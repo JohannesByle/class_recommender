@@ -22,6 +22,7 @@ majors = Select(driver.find_element_by_xpath('//*[@id="subj_id"]'))
 [majors.select_by_index(n) for n in range(len(majors.options))]
 driver.find_element_by_xpath("/html/body/div[3]/form/input[17]").click()
 
+# Scrape the course data
 df = pd.DataFrame(columns=["major", "Num", "Name"])
 majors = driver.find_elements_by_class_name("datadisplaytable")
 for major in majors:

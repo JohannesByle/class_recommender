@@ -1,36 +1,54 @@
-from selenium import webdriver
+import requests
 import os
-from selenium.webdriver.support.select import Select
+from bs4 import BeautifulSoup
 import pandas as pd
 from tqdm import tqdm
 
-# Initialize driver
-driver = webdriver.Chrome()
 
-# Login to the portal
-driver.get("https://bannerweb.wheaton.edu/db1/bwckgens.p_proc_term_date")
-driver.find_element_by_id("UserID").send_keys(os.environ["PORTAL_USER_ID"])
-driver.find_element_by_id("PIN").send_keys(os.environ["PORTAL_PASSWORD"])
-driver.find_element_by_xpath("/html/body/div[3]/form/p/input").click()
-
-# Navigate to the classes selection screen
-driver.get("https://bannerweb.wheaton.edu/db1/bwskfcls.p_sel_crse_search")
-years = Select(driver.find_element_by_xpath("/html/body/div[3]/form/table/tbody/tr/td/select"))
-years.select_by_index(1)
-driver.find_element_by_xpath("/html/body/div[3]/form/input[2]").click()
-majors = Select(driver.find_element_by_xpath('//*[@id="subj_id"]'))
-[majors.select_by_index(n) for n in range(len(majors.options))]
-driver.find_element_by_xpath("/html/body/div[3]/form/input[17]").click()
-
-# Scrape the course data by clicking through each class
-dfs = []
-for n in tqdm(range(len(driver.find_elements_by_css_selector("input[value='View Sections']")))):
-    inputs = driver.find_elements_by_css_selector("input[value='View Sections']")
-    inputs[n].click()
-    table = pd.read_html(driver.find_element_by_xpath("//body").get_attribute('outerHTML'))[5]
+def course_to_pandas(html):
+    table = pd.read_html(html)[5]
     major = table.columns.get_level_values(0)[0]
     if [n for n in table.columns.get_level_values(0) if n != major]:
         raise Exception("Not just one major")
-    dfs.append(table[major])
-    driver.back()
-pd.concat(dfs).reset_index(drop=True).to_feather("courses.feather")
+    return table[major]
+
+
+def form_to_json(html, action):
+    soups = BeautifulSoup(html, features="lxml").find_all("form", action=action)
+    data = []
+    for soup in soups:
+        temp_data = []
+        for input_el in soup.find_all("input"):
+            if input_el.has_attr("name") and input_el.has_attr("value"):
+                temp_data.append((input_el["name"], input_el["value"]))
+        for select_el in soup.find_all("select"):
+            name = select_el["name"]
+            for option_el in select_el.find_all("option"):
+                temp_data.append((name, option_el["value"]))
+        data.append(temp_data)
+    return data
+
+
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+auth_data = {"sid": os.environ["PORTAL_USER_ID"], "PIN": os.environ["PORTAL_PASSWORD"]}
+
+
+def get_all_courses(year):
+    dfs = []
+    with requests.session() as s:
+        s.get("https://bannerweb.wheaton.edu/db1/bwckgens.p_proc_term_date")
+        s.post("https://bannerweb.wheaton.edu/db1/twbkwbis.P_ValLogin", data=auth_data)
+        p = s.get("https://bannerweb.wheaton.edu/db1/bwskfcls.p_sel_crse_search")
+        form = form_to_json(p.text, "/db1/bwckgens.p_proc_term_date")[0]
+        form = [n for n in form if n[0] != "p_term" or n[1] == year]
+        p = s.post("https://bannerweb.wheaton.edu/db1/bwckgens.p_proc_term_date", data=form)
+        form = form_to_json(p.text, "/db1/bwskfcls.P_GetCrse")[0]
+        form.append(("SEL_CRSE", "dummy"))
+        form.append(("SEL_TITLE", "dummy"))
+        p = s.post("https://bannerweb.wheaton.edu/db1/bwskfcls.P_GetCrse", data=form)
+        forms = form_to_json(p.text, "/db1/bwskfcls.P_GetCrse")
+        for form in tqdm(forms):
+            p = s.post("https://bannerweb.wheaton.edu/db1/bwskfcls.P_GetCrse", data=form)
+            dfs.append(course_to_pandas(p.text))
+
+    pd.concat(dfs).reset_index(drop=True).to_csv("cache/courses.csv")

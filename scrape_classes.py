@@ -3,6 +3,17 @@ import os
 from bs4 import BeautifulSoup
 import pandas as pd
 from tqdm import tqdm
+import json
+
+os.chdir(os.path.dirname(__file__))
+requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
+auth_data = {"sid": os.environ["PORTAL_USER_ID"], "PIN": os.environ["PORTAL_PASSWORD"]}
+
+
+def clean_df(df):
+    df = df.dropna(subset=["CRN"]).drop_duplicates().reset_index(drop=True)
+    df["CRN"] = df["CRN"].astype(int)
+    return df
 
 
 def course_to_pandas(html):
@@ -29,8 +40,18 @@ def form_to_json(html, action):
     return data
 
 
-requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
-auth_data = {"sid": os.environ["PORTAL_USER_ID"], "PIN": os.environ["PORTAL_PASSWORD"]}
+def get_course(subject, course, year):
+    with open("post_form.json", "r") as f:
+        post_data = json.load(f)
+    replacements = {"sel_subj": str(subject), "SEL_CRSE": str(course), "term_in": str(year)}
+    for n in range(len(post_data)):
+        if post_data[n][0] in replacements:
+            post_data[n][1] = replacements[post_data[n][0]]
+    with requests.session() as s:
+        s.get("https://bannerweb.wheaton.edu/db1/bwckgens.p_proc_term_date")
+        s.post("https://bannerweb.wheaton.edu/db1/twbkwbis.P_ValLogin", data=auth_data)
+        p = s.post("https://bannerweb.wheaton.edu/db1/bwskfcls.P_GetCrse", data=post_data)
+        return course_to_pandas(p.text)
 
 
 def get_all_courses(year):
@@ -51,4 +72,4 @@ def get_all_courses(year):
             p = s.post("https://bannerweb.wheaton.edu/db1/bwskfcls.P_GetCrse", data=form)
             dfs.append(course_to_pandas(p.text))
 
-    pd.concat(dfs).reset_index(drop=True).to_csv("cache/courses.csv")
+    clean_df(pd.concat(dfs)).to_pickle("cache/courses.p")

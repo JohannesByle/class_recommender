@@ -12,10 +12,15 @@ if not os.path.exists("data/requirements_json"):
 def print_recursive(node, tab=0):
     indent = "".join(["\t"] * tab)
     if isinstance(node, dict) and "Label" in node:
-        print(indent + str(node["Label"]))
+        how_many = "Any"
+        if node["Type"] == "Subset":
+            how_many = "All"
+        elif node["Type"] == "Group":
+            how_many = "Choose {}".format(node["Num Required"])
+        print("{}{} - {}".format(indent, node["Label"], how_many))
         [print_recursive(n, tab + 1) for n in node["Rule"]]
     elif isinstance(node, dict) and "Course" in node:
-        print(indent + str(node))
+        print(indent + str((node["Course"]["Name"], node["Course"]["Number"])))
     elif isinstance(node, list):
         [print_recursive(n, tab + 1) for n in node]
 

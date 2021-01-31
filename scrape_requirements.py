@@ -14,6 +14,8 @@ sys.setrecursionlimit(10000)
 os.chdir(os.path.dirname(__file__))
 if not os.path.exists("data"):
     os.mkdir("data")
+if not os.path.exists("data/requirements_xml"):
+    os.mkdir("data/requirements_xml")
 
 
 def convert_to_json(filename, output_filename):
@@ -113,7 +115,7 @@ def scrape_requirements(update_majors_list=False):
                 what_if_data["BLOCKLIST"] = block_list.format(program=program, major=major)
                 what_if_data["DEGREE"] = program[2:4]
                 p = s.post("https://degreeworks.wheaton.edu/DashboardServlet/dashboard", data=what_if_data)
-                save_file = "data/requirements/{}_{}.xml".format(*[n.replace("/", "") for n in [program, major]])
+                save_file = "data/requirements_xml/{}_{}.xml".format(*[n.replace("/", "") for n in [program, major]])
                 with open(save_file, "w") as f:
                     f.write(p.text)
     convert_xml()

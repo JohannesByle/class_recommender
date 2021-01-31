@@ -73,6 +73,8 @@ def parse_xml(node):
             to_return_rules.append(rule[0])
             continue
         to_return_rules.append(rule)
+    if len(to_return_rules) == 1:
+        to_return_rules = to_return_rules[0]
     return to_return_rules
 
 

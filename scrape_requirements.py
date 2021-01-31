@@ -105,14 +105,14 @@ def scrape_requirements(update_majors_list=False):
             s.cookies.set(cookie['name'], cookie['value'])
         s.get(url)
 
-        with open("dw_json/what_if.json") as f:
+        with open("post_forms/dw_what_if_major.json") as f:
             what_if_data = json.load(f)
-        block_list = 'dummy&GOALCODE=PROGRAM&GOALVALUE="{program}"&&GOALCODE=MAJOR&GOALVALUE="{major}"&GOALCATYR=9999&'
         with open("data/majors.json") as f:
             majors = json.load(f)
         for program in tqdm(majors):
             for major in majors[program]["majors"]:
-                what_if_data["BLOCKLIST"] = block_list.format(program=program, major=major)
+                what_if_data["BLOCKLIST"] = what_if_data["BLOCKLIST"].format(id=int(os.environ["STUDENT_ID"]),
+                                                                             program=program, major=major)
                 what_if_data["DEGREE"] = program[2:4]
                 p = s.post("https://degreeworks.wheaton.edu/DashboardServlet/dashboard", data=what_if_data)
                 save_file = "data/requirements_xml/{}_{}.xml".format(*[n.replace("/", "") for n in [program, major]])

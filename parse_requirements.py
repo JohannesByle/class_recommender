@@ -20,7 +20,7 @@ def print_recursive(node, tab=0):
         print("{}{} - {}".format(indent, node["Label"], how_many))
         [print_recursive(n, tab + 1) for n in node["Rule"]]
     elif isinstance(node, dict) and "Course" in node:
-        print(indent + str((node["Course"]["Name"], node["Course"]["Number"])))
+        print(indent + str(list(node["Course"].values())))
     elif isinstance(node, list):
         [print_recursive(n, tab + 1) for n in node]
 
@@ -48,9 +48,17 @@ def parse_rule(rule):
 
 
 def parse_req(req):
+    def parse_course(course):
+        course_data = {"Course": {"Name": course.attrib["Disc"], "Number": course.attrib["Num"]}}
+        children_tags = [n.tag for n in course]
+        if "With" in children_tags:
+            with_node = course[children_tags.index("With")]
+            course_data["Course"][with_node.attrib["Code"]] = [n.text for n in with_node if n.tag == "Value"][0]
+        return course_data
+
     if req.attrib["Class_cred_op"] != "OR":
         raise Exception("Not or exception")
-    return [{"Course": {"Name": n.attrib["Disc"], "Number": n.attrib["Num"]}} for n in req.findall("Course")]
+    return [parse_course(n) for n in req.findall("Course")]
 
 
 def parse_xml(node):

@@ -2,6 +2,12 @@ from xml.etree import ElementTree
 import os
 import json
 
+os.chdir(os.path.dirname(__file__))
+if not os.path.exists("data"):
+    os.mkdir("data")
+if not os.path.exists("data/requirements_json"):
+    os.mkdir("data/requirements_json")
+
 
 def print_recursive(node, tab=0):
     indent = "".join(["\t"] * tab)
@@ -17,22 +23,23 @@ def print_recursive(node, tab=0):
 def parse_rule(rule):
     children = [n.tag for n in rule]
     label = rule.attrib["Label"]
-    if rule.attrib["RuleType"] == "IfStmt":
+    rule_type = rule.attrib["RuleType"]
+    if rule_type == "IfStmt":
         is_else = "IfElsePart" in children and rule[children.index("IfElsePart")].text == "ElsePart"
         boolean = rule[children.index("BooleanEvaluation")].text == "True"
         requirement_children = rule.find("Requirement")
         requirement_children_tags = [n.tag for n in requirement_children]
         name = "ElsePart" if (is_else or not boolean) and "ElsePart" in requirement_children_tags else "IfPart"
         return parse_xml(requirement_children[requirement_children_tags.index(name)])
-    elif rule.attrib["RuleType"] == "Course":
+    elif rule_type == "Course":
         if len(rule.findall("Requirement")) > 1:
             raise Exception("More than one requirement")
-        return {"Label": label + rule.attrib["RuleType"], "Rule": parse_req(rule.find("Requirement"))}
-    elif rule.attrib["RuleType"] == "Group":
-        return {"Label": label + rule.attrib["RuleType"], "Num Required": rule.find("Requirement").attrib["NumGroups"],
-                "Rule": parse_xml(rule)}
+        return {"Label": label, "Rule": parse_req(rule.find("Requirement")), "Type": rule_type}
+    elif rule_type == "Group":
+        return {"Label": label, "Num Required": rule.find("Requirement").attrib["NumGroups"],
+                "Rule": parse_xml(rule), "Type": rule_type}
     else:
-        return {"Label": label + rule.attrib["RuleType"], "Rule": parse_xml(rule)}
+        return {"Label": label, "Rule": parse_xml(rule), "Type": rule_type}
 
 
 def parse_req(req):
@@ -44,13 +51,20 @@ def parse_req(req):
 def parse_xml(node):
     if node.tag == "Block" and node.attrib["Req_type"] == "DEGREE":
         return
-    return [n for n in [parse_rule(n) if n.tag == "Rule" else parse_xml(n) for n in node] if n]
+    rules = [parse_rule(n) if n.tag == "Rule" else parse_xml(n) for n in node]
+    to_return_rules = []
+    for rule in rules:
+        if not rule:
+            continue
+        if isinstance(rule, list) and len(rule) == 1:
+            to_return_rules.append(rule[0])
+            continue
+        to_return_rules.append(rule)
+    return to_return_rules
 
 
 def convert_xml():
-    requirements_json = {}
-    reqs_dir = "data/requirements"
+    reqs_dir = "data/requirements_xml"
     for file in os.listdir(reqs_dir):
-        requirements_json[file.replace(".xml", "")] = parse_xml(ElementTree.parse(reqs_dir + "/" + file).getroot())
-    with open("data/requirements.json", "w") as f:
-        json.dump(requirements_json, f)
+        with open("data/requirements_json/" + file.replace(".xml", ".json"), "w") as f:
+            json.dump(parse_xml(ElementTree.parse(reqs_dir + "/" + file).getroot()), f)

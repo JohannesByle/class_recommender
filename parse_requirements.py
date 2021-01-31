@@ -4,14 +4,13 @@ import json
 
 
 def print_recursive(node, tab=0):
-    if isinstance(node, tuple):
-        indent = "".join(["\t"] * tab)
-        if isinstance(node[1], list):
-            print(indent + str(node[0]))
-            [print_recursive(n, tab + 1) for n in node[1]]
-        else:
-            print(indent + str(node))
-    else:
+    indent = "".join(["\t"] * tab)
+    if isinstance(node, dict) and "Label" in node:
+        print(indent + str(node["Label"]))
+        [print_recursive(n, tab + 1) for n in node["Rule"]]
+    elif isinstance(node, dict) and "Course" in node:
+        print(indent + str(node))
+    elif isinstance(node, list):
         [print_recursive(n, tab + 1) for n in node]
 
 
@@ -28,17 +27,18 @@ def parse_rule(rule):
     elif rule.attrib["RuleType"] == "Course":
         if len(rule.findall("Requirement")) > 1:
             raise Exception("More than one requirement")
-        return label, parse_req(rule.find("Requirement"))
+        return {"Label": label + rule.attrib["RuleType"], "Rule": parse_req(rule.find("Requirement"))}
     elif rule.attrib["RuleType"] == "Group":
-        return (label, rule.find("Requirement").attrib["NumGroups"]), parse_xml(rule)
+        return {"Label": label + rule.attrib["RuleType"], "Num Required": rule.find("Requirement").attrib["NumGroups"],
+                "Rule": parse_xml(rule)}
     else:
-        return label, parse_xml(rule)
+        return {"Label": label + rule.attrib["RuleType"], "Rule": parse_xml(rule)}
 
 
 def parse_req(req):
     if req.attrib["Class_cred_op"] != "OR":
         raise Exception("Not or exception")
-    return [(n.attrib["Disc"], n.attrib["Num"]) for n in req.findall("Course")]
+    return [{"Course": {"Name": n.attrib["Disc"], "Number": n.attrib["Num"]}} for n in req.findall("Course")]
 
 
 def parse_xml(node):

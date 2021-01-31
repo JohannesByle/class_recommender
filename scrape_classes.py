@@ -43,7 +43,7 @@ def form_to_json(html, action):
 
 
 def get_course(subject, course, year):
-    with open("post_form.json", "r") as f:
+    with open("post_forms/bannerweb.json", "r") as f:
         post_data = json.load(f)
     replacements = {"sel_subj": str(subject), "SEL_CRSE": str(course), "term_in": str(year)}
     for n in range(len(post_data)):

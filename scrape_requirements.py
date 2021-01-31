@@ -47,18 +47,21 @@ def get_wait(f, max_tries=20):
 
 def scrape_requirements(update_majors_list=False):
     auth_data = {"j_username": os.environ["PORTAL_USER_ID"], "j_password": os.environ["PORTAL_PASSWORD"]}
+    print("Starting chromedriver")
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     chrome_options.add_experimental_option("detach", True)
-    driver = webdriver.Chrome("chromedriver.exe", options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
     url = "https://degreeworks.wheaton.edu/DashboardServlet/"
     driver.get(url)
     for key in auth_data:
         driver.find_element_by_name(key).send_keys(auth_data[key])
     driver.find_element_by_name("_eventId_proceed").click()
+    print("Waiting for DegreeWorks")
     while driver.current_url != url:
         continue
     if update_majors_list:
+        print("Updating majors list")
         driver.switch_to.frame("frBodyContainer")
         driver.switch_to.frame("frLeft")
         get_wait(lambda: driver.find_elements_by_css_selector("li[title='What If']"))[0].click()
@@ -100,6 +103,7 @@ def scrape_requirements(update_majors_list=False):
         with open("data/minors.json", "w") as f:
             json.dump(minors, f)
     cookies = driver.get_cookies()
+    driver.quit()
     with requests.session() as s:
         for cookie in cookies:
             s.cookies.set(cookie['name'], cookie['value'])
@@ -109,8 +113,10 @@ def scrape_requirements(update_majors_list=False):
             what_if_data = json.load(f)
         with open("data/majors.json") as f:
             majors = json.load(f)
-        for program in tqdm(majors):
+        pbar = tqdm(total=sum([len(majors[n]["majors"]) for n in majors]))
+        for program in majors:
             for major in majors[program]["majors"]:
+                pbar.update(1)
                 what_if_data["BLOCKLIST"] = what_if_data["BLOCKLIST"].format(id=int(os.environ["STUDENT_ID"]),
                                                                              program=program, major=major)
                 what_if_data["DEGREE"] = program[2:4]

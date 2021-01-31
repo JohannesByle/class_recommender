@@ -110,12 +110,13 @@ def scrape_requirements(update_majors_list=False):
         s.get(url)
 
         with open("post_forms/dw_what_if_major.json") as f:
-            what_if_data = json.load(f)
+            what_if_data_master = json.load(f)
         with open("data/majors.json") as f:
             majors = json.load(f)
         pbar = tqdm(total=sum([len(majors[n]["majors"]) for n in majors]))
         for program in majors:
             for major in majors[program]["majors"]:
+                what_if_data = what_if_data_master.copy()
                 pbar.update(1)
                 what_if_data["BLOCKLIST"] = what_if_data["BLOCKLIST"].format(id=int(os.environ["STUDENT_ID"]),
                                                                              program=program, major=major)

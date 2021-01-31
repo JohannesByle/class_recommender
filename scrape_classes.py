@@ -6,8 +6,8 @@ from tqdm import tqdm
 import json
 
 os.chdir(os.path.dirname(__file__))
-if not os.path.exists("cache"):
-    os.mkdir("cache")
+if not os.path.exists("data"):
+    os.mkdir("data")
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 auth_data = {"sid": os.environ["PORTAL_USER_ID"], "PIN": os.environ["PORTAL_PASSWORD"]}
 
@@ -74,4 +74,4 @@ def get_all_courses(year):
             p = s.post("https://bannerweb.wheaton.edu/db1/bwskfcls.P_GetCrse", data=form)
             dfs.append(course_to_pandas(p.text))
 
-    clean_df(pd.concat(dfs)).to_pickle("cache/courses.p")
+    clean_df(pd.concat(dfs)).to_pickle("data/courses.p")

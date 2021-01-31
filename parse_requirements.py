@@ -17,6 +17,8 @@ def print_recursive(node, tab=0):
             how_many = "All"
         elif node["Type"] == "Group":
             how_many = "Choose {}".format(node["Num Required"])
+        elif node["Type"] == "Course" and node["Min Credits"]:
+            how_many = "At least {} credits".format(node["Min Credits"])
         print("{}{} - {}".format(indent, node["Label"], how_many))
         [print_recursive(n, tab + 1) for n in node["Rule"]]
     elif isinstance(node, dict) and "Course" in node:
@@ -39,7 +41,8 @@ def parse_rule(rule):
     elif rule_type == "Course":
         if len(rule.findall("Requirement")) > 1:
             raise Exception("More than one requirement")
-        return {"Label": label, "Rule": parse_req(rule.find("Requirement")), "Type": rule_type}
+        min_credits, courses = parse_req(rule.find("Requirement"))
+        return {"Label": label, "Rule": courses, "Type": rule_type, "Min Credits": min_credits}
     elif rule_type == "Group":
         return {"Label": label, "Num Required": rule.find("Requirement").attrib["NumGroups"],
                 "Rule": parse_xml(rule), "Type": rule_type}
@@ -58,7 +61,10 @@ def parse_req(req):
 
     if req.attrib["Class_cred_op"] != "OR":
         raise Exception("Not or exception")
-    return [parse_course(n) for n in req.findall("Course")]
+    min_cred = None
+    if "Credits_begin" in req.attrib:
+        min_cred = req.attrib["Credits_begin"]
+    return min_cred, [parse_course(n) for n in req.findall("Course")]
 
 
 def parse_xml(node):

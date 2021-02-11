@@ -79,7 +79,7 @@ def parse_requirement(courses, node):
     sat_courses_all = pd.DataFrame()
     for course in node.findall("Course"):
         sat_courses = courses.copy()
-        assert all([n.tag in ["With"] for n in course])
+        assert all([n.tag in ["With", "CrossListedCourse"] for n in course])
         for attrib in ["Disc", "Num"]:
             sat_courses[attrib] = sat_courses[attrib].astype(str)
             sat_courses = sat_courses[sat_courses[attrib].str.match(course.attrib[attrib].replace("@", ".+"))]

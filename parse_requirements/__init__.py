@@ -1,12 +1,4 @@
-import os
 from warnings import warn
-import pandas as pd
-
-os.chdir(os.path.dirname(os.path.dirname(__file__)))
-if not os.path.exists("data"):
-    os.mkdir("data")
-if not os.path.exists("data/requirements_json"):
-    os.mkdir("data/requirements_json")
 
 
 def print_recursive(array, tab=0):

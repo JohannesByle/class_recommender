@@ -5,10 +5,6 @@ import pandas as pd
 from tqdm import tqdm
 import json
 
-os.chdir(os.path.dirname(__file__))
-dirs = ["data"]
-[os.mkdir(n) for n in dirs if not os.path.exists(n)]
-
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 auth_data = {"sid": os.environ["PORTAL_USER_ID"], "PIN": os.environ["PORTAL_PASSWORD"]}
 

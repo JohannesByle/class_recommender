@@ -7,15 +7,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 import time
-from parse_requirements import convert_xml
 
 sys.setrecursionlimit(10000)
-
-os.chdir(os.path.dirname(__file__))
-if not os.path.exists("../data"):
-    os.mkdir("../data")
-if not os.path.exists("../data/requirements_xml"):
-    os.mkdir("../data/requirements_xml")
 
 
 def convert_to_json(filename, output_filename):
@@ -125,4 +118,3 @@ def scrape_requirements(update_majors_list=False):
                 save_file = "data/requirements_xml/{}_{}.xml".format(*[n.replace("/", "") for n in [program, major]])
                 with open(save_file, "w") as f:
                     f.write(p.text)
-    convert_xml()

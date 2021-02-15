@@ -12,10 +12,10 @@ from parse_requirements import convert_xml
 sys.setrecursionlimit(10000)
 
 os.chdir(os.path.dirname(__file__))
-if not os.path.exists("data"):
-    os.mkdir("data")
-if not os.path.exists("data/requirements_xml"):
-    os.mkdir("data/requirements_xml")
+if not os.path.exists("../data"):
+    os.mkdir("../data")
+if not os.path.exists("../data/requirements_xml"):
+    os.mkdir("../data/requirements_xml")
 
 
 def convert_to_json(filename, output_filename):
@@ -98,9 +98,9 @@ def scrape_requirements(update_majors_list=False):
             majors = get_dict("MAJORPICK")
 
             programs[code] = {"name": option.text, "majors": majors}
-        with open("data/majors.json", "w") as f:
+        with open("../data/majors.json", "w") as f:
             json.dump(programs, f)
-        with open("data/minors.json", "w") as f:
+        with open("../data/minors.json", "w") as f:
             json.dump(minors, f)
     cookies = driver.get_cookies()
     driver.quit()
@@ -111,7 +111,7 @@ def scrape_requirements(update_majors_list=False):
 
         with open("post_forms/dw_what_if_major.json") as f:
             what_if_data_master = json.load(f)
-        with open("data/majors.json") as f:
+        with open("../data/majors.json") as f:
             majors = json.load(f)
         pbar = tqdm(total=sum([len(majors[n]["majors"]) for n in majors]))
         for program in majors:

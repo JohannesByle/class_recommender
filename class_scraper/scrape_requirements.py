@@ -116,5 +116,6 @@ def scrape_requirements(update_majors_list=False):
                 what_if_data["DEGREE"] = program[2:4]
                 p = s.post("https://degreeworks.wheaton.edu/DashboardServlet/dashboard", data=what_if_data)
                 save_file = "data/requirements_xml/{}_{}.xml".format(*[n.replace("/", "") for n in [program, major]])
-                with open(save_file, "w") as f:
-                    f.write(p.text)
+                if p.text.count("<Block") > 2:
+                    with open(save_file, "w") as f:
+                        f.write(p.text)

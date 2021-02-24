@@ -69,7 +69,7 @@ def get_all_courses():
         form_master = [n for n in form if n[0] != "p_term"]
         years_form = [("term_in", n[1]) for n in years]
         courses = []
-        for year in years[:4]:
+        for year in years[:10]:
             form = form_master + [year]
             p = s.post("https://bannerweb.wheaton.edu/db1/bwckgens.p_proc_term_date", data=form)
             form = form_to_json(p.text, "/db1/bwskfcls.P_GetCrse")[0]

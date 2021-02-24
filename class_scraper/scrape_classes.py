@@ -65,11 +65,11 @@ def get_all_courses():
         s.post("https://bannerweb.wheaton.edu/db1/twbkwbis.P_ValLogin", data=auth_data)
         p = s.get("https://bannerweb.wheaton.edu/db1/bwskfcls.p_sel_crse_search")
         form = form_to_json(p.text, "/db1/bwckgens.p_proc_term_date")[0]
-        years = [n for n in form if n[0] == "p_term" and n[1] and not n[1].endswith("05")]
+        years = [n for n in form if n[0] == "p_term" and n[1]]
         form_master = [n for n in form if n[0] != "p_term"]
         years_form = [("term_in", n[1]) for n in years]
         courses = []
-        for year in years[:10]:
+        for year in years[:14]:
             form = form_master + [year]
             p = s.post("https://bannerweb.wheaton.edu/db1/bwckgens.p_proc_term_date", data=form)
             form = form_to_json(p.text, "/db1/bwskfcls.P_GetCrse")[0]
@@ -77,7 +77,7 @@ def get_all_courses():
             form.append(("SEL_TITLE", "dummy"))
             p = s.post("https://bannerweb.wheaton.edu/db1/bwskfcls.P_GetCrse", data=form)
             forms = form_to_json(p.text, "/db1/bwskfcls.P_GetCrse")
-            for form in tqdm(forms):
+            for form in tqdm(forms, desc=str(year)):
                 subj = [n[1] for n in form if n[0] == "sel_subj" and n[1] != "dummy"][0]
                 course = [n[1] for n in form if n[0] == "SEL_CRSE"][0]
                 if not (subj, course) in courses:

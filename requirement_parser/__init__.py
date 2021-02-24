@@ -46,6 +46,6 @@ def parse_xml(courses, node):
     return remove_nests(to_return)
 
 
-def nun_requirements_satisfied(courses, filename):
+def requirements_satisfied(courses, filename):
     xml = ElementTree.parse(filename)
     return parse_xml(courses, xml.getroot())

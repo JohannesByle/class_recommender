@@ -1,4 +1,5 @@
 from warnings import warn
+from xml.etree import ElementTree
 
 
 def print_recursive(array, tab=0):
@@ -43,3 +44,8 @@ def parse_xml(courses, node):
     fun = switch({"Rule": parse_rule, "Requirement": parse_requirement}, node.tag, ignored=ignored)
     to_return = fun(courses, node) if fun else [parse_xml(courses, n) for n in node]
     return remove_nests(to_return)
+
+
+def nun_requirements_satisfied(courses, filename):
+    xml = ElementTree.parse(filename)
+    return parse_xml(courses, xml.getroot())

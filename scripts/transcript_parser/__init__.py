@@ -3,7 +3,6 @@ import os
 import pandas as pd
 import re
 import json
-from flask_app import static
 
 courses_df = pd.read_pickle(os.path.join(os.path.dirname(os.path.dirname(__file__)), "class_scraper/data/courses.p"))
 with open(os.path.join(os.path.dirname(__file__), "tags.json"), "r") as f:

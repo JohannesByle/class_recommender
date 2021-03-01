@@ -7,19 +7,21 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(16)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 
+login_manager = LoginManager()
+login_manager.login_view = 'sign_in.sign_in'
+login_manager.init_app(app)
+
 db = SQLAlchemy(app)
 db.init_app(app)
 
 from .views.auth.sign_up import sign_up_blueprint
 from .views.auth.sign_in import sign_in_blueprint
+from .views.auth.verify_email import verify_email_blueprint
 from models import User
 
 app.register_blueprint(sign_up_blueprint)
 app.register_blueprint(sign_in_blueprint)
-
-login_manager = LoginManager()
-login_manager.login_view = 'sign_in.sign_in'
-login_manager.init_app(app)
+app.register_blueprint(verify_email_blueprint)
 
 
 @login_manager.user_loader

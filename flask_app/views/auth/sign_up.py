@@ -3,6 +3,7 @@ from flask import render_template, request, redirect, flash, Blueprint
 from models import User
 from flask_app import db
 from werkzeug.security import generate_password_hash
+from .verify_email import send_email_verification_code
 
 sign_up_blueprint = Blueprint("sign_up", __name__)
 
@@ -28,4 +29,5 @@ def sign_up_post():
     )
     db.session.add(new_user)
     db.session.commit()
-    return redirect("/login")
+    send_email_verification_code(new_user)
+    return redirect("/sign_in")

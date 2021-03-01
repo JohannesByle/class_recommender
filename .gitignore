@@ -2,3 +2,4 @@
 /bootstrap/
 /venv/
 /config.bat
+/flask_app/*.sqlite

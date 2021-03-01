@@ -8,7 +8,6 @@ from tqdm import tqdm
 def migrate_classes():
     path = os.path.dirname(__file__)
     df = pd.read_pickle(os.path.join(path, "data/courses.p"))
-    print(list(df.columns))
     for index, row in tqdm(df.iterrows(), total=len(df.index)):
         new_course = dict(
             term=row["Associated Term"],

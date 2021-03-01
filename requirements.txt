@@ -1,6 +1,10 @@
-Flask
-requests
-pandas
-tqdm
-selenium
-beautifulsoup4
+requests~=2.25.1
+tqdm~=4.58.0
+pandas~=1.2.2
+beautifulsoup4~=4.9.3
+Flask~=1.1.2
+flask_login
+flask_sqlalchemy
+selenium~=3.141.0
+
+Werkzeug~=1.0.1

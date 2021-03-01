@@ -33,13 +33,19 @@
                            href="{{ item.link|safe }}">{{ item.name }}</a>
                     </li>
                 {% endfor %}
-                <li>
-                    <a class="nav-link" data-bs-toggle="modal" data-bs-target="#sign_in_modal" href="#">sign_in</a>
-                </li>
-                <li>
-                    <a class="nav-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
-                       data-bs-target="#sign_up_modal" href="#">sign_up</a>
-                </li>
+                {% if current_user.is_authenticated %}
+                    <li>
+                        <a class="nav-link" href="/sign_out">sign_out</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="nav-link" data-bs-toggle="modal" data-bs-target="#sign_in_modal" href="#">sign_in</a>
+                    </li>
+                    <li>
+                        <a class="nav-link btn btn-sm btn-outline-secondary" data-bs-toggle="modal"
+                           data-bs-target="#sign_up_modal" href="#">sign_up</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>

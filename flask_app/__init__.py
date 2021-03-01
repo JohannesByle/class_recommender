@@ -17,11 +17,13 @@ db.init_app(app)
 from .views.auth.sign_up import sign_up_blueprint
 from .views.auth.sign_in import sign_in_blueprint
 from .views.auth.verify_email import verify_email_blueprint
+from .views.search_classes import search_classes_blueprint
 from models import User
 
 app.register_blueprint(sign_up_blueprint)
 app.register_blueprint(sign_in_blueprint)
 app.register_blueprint(verify_email_blueprint)
+app.register_blueprint(search_classes_blueprint)
 
 
 @login_manager.user_loader

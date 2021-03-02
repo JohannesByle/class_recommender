@@ -33,5 +33,5 @@ function Class(class_dict) {
 const classes_list_elements = classes_list.map((row) => Class(row));
 ReactDOM.render(
     <div>{classes_list_elements}</div>,
-    document.getElementById('root')
+    document.getElementById("classes_list")
 );

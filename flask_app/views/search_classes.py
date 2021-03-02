@@ -10,6 +10,7 @@ def df_from_sql():
     df = pd.read_sql(Class.query.statement, db.engine)
     df["term"] = df["term"].apply(lambda x: x.replace(" Term", ""))
     df["attributes"] = df["attribute"].apply(lambda x: extract_attributes(str(x)))
+    df["instructor"] = df["instructor"].apply(lambda x: str(x).replace(" (P)", ""))
     df = df[df["term"] == "Spring 2021"]
     return df
 

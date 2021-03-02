@@ -3,3 +3,4 @@
 /venv/
 /config.bat
 /flask_app/*.sqlite
+/node_modules/

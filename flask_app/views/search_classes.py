@@ -19,4 +19,4 @@ classes_df = df_from_sql()
 
 @search_classes_blueprint.route('/search_classes')
 def search_classes():
-    return render_template("search_classes/search_classes.html", classes_df=classes_df.to_json(orient="records"))
+    return render_template("search_classes/search_classes.html", classes_list=classes_df.to_json(orient="records"))

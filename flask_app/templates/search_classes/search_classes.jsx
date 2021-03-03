@@ -1,13 +1,13 @@
-const classes_list = [];
+import {Button} from '@material-ui/core';
 
 
 function Class(class_dict) {
     const rem_color = class_dict["rem"] > 0 ? "bg-primary" : "bg-secondary";
     const attributes = class_dict["attributes"].map((attribute) =>
-        <span className="pill badge bg-primary ms-1">{attribute}</span>
+        <span key={attribute} className="pill badge bg-primary ms-1">{attribute}</span>
     );
     return (
-        <div className="card mb-2 bg-light" key={class_dict["id"]}>
+        <div className="card mb-2 bg-light">
             <div className="card-body py-1 px-3 row">
                 <div className="col my-auto">
                     <span className="fs-6">{class_dict["title"]}</span>
@@ -31,16 +31,8 @@ function Class(class_dict) {
     );
 }
 
-const classes_list_elements = classes_list.map((row) => Class(row));
+const classes_list_elements = classes_list.map((row) => <div key={row["id"]}>{Class(row)}</div>);
 ReactDOM.render(
     <div>{classes_list_elements}</div>,
-    document.getElementById("classes_list")
+    document.getElementById("classes_container")
 );
-
-function App() {
-    return <Button color="primary">Hello World</Button>;
-}
-ReactDOM.render(
-    App(),
-    document.getElementById("filters_col")
-)

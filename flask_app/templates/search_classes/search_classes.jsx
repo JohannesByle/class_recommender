@@ -1,4 +1,5 @@
-const classes_list = {{ classes_list|safe }};
+const classes_list = [];
+
 
 function Class(class_dict) {
     const rem_color = class_dict["rem"] > 0 ? "bg-primary" : "bg-secondary";
@@ -35,3 +36,11 @@ ReactDOM.render(
     <div>{classes_list_elements}</div>,
     document.getElementById("classes_list")
 );
+
+function App() {
+    return <Button color="primary">Hello World</Button>;
+}
+ReactDOM.render(
+    App(),
+    document.getElementById("filters_col")
+)

@@ -4,3 +4,5 @@
 /config.bat
 /flask_app/*.sqlite
 /node_modules/
+/package-lock.json
+/package.json

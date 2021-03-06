@@ -22,7 +22,7 @@ classes_df = df_from_sql()
 
 @search_classes_blueprint.route('/search_classes')
 def search_classes():
-    with open("flask_app/templates/search_classes/react_scripts/dist/main.js", "r") as f:
+    with open("flask_app/templates/search_classes/react_scripts/dist/main.js", "r", encoding="utf8") as f:
         js = f.read()
     return render_template("search_classes/search_classes.html", classes_list=classes_df.to_json(orient="records"),
                            js=js)

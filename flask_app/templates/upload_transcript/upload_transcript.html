@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Upload Transcript</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block body %}
+    <div class="col text-center">
+      <form>
+        <input type="file" id="FILE" name="filename">
+      </form>
+    </div>
 
-</body>
-</html>
+{% endblock %}

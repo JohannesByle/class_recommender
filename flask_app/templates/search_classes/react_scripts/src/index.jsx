@@ -34,9 +34,9 @@ function add_multi_select(label, key) {
 
 add_slider("Remaining Slots", "rem", "rem");
 add_slider("Credits", "cred", "cred_num");
-add_multi_select("Tags", "attributes")
-add_multi_select("Instructors", "instructor")
-add_multi_select("Subject", "subj")
+add_multi_select("Tags", "attributes");
+add_multi_select("Instructors", "instructors");
+add_multi_select("Subject", "subj");
 
 
 

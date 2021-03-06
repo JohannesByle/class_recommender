@@ -14,7 +14,6 @@ function get_values(key) {
     const values = [];
     for (let i = 0; i < classes_list.length; i++)
         values.push(classes_list[i][key])
-    console.log(values);
     return values;
 
 }

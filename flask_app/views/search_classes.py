@@ -12,6 +12,7 @@ def df_from_sql():
     df["attributes"] = df["attribute"].apply(lambda x: extract_attributes(str(x)))
     df["instructor"] = df["instructor"].apply(lambda x: str(x).replace(" (P)", ""))
     df["cred"] = df["cred"].apply(lambda x: str(x).replace(".000", "").replace(".0", ""))
+    df["cred_num"] = pd.to_numeric(df["cred"], errors="coerce")
     df["time"] = df["time"].apply(lambda x: str(x).replace(" ", ""))
     df = df[df["term"] == "Spring 2021"]
     return df

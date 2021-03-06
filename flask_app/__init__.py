@@ -2,6 +2,8 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import os
+from sqlalchemy.exc import OperationalError
+from warnings import warn
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(16)
@@ -12,18 +14,22 @@ login_manager.login_view = 'sign_in.sign_in'
 login_manager.init_app(app)
 
 db = SQLAlchemy(app)
+from models import *
+
 db.init_app(app)
 
-from .views.auth.sign_up import sign_up_blueprint
-from .views.auth.sign_in import sign_in_blueprint
-from .views.auth.verify_email import verify_email_blueprint
-from .views.search_classes import search_classes_blueprint
-from models import User
+try:
+    from .views.auth.sign_up import sign_up_blueprint
+    from .views.auth.sign_in import sign_in_blueprint
+    from .views.auth.verify_email import verify_email_blueprint
+    from .views.search_classes import search_classes_blueprint
 
-app.register_blueprint(sign_up_blueprint)
-app.register_blueprint(sign_in_blueprint)
-app.register_blueprint(verify_email_blueprint)
-app.register_blueprint(search_classes_blueprint)
+    app.register_blueprint(sign_up_blueprint)
+    app.register_blueprint(sign_in_blueprint)
+    app.register_blueprint(verify_email_blueprint)
+    app.register_blueprint(search_classes_blueprint)
+except OperationalError:
+    warn("Database not initialized yet. Ignore this warning if you currently creating the database")
 
 
 @login_manager.user_loader

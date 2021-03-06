@@ -6,7 +6,7 @@ import React from 'react';
 export default function RangeSlider(label, max, min, index, filter_functions, filter_classes) {
     function filter_function(e, val) {
         filter_functions[index] = function (x) {
-            return x >= val[0] && x <= val[1];
+            return isNaN(x) || x >= val[0] && x <= val[1];
         };
         filter_classes();
     }

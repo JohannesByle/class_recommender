@@ -1,5 +1,5 @@
-import {Button} from '@material-ui/core';
-
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 function Class(class_dict) {
     const rem_color = class_dict["rem"] > 0 ? "bg-primary" : "bg-secondary";
@@ -31,8 +31,24 @@ function Class(class_dict) {
     );
 }
 
-const classes_list_elements = classes_list.map((row) => <div key={row["id"]}>{Class(row)}</div>);
-ReactDOM.render(
-    <div>{classes_list_elements}</div>,
-    document.getElementById("classes_container")
-);
+export default function filter_classes(classes_list, filter_keys, filter_functions) {
+    let num_rows = 50;
+    let filtered_classes_list = [];
+    for (let i = 0; i < classes_list.length; i++) {
+        let include_row = true;
+        for (let j = 0; j < filter_functions.length; j++) {
+            if (typeof filter_functions[j] === "function")
+                include_row = filter_functions[j](classes_list[i][filter_keys[j]]);
+            if (!include_row)
+                break;
+        }
+        if (include_row)
+            filtered_classes_list.push(<div key={classes_list[i]["id"]}>{Class(classes_list[i])}</div>)
+        if (filtered_classes_list.length >= num_rows)
+            break;
+    }
+    ReactDOM.render(
+        <div>{filtered_classes_list}</div>,
+        document.getElementById("classes_container")
+    );
+}

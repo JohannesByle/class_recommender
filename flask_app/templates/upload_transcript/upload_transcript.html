@@ -1,12 +1,17 @@
 {% extends "base.html" %}
 {% block body %}
-    <h1>File Upload</h1>
-    <div class="col text-center">
-
+    <div class="col text-center", style="color:white">
         <form method="POST" action="" enctype="multipart/form-data">
             <p><input type="file" name="file"></p>
-            <p><input type="submit" value="Submit"></p>
+            <p><input type="submit" value="Submit" accept=".html"></p>
         </form>
+
+        {% if any %}
+        <h4>{{name}}</h4>
+            {{data}}
+        {% else %}
+         <h4>No transcript uploaded.</h4>
+        {% endif %}
     </div>
 
 {% endblock %}

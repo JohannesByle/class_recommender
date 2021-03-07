@@ -9,6 +9,8 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(16)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # prevents oversize files
+app.config['UPLOAD_EXTENSIONS'] = ['.html']  # limits file extensions
 
 login_manager = LoginManager()
 login_manager.login_view = 'sign_in.sign_in'

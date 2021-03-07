@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% block body %}
+    <h1>File Upload</h1>
     <div class="col text-center">
-      <form action='' method='POST' enctype='multipart/form-data'>
-        <input type='file' name='userFile'><br>
-        <input type='submit' name='upload_btn' value='upload'>
-      </form>
+
+        <form method="POST" action="" enctype="multipart/form-data">
+            <p><input type="file" name="file"></p>
+            <p><input type="submit" value="Submit"></p>
+        </form>
     </div>
 
 {% endblock %}

@@ -26,8 +26,8 @@ def upload_transcript_post():
         uploaded_file.save(uploaded_file.filename)
         page = open(filename)
         courses = parse_transcript(page)
-
-        return render_template("upload_transcript/upload_transcript.html", any=True, name=filename, data=courses)
+        return render_template('upload_transcript/upload_transcript.html',
+                               any=True, tables=[courses.to_html(classes='data', header="true")])
 
     return redirect("/search_classes")
 

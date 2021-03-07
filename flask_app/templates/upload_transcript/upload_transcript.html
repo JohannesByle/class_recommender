@@ -13,7 +13,10 @@
         <div class="row justify-content-center">
             {% if any %}
                 <h4 class="col-4">{{name}}</h4>
-                {{data}}
+                {% for table in tables %}
+                    {{ table|safe }}
+                {% endfor %}
+
             {% else %}
                 <h4 class="col-4">No transcript uploaded.</h4>
             {% endif %}

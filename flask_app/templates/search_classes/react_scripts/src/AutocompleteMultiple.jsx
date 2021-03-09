@@ -1,8 +1,6 @@
 import React from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import theme from "./theme";
-import {ThemeProvider} from '@material-ui/core/styles';
 
 
 export default function AutocompleteMultiple(label, options, index, filter_functions, filter_classes) {
@@ -20,26 +18,20 @@ export default function AutocompleteMultiple(label, options, index, filter_funct
     }
 
     return (
-        <div key={index}>
-            <ThemeProvider theme={theme}>
-                <div className="m-2 mt-3 border-bottom">
-                    <Autocomplete
-                        multiple
-                        onChange={filter_function}
-                        id="tags-standard"
-                        options={options}
-                        getOptionLabel={(option) => option}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant="standard"
-                                label={label}
-                                placeholder={label}
-                            />
-                        )}
-                    />
-                </div>
-            </ThemeProvider>
-        </div>
+        <Autocomplete
+            multiple
+            onChange={filter_function}
+            id="tags-standard"
+            options={options}
+            getOptionLabel={(option) => option}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    variant="standard"
+                    label={label}
+                    placeholder={label}
+                />
+            )}
+        />
     );
 }

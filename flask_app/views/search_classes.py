@@ -11,7 +11,6 @@ def get_min_max(num_string):
     num_string = str(num_string)
     matches = re.findall(r"-?\d+\.*\d*", num_string)
     if matches:
-        print(matches)
         numbers = [float(n) for n in matches]
         return [min(numbers), max(numbers)]
     else:

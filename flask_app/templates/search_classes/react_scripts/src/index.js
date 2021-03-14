@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import filter_classes from "./filter_classes";
 import RangeSlider from "./RangeSlider.js";
 import AutocompleteMultiple from "./AutocompleteMultiple";
+import TimePicker from "./TimePicker";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
 var filter_functions = [];
@@ -70,10 +71,8 @@ add_multi_select("Tags", "attributes");
 add_multi_select("Instructors", "instructors");
 add_multi_select("Subject", "subj");
 
-ReactDOM.render(React.createElement(
-    'div',
-    null,
-    filter_elements
-), document.getElementById("filters_container"));
+ReactDOM.render(
+// <div>{filter_elements}</div>,
+FilterElement(React.createElement(TimePicker, { time: "00:00:00" }), 0), document.getElementById("filters_container"));
 
 filter_classes_wrapper();

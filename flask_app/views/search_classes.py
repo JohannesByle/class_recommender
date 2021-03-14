@@ -17,6 +17,7 @@ def df_from_sql():
     df["start_time"] = df["time"].apply(lambda x: get_time(x)[0])
     df["end_time"] = df["time"].apply(lambda x: get_time(x)[1])
     df["time"] = df["time"].apply(lambda x: str(x).replace(" ", ""))
+    df["days_list"] = df["days"].apply(lambda x: list(x) if x and x != "TBA" else "TBA")
     df = df[df["term"] == "Spring 2021"]
     return df
 

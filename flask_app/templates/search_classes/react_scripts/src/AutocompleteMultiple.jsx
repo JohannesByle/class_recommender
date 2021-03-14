@@ -11,10 +11,10 @@ function AutocompleteMultiple(label, options, index) {
             if (val.length === 0)
                 return true;
             for (let i = 0; i < val.length; i++) {
-                if (x.includes(val[i]))
-                    return true;
+                if (!x.includes(val[i]))
+                    return false;
             }
-            return false;
+            return true;
         };
         filter_classes();
     }

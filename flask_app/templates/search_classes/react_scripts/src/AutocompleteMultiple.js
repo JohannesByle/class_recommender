@@ -9,9 +9,9 @@ function AutocompleteMultiple(label, options, index) {
         filter_functions[index] = function (x) {
             if (val.length === 0) return true;
             for (var i = 0; i < val.length; i++) {
-                if (x.includes(val[i])) return true;
+                if (!x.includes(val[i])) return false;
             }
-            return false;
+            return true;
         };
         filter_classes();
     }

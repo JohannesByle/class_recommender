@@ -44,8 +44,8 @@ import add_slider from "./RangeSlider";
 import add_multi_select from "./AutocompleteMultiple";
 import add_time_picker from "./TimePicker";
 
-add_slider("Remaining Slots", "rem", "rem");
-add_slider("Credits", "cred", "cred_num");
+add_slider("Remaining Slots", "rem_num");
+add_slider("Credits", "cred_num");
 add_multi_select("Tags", "attributes");
 add_multi_select("Instructors", "instructors");
 add_multi_select("Subject", "subj");

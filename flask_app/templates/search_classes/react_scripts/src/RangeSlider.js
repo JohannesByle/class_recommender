@@ -6,7 +6,7 @@ import filter_classes from "./filter_classes";
 function RangeSlider(label, max, min, index) {
     function filter_function(e, val) {
         filter_functions[index] = function (x) {
-            return isNaN(x) || x >= val[0] && x <= val[1];
+            return isNaN(x[0]) || isNaN(x[1]) || x[1] >= val[0] && x[0] <= val[1];
         };
         filter_classes();
     }
@@ -33,11 +33,15 @@ function RangeSlider(label, max, min, index) {
     );
 }
 
-export default function add_slider(label, key, key_num) {
+export default function add_slider(label, key) {
     filter_keys.push(key);
     var index = filter_keys.length - 1;
-    var cred = get_values(key_num);
-    var min = Math.min.apply(Math, cred);
-    var max = Math.max.apply(Math, cred);
+    var values = get_values(key);
+    var min = Math.min.apply(Math, values.map(function (x) {
+        return x[0];
+    }));
+    var max = Math.max.apply(Math, values.map(function (x) {
+        return x[1];
+    }));
     filter_elements.push(FilterElement(RangeSlider(label, max, min, index), index));
 }

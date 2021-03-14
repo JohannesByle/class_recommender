@@ -2,8 +2,20 @@ from flask import Blueprint, render_template, request, flash, redirect
 import pandas as pd
 from models import Class, extract_attributes, get_time
 from flask_app import db
+import re
 
 search_classes_blueprint = Blueprint("search_classes", __name__)
+
+
+def get_min_max(num_string):
+    num_string = str(num_string)
+    matches = re.findall(r"-?\d+\.*\d*", num_string)
+    if matches:
+        print(matches)
+        numbers = [float(n) for n in matches]
+        return [min(numbers), max(numbers)]
+    else:
+        return [None, None]
 
 
 def df_from_sql():
@@ -13,7 +25,8 @@ def df_from_sql():
     df["instructor"] = df["instructor"].apply(lambda x: str(x).replace(" (P)", ""))
     df["instructors"] = df["instructor"].apply(lambda x: x.split(", "))
     df["cred"] = df["cred"].apply(lambda x: str(x).replace(".000", "").replace(".0", ""))
-    df["cred_num"] = pd.to_numeric(df["cred"], errors="coerce")
+    df["cred_num"] = df["cred"].apply(lambda x: get_min_max(x))
+    df["rem_num"] = df["rem"].apply(lambda x: get_min_max(x))
     df["start_time"] = df["time"].apply(lambda x: get_time(x)[0])
     df["end_time"] = df["time"].apply(lambda x: get_time(x)[1])
     df["time"] = df["time"].apply(lambda x: str(x).replace(" ", ""))

@@ -1,9 +1,11 @@
 import React from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
+import {filter_elements, filter_functions, filter_keys, get_values, FilterElement} from "./index";
+import filter_classes from "./filter_classes";
 
 
-export default function AutocompleteMultiple(label, options, index, filter_functions, filter_classes) {
+function AutocompleteMultiple(label, options, index) {
     function filter_function(e, val) {
         filter_functions[index] = (x) => {
             if (val.length === 0)
@@ -34,4 +36,12 @@ export default function AutocompleteMultiple(label, options, index, filter_funct
             )}
         />
     );
+}
+
+export default function add_multi_select(label, key) {
+    filter_keys.push(key);
+    const index = filter_keys.length - 1;
+    const attributes = Array.from(new Set(get_values(key).flat()));
+    const input_element = AutocompleteMultiple(label, attributes, index);
+    filter_elements.push(FilterElement(input_element, index));
 }

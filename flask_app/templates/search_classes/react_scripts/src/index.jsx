@@ -1,17 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import filter_classes from "./filter_classes";
-import RangeSlider from "./RangeSlider.js";
-import AutocompleteMultiple from "./AutocompleteMultiple";
-import TimePicker from "./TimePicker";
 import {createMuiTheme, ThemeProvider} from "@material-ui/core/styles";
 
-const filter_functions = [];
-const filter_keys = [];
-const filter_elements = [];
+export const filter_functions = [];
+export const filter_keys = [];
+export const filter_elements = [];
 
 
-function FilterElement(input_element, index) {
+export function FilterElement(input_element, index) {
     const theme = createMuiTheme({
         palette: {
             primary: {
@@ -34,11 +31,7 @@ function FilterElement(input_element, index) {
     );
 }
 
-function filter_classes_wrapper() {
-    filter_classes(classes_list, filter_keys, filter_functions);
-}
-
-function get_values(key) {
+export function get_values(key) {
     const values = [];
     for (let i = 0; i < classes_list.length; i++)
         values.push(classes_list[i][key]);
@@ -46,37 +39,24 @@ function get_values(key) {
 
 }
 
-function add_slider(label, key, key_num) {
-    filter_keys.push(key);
-    const index = filter_keys.length - 1;
-    const cred = get_values(key_num);
-    const min = Math.min.apply(Math, cred);
-    const max = Math.max.apply(Math, cred);
-    const input_element = RangeSlider(label, max, min, index, filter_functions, filter_classes_wrapper);
-    filter_elements.push(FilterElement(input_element, index));
-}
-
-function add_multi_select(label, key) {
-    filter_keys.push(key);
-    const index = filter_keys.length - 1;
-    const attributes = Array.from(new Set(get_values(key).flat()));
-    const input_element = AutocompleteMultiple(label, attributes, index, filter_functions, filter_classes_wrapper);
-    filter_elements.push(FilterElement(input_element, index));
-}
+import add_slider from "./RangeSlider";
+import add_multi_select from "./AutocompleteMultiple";
+import add_time_picker from "./TimePicker";
 
 add_slider("Remaining Slots", "rem", "rem");
 add_slider("Credits", "cred", "cred_num");
 add_multi_select("Tags", "attributes");
 add_multi_select("Instructors", "instructors");
 add_multi_select("Subject", "subj");
-
+add_time_picker("Starts after", "start_time", "00:00:00", false)
+add_time_picker("Ends before", "end_time", "23:59:59", true)
 
 ReactDOM.render(
-    // <div>{filter_elements}</div>,
-    FilterElement(<TimePicker time={"00:00:00"}/>, 0),
+    <div>{filter_elements}</div>,
+    // FilterElement(<TimePicker time={"00:00:00"}/>, 0),
     document.getElementById("filters_container")
 );
 
 
-filter_classes_wrapper()
+filter_classes()
 

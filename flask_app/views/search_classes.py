@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect
 import pandas as pd
-from models import Class, extract_attributes
+from models import Class, extract_attributes, get_time
 from flask_app import db
 
 search_classes_blueprint = Blueprint("search_classes", __name__)
@@ -14,6 +14,8 @@ def df_from_sql():
     df["instructors"] = df["instructor"].apply(lambda x: x.split(", "))
     df["cred"] = df["cred"].apply(lambda x: str(x).replace(".000", "").replace(".0", ""))
     df["cred_num"] = pd.to_numeric(df["cred"], errors="coerce")
+    df["start_time"] = df["time"].apply(lambda x: get_time(x)[0])
+    df["end_time"] = df["time"].apply(lambda x: get_time(x)[1])
     df["time"] = df["time"].apply(lambda x: str(x).replace(" ", ""))
     df = df[df["term"] == "Spring 2021"]
     return df

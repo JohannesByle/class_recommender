@@ -19,13 +19,13 @@ function grade_color(grade) {
 
 function Class(class_dict) {
     return (
-        <div className="card mb-2 bg-light" style={{width: 400}}>
+        <div className="card mb-2 bg-light class_card">
             <div className="card-body py-1 px-3 row">
-                <div className="col-9 text-nowrap text-truncate">
+                <div className="col-8 text-nowrap text-truncate">
                     <span className="badge bg-primary">{class_dict["subj"]} {class_dict["crse"]}</span>
                     <span className="fs-6">{" "}{class_dict["title"]}</span>
                 </div>
-                <div className="col-3 my-auto">
+                <div className="col-4 my-auto">
                     <span className="float-end badge bg-dark ms-1">{class_dict["cred"]}</span>
                     <span className={"float-end badge ms-1 bg-" + grade_color(class_dict["grade"])}>
                         {class_dict["grade"]}

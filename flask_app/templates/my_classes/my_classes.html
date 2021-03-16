@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 {% block body %}
+    <style>
+        .class_card {
+            min-width: 300px;
+        }
 
+        @media (min-width: 768px) {
+            .class_card {
+                min-width: 400px;
+            }
+        }
+    </style>
     <div class="col-10 mx-auto">
-        <div class="row m-5">
+        <div class="row m-0 m-md-5">
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="add_class_button"
                         data-bs-toggle="dropdown">

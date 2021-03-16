@@ -1,17 +1,26 @@
 {% extends "base.html" %}
 {% block body %}
-    <div class="col text-center", style="color:white">
-        <form method="POST" action="" enctype="multipart/form-data">
-            <p><input type="file" name="file"></p>
-            <p><input type="submit" value="Submit" accept=".html"></p>
-        </form>
+    <div class="row justify-content-center", style="color:white">
+        <div class="col-4">
+            <form method="POST" action="" enctype="multipart/form-data">
+                <label class="form-label" for="customFile">Upload your transcript as a .html file</label>
+                <input type="file" class="form-control" name="file" accept=".html"/>
+                <label class="btn btn-light">
+                    Upload <p><input type="submit" value="Submit" hidden></p>
+                </label>
+            </form>
+        </div>
+        <div class="row justify-content-center">
+            {% if any %}
+                <h4 class="col-4">{{name}}</h4>
+                {% for table in tables %}
+                    {{ table|safe }}
+                {% endfor %}
 
-        {% if any %}
-        <h4>{{name}}</h4>
-            {{data}}
-        {% else %}
-         <h4>No transcript uploaded.</h4>
-        {% endif %}
+            {% else %}
+                <h4 class="col-4">No transcript uploaded.</h4>
+            {% endif %}
+        </div>
     </div>
 
 {% endblock %}

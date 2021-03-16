@@ -19,9 +19,9 @@ function grade_color(grade) {
 
 function Class(class_dict) {
     return (
-        <div className="card mb-2 bg-light" style={{width: 500}}>
+        <div className="card mb-2 bg-light" style={{width: 400}}>
             <div className="card-body py-1 px-3 row">
-                <div className="col-9">
+                <div className="col-9 text-nowrap text-truncate">
                     <span className="badge bg-primary">{class_dict["subj"]} {class_dict["crse"]}</span>
                     <span className="fs-6">{" "}{class_dict["title"]}</span>
                 </div>
@@ -48,7 +48,7 @@ export default function render_classes(classes) {
             if (i > classes_elements.length)
                 return
             ReactDOM.render(
-                <div className="d-flex flex-wrap">{classes_elements.slice(0, i)}</div>,
+                <div className="d-flex flex-wrap justify-content-center">{classes_elements.slice(0, i)}</div>,
                 document.getElementById("classes_container")
             );
             i++;

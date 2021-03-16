@@ -17,13 +17,13 @@ function grade_color(grade) {
 function Class(class_dict) {
     return React.createElement(
         'div',
-        { className: 'card mb-2 bg-light', style: { width: 500 } },
+        { className: 'card mb-2 bg-light', style: { width: 400 } },
         React.createElement(
             'div',
             { className: 'card-body py-1 px-3 row' },
             React.createElement(
                 'div',
-                { className: 'col-9' },
+                { className: 'col-9 text-nowrap text-truncate' },
                 React.createElement(
                     'span',
                     { className: 'badge bg-primary' },
@@ -71,7 +71,7 @@ export default function render_classes(classes) {
             if (i > classes_elements.length) return;
             ReactDOM.render(React.createElement(
                 'div',
-                { className: 'd-flex flex-wrap' },
+                { className: 'd-flex flex-wrap justify-content-center' },
                 classes_elements.slice(0, i)
             ), document.getElementById("classes_container"));
             i++;

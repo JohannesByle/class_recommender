@@ -8,7 +8,7 @@ function Class(class_dict) {
         <span key={attribute} className="pill badge bg-primary ms-1">{attribute}</span>
     );
     return (
-        <div className="card mb-2 bg-light">
+        <div className="card mb-2 bg-light border-secondary border-2">
             <div className="card-body py-1 px-3 row">
                 <div className="col my-auto">
                     <span className="fs-6">{class_dict["title"]}</span>

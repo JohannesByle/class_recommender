@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, request, abort
-
+from flask_login import login_required
 from flask_app import app
 import os
 from scripts.transcript_parser import parse_transcript
@@ -8,11 +8,13 @@ upload_transcript_blueprint = Blueprint("upload_transcript", __name__)
 
 
 @upload_transcript_blueprint.route('/upload_transcript')
+@login_required
 def upload_transcript():
     return render_template("upload_transcript/upload_transcript.html", any=False, filename=None, data=None)
 
 
 @upload_transcript_blueprint.route('/upload_transcript', methods=['POST'])
+@login_required
 def upload_transcript_post():
     uploaded_file = request.files['file']
     filename = uploaded_file.filename

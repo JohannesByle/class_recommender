@@ -6,5 +6,6 @@ Flask~=1.1.2
 flask_login
 flask_sqlalchemy
 selenium~=3.141.0
-
+lxml
 Werkzeug~=1.0.1
+SQLAlchemy~=1.3.23

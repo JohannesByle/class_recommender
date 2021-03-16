@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block body %}
+
+    <div class="col-10 mx-auto">
+        <div class="row m-5">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="add_class_button"
+                        data-bs-toggle="dropdown">
+                    Add Class
+                </button>
+                <ul class="dropdown-menu" id="form_options_dropdown">
+                    <li id="add_class_li"></li>
+                    <li id="upload_transcript_li"></li>
+                </ul>
+            </div>
+            <div id="add_class_form">
+            </div>
+        </div>
+        <div class="row m-5">
+            <h2 class="text-light">my_classes</h2>
+            <div id="classes_container">
+
+            </div>
+        </div>
+    </div>
+    <script>
+        {{ js|safe }}
+    </script>
+
+
+{% endblock %}

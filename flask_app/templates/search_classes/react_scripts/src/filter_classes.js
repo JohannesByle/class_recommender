@@ -13,7 +13,7 @@ function Class(class_dict) {
     });
     return React.createElement(
         'div',
-        { className: 'card mb-2 bg-light' },
+        { className: 'card mb-2 bg-light border-secondary border-2' },
         React.createElement(
             'div',
             { className: 'card-body py-1 px-3 row' },

@@ -1,47 +1,64 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import filter_classes from "./filter_classes";
-import RangeSlider from "./RangeSlider.js";
-import AutocompleteMultiple from "./AutocompleteMultiple";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 
-var filter_functions = [];
-var filter_keys = [];
-var filter_elements = [];
-function filter_classes_wrapper() {
-    filter_classes(classes_list, filter_keys, filter_functions);
+export var filter_functions = [];
+export var filter_keys = [];
+export var filter_elements = [];
+
+export function FilterElement(input_element, index) {
+    var theme = createMuiTheme({
+        palette: {
+            primary: {
+                main: "#000000"
+            },
+            secondary: {
+                main: '#f44336'
+            }
+        }
+    });
+    return React.createElement(
+        'div',
+        { key: index },
+        React.createElement(
+            ThemeProvider,
+            { theme: theme },
+            React.createElement(
+                'div',
+                { className: 'm-2 mt-3 border-bottom' },
+                input_element
+            )
+        )
+    );
 }
-function get_values(key) {
+
+export function get_values(key) {
     var values = [];
     for (var i = 0; i < classes_list.length; i++) {
         values.push(classes_list[i][key]);
-    }console.log(values);
-    return values;
+    }return values;
 }
 
-function add_slider(label, key, key_num) {
-    filter_keys.push(key);
-    var cred = get_values(key_num);
-    var min = Math.min.apply(Math, cred);
-    var max = Math.max.apply(Math, cred);
-    filter_elements.push(RangeSlider(label, max, min, filter_keys.length - 1, filter_functions, filter_classes_wrapper));
-}
+import add_slider from "./RangeSlider";
+import add_multi_select from "./AutocompleteMultiple";
+import add_time_picker from "./TimePicker";
 
-function add_multi_select(label, key) {
-    filter_keys.push(key);
-    var attributes = Array.from(new Set(get_values(key).flat()));
-    filter_elements.push(AutocompleteMultiple(label, attributes, filter_keys.length - 1, filter_functions, filter_classes_wrapper));
-}
-
-add_slider("Remaining Slots", "rem", "rem");
-add_slider("Credits", "cred", "cred_num");
+add_slider("Remaining Slots", "rem_num");
+add_slider("Credits", "cred_num");
 add_multi_select("Tags", "attributes");
 add_multi_select("Instructors", "instructors");
 add_multi_select("Subject", "subj");
+add_multi_select("Days", "days_list");
+add_time_picker("Starts after", "start_time", "00:00:00", false);
+add_time_picker("Ends before", "end_time", "23:59:59", true);
 
 ReactDOM.render(React.createElement(
     'div',
     null,
     filter_elements
-), document.getElementById("filters_container"));
+),
+// FilterElement(<TimePicker time={"00:00:00"}/>, 0),
+document.getElementById("filters_container"));
 
-filter_classes_wrapper();
+filter_classes();

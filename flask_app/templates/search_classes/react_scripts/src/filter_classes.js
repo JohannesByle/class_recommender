@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { filter_keys, filter_functions } from "./index";
 
 function Class(class_dict) {
     var rem_color = class_dict["rem"] > 0 ? "bg-primary" : "bg-secondary";
@@ -67,7 +68,7 @@ function Class(class_dict) {
     );
 }
 
-export default function filter_classes(classes_list, filter_keys, filter_functions) {
+export default function filter_classes() {
     var num_rows = 50;
     var filtered_classes_list = [];
     for (var i = 0; i < classes_list.length; i++) {

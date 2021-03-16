@@ -19,16 +19,15 @@ function UploadForm() {
     }
 
     return (
-        <form encType="multipart/form-data" action="" style={{maxWidth: 350}} className="mt-3 mx-auto">
+        <div style={{maxWidth: 350}} className="mt-3 mx-auto">
             <div className="mb-3">
                 <label htmlFor="formFile" className="form-label text-light">Upload transcript html file</label>
                 <input className="form-control" type="file" id="formFile" accept="text/html"
                        onChange={(e) => file = e.target.files[0]}/>
             </div>
-            <button type="submit" className="btn btn-secondary float-end"
-                    onClick={upload_transcript}>Upload
+            <button className="btn btn-secondary float-end" onClick={upload_transcript}>Upload
             </button>
-        </form>
+        </div>
     );
 }
 

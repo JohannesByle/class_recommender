@@ -20,8 +20,8 @@ function UploadForm() {
     }
 
     return React.createElement(
-        "form",
-        { encType: "multipart/form-data", action: "", style: { maxWidth: 350 }, className: "mt-3 mx-auto" },
+        "div",
+        { style: { maxWidth: 350 }, className: "mt-3 mx-auto" },
         React.createElement(
             "div",
             { className: "mb-3" },
@@ -37,8 +37,7 @@ function UploadForm() {
         ),
         React.createElement(
             "button",
-            { type: "submit", className: "btn btn-secondary float-end",
-                onClick: upload_transcript },
+            { className: "btn btn-secondary float-end", onClick: upload_transcript },
             "Upload"
         )
     );

@@ -8,6 +8,7 @@ function grade_color(grade) {
         "B": "primary",
         "C": "warning",
         "D": "danger",
+        "F": "dark",
         "T": "secondary",
         "P": "secondary"
     }

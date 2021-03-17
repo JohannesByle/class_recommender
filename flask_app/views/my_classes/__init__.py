@@ -6,6 +6,7 @@ import pandas as pd
 from flask_app import db
 from models import Class
 import json
+import re
 
 path = os.path.dirname(__file__)
 js_path = os.path.join(os.path.dirname(os.path.dirname(path)), "templates/my_classes/react_scripts/dist/main.js")
@@ -17,7 +18,16 @@ for index, row in courses_df.iterrows():
     if row["subj"] not in courses_dict:
         courses_dict[row["subj"]] = {}
     if row["crse"] not in courses_dict[row["subj"]]:
-        courses_dict[row["subj"]][row["crse"]] = {"title": row["title"], "cred": row["cred"]}
+        cred = int(re.findall(r"(\d+)\.?\d*$", row["cred"])[0])
+        courses_dict[row["subj"]][row["crse"]] = {"title": row["title"], "cred": cred}
+
+
+def add_class_to_db(new_class_dict):
+    if new_class_dict not in current_user.classes:
+        current_user.classes = current_user.classes + [new_class_dict]
+        db.session.commit()
+        return True
+    return False
 
 
 @my_classes_blueprint.route("/my_classes")
@@ -35,14 +45,14 @@ def my_classes():
 @login_required
 def upload_transcript():
     courses = parse_transcript(request.data.decode("utf-8"))
-    return courses.to_json(orient="records")
+    for index_, row_ in courses.iterrows():
+        add_class_to_db(dict(row_))
+    return json.dumps(current_user.classes)
 
 
 @my_classes_blueprint.route("/add_class", methods=['POST'])
 @login_required
 def add_class():
     new_class_dict = json.loads(request.data.decode("utf-8"))
-    if new_class_dict not in current_user.classes:
-        current_user.classes = current_user.classes + [new_class_dict]
-        db.session.commit()
+    add_class_to_db(new_class_dict)
     return json.dumps(current_user.classes)

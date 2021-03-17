@@ -58,31 +58,36 @@ function Class(class_dict) {
 }
 
 export default function render_classes(classes) {
-    var classes_elements = classes.map(function (class_dict, index) {
-        return React.createElement(
-            'div',
-            { key: index, className: 'px-1 pb-1' },
-            Class(class_dict)
-        );
-    });
-    var i = 0;
 
-    function render_all() {
-        setTimeout(function () {
-            if (i > classes_elements.length) return;
-            ReactDOM.render(React.createElement(
+    function render_array(array) {
+        var elements = array.map(function (class_dict, index) {
+            return React.createElement(
                 'div',
-                { className: 'd-flex flex-wrap justify-content-center' },
-                classes_elements.slice(0, i).reverse()
-            ), document.getElementById("classes_container"));
-            i++;
-            render_all();
-        }, 50);
+                { key: index, className: 'px-1 pb-1' },
+                Class(class_dict)
+            );
+        }).reverse();
+        ReactDOM.render(React.createElement(
+            'div',
+            { className: 'd-flex flex-wrap justify-content-center' },
+            elements
+        ), document.getElementById("classes_container"));
     }
 
-    render_all();
-}
+    function render_slowly(i) {
+        setTimeout(function () {
+            if (i > my_courses.length) return;
+            render_array(my_courses.slice(0, i));
+            render_slowly(i + 1);
+        }, 100);
+    }
 
+    render_array(my_courses);
+    var original_length = my_courses.length;
+    my_courses = classes;
+    render_slowly(original_length);
+}
+render_classes(my_courses);
 import render_upload_form from "./upload_transcript";
 
 ReactDOM.render(React.createElement(

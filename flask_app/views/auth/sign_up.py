@@ -25,7 +25,8 @@ def sign_up_post():
         email=email,
         password=generate_password_hash(password, method='sha256'),
         email_code=create_code(),
-        email_verified=False
+        email_verified=False,
+        classes=[]
     )
     db.session.add(new_user)
     db.session.commit()

@@ -13,7 +13,8 @@ function UploadForm() {
         }).then(function (r) {
             return r.json();
         }).then(function (result) {
-            return render_classes(result);
+            ReactDOM.unmountComponentAtNode(document.getElementById("add_class_form"));
+            render_classes(result);
         }, function (error) {
             return console.log(error);
         });

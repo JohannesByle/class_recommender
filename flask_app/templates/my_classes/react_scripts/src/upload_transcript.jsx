@@ -14,7 +14,10 @@ function UploadForm() {
                 body: file
             }
         ).then(r => r.json()).then(
-            (result) => render_classes(result),
+            (result) => {
+                ReactDOM.unmountComponentAtNode(document.getElementById("add_class_form"))
+                render_classes(result)
+            },
             (error) => console.log(error));
     }
 

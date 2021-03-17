@@ -17,13 +17,28 @@ function grade_color(grade) {
 
 function Class(class_dict, remove) {
     var remove_icon = null;
+
+    function remove_self() {
+        console.log("WHAAAAT");
+        fetch("/remove_class", {
+            method: "POST",
+            body: JSON.stringify(class_dict)
+        }).then(function (r) {
+            return r.json();
+        }).then(function (result) {
+            return render_classes(result, true);
+        }, function (error) {
+            return console.log(error);
+        });
+    }
+
     if (remove) {
         remove_icon = React.createElement(
             'span',
             { className: 'float-end ms-2' },
             React.createElement(
                 'a',
-                { href: '#', className: 'stretched-link link-danger' },
+                { href: '#', className: 'stretched-link link-danger', onClick: remove_self },
                 React.createElement('i', { className: 'bi bi-x-circle-fill' })
             )
         );
@@ -90,13 +105,12 @@ export default function render_classes(classes, remove) {
 
     function render_slowly(i) {
         setTimeout(function () {
-            if (i > my_courses.length) return;
             render_array(my_courses.slice(0, i));
+            if (i > my_courses.length) return;
             render_slowly(i + 1);
         }, 100);
     }
 
-    render_array(my_courses);
     var original_length = my_courses.length;
     my_courses = classes;
     render_slowly(original_length);

@@ -20,10 +20,23 @@ function grade_color(grade) {
 
 function Class(class_dict, remove) {
     let remove_icon = null;
+
+    function remove_self() {
+        console.log("WHAAAAT")
+        fetch("/remove_class",
+            {
+                method: "POST",
+                body: JSON.stringify(class_dict)
+            }
+        ).then(r => r.json()).then(
+            (result) => render_classes(result, true),
+            (error) => console.log(error));
+    }
+
     if (remove) {
         remove_icon = (
             <span className="float-end ms-2">
-                <a href="#" className="stretched-link link-danger">
+                <a href="#" className="stretched-link link-danger" onClick={remove_self}>
                     <i className="bi bi-x-circle-fill"></i>
                 </a>
             </span>
@@ -70,14 +83,13 @@ export default function render_classes(classes, remove) {
 
     function render_slowly(i) {
         setTimeout(function () {
+            render_array(my_courses.slice(0, i))
             if (i > my_courses.length)
                 return
-            render_array(my_courses.slice(0, i))
             render_slowly(i + 1)
         }, 100);
     }
-
-    render_array(my_courses)
+    
     let original_length = my_courses.length
     my_courses = classes;
     render_slowly(original_length)

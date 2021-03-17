@@ -52,3 +52,13 @@ def add_class():
         current_user.classes = current_user.classes + [new_class_dict]
         db.session.commit()
     return json.dumps(current_user.classes)
+
+
+@my_classes_blueprint.route("/remove_class", methods=['POST'])
+@login_required
+def remove_class():
+    class_dict = json.loads(request.data.decode("utf-8"))
+    if class_dict in current_user.classes:
+        current_user.classes = [n for n in current_user.classes if n != class_dict]
+        db.session.commit()
+    return json.dumps(current_user.classes)

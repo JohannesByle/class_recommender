@@ -96,7 +96,7 @@ export default function render_classes(classes, remove) {
             if (i > my_courses.length)
                 return
             render_slowly(i + 1)
-        }, 100);
+        }, 25);
     }
 
     let original_length = my_courses.length

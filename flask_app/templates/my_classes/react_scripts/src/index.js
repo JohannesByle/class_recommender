@@ -116,7 +116,7 @@ export default function render_classes(classes, remove) {
             render_array(my_courses.slice(0, i));
             if (i > my_courses.length) return;
             render_slowly(i + 1);
-        }, 100);
+        }, 25);
     }
 
     var original_length = my_courses.length;

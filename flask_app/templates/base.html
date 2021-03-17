@@ -19,8 +19,11 @@
 {% set nav_items = [
     {"name": "search_classes", "link": "/search_classes"},
     {"name": "suggested_schedule", "link": "/suggested_schedule"},
-    {"name": "my_classes", "link": "/my_classes"}
 ] %}
+
+{% if current_user.is_authenticated %}
+    {% set nav_items = nav_items + [{"name": "my_classes", "link": "/my_classes"}] %}
+{% endif %}
 <nav class="navbar navbar-expand-md navbar-dark bg-dark m-2 m-md-5 my-md-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">class_recommender</a>

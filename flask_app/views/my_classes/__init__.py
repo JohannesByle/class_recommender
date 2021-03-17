@@ -22,14 +22,6 @@ for index, row in courses_df.iterrows():
         courses_dict[row["subj"]][row["crse"]] = {"title": row["title"], "cred": cred}
 
 
-def add_class_to_db(new_class_dict):
-    if new_class_dict not in current_user.classes:
-        current_user.classes = current_user.classes + [new_class_dict]
-        db.session.commit()
-        return True
-    return False
-
-
 @my_classes_blueprint.route("/my_classes")
 @login_required
 def my_classes():
@@ -46,7 +38,9 @@ def my_classes():
 def upload_transcript():
     courses = parse_transcript(request.data.decode("utf-8"))
     for index_, row_ in courses.iterrows():
-        add_class_to_db(dict(row_))
+        if dict(row_) not in current_user.classes:
+            current_user.classes = current_user.classes + [dict(row_)]
+    db.session.commit()
     return json.dumps(current_user.classes)
 
 
@@ -54,5 +48,7 @@ def upload_transcript():
 @login_required
 def add_class():
     new_class_dict = json.loads(request.data.decode("utf-8"))
-    add_class_to_db(new_class_dict)
+    if new_class_dict not in current_user.classes:
+        current_user.classes = current_user.classes + [new_class_dict]
+        db.session.commit()
     return json.dumps(current_user.classes)

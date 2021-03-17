@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import render_classes from "./index";
 
 var subjects = Object.keys(courses_dict);
 
@@ -12,21 +13,45 @@ function ComboBox(label, options, custom_function) {
         renderInput: function renderInput(params) {
             return React.createElement(TextField, Object.assign({}, params, { label: label, variant: "standard" }));
         },
-        onChange: custom_function
+        onChange: custom_function,
+        error: "true",
+        defaultValue: null
     });
 }
 
 function AddClassForm() {
-    function update_course_list(e, subject) {
-        var codes = Object.keys(courses_dict[subject]);
+    var subject = null;
+    var course = null;
+    var title = null;
+    var grade = null;
+    var cred = null;
+
+    function upload_class() {
+        fetch("/add_class", {
+            method: "POST",
+            body: JSON.stringify({ "subj": subject, "crse": course, "grade": grade, "title": title, "cred": cred })
+        }).then(function (r) {
+            return r.json();
+        }).then(function (result) {
+            return render_classes(result);
+        }, function (error) {
+            return console.log(error);
+        });
+    }
+
+    function update_course_list(e, subj) {
+        var codes = Object.keys(courses_dict[subj]);
         var courses = [];
         for (var i = 0; i < codes.length; i++) {
-            courses.push(codes[i] + " " + courses_dict[subject][codes[i]]);
+            courses.push(codes[i] + " " + courses_dict[subj][codes[i]]["title"]);
         }
-
+        ReactDOM.unmountComponentAtNode(document.getElementById("course_input"));
         ReactDOM.render(ComboBox("Course", courses, function (e, val) {
-            return null;
+            course = codes[courses.indexOf(val)];
+            title = courses_dict[subj][course]["title"];
+            cred = courses_dict[subj][course]["cred"];
         }), document.getElementById("course_input"));
+        subject = subj;
     }
 
     return React.createElement(
@@ -49,14 +74,14 @@ function AddClassForm() {
                     "div",
                     { className: "mb-2", id: "grade_input" },
                     ComboBox("Grade", ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "P"], function (e, val) {
-                        return null;
+                        return grade = val;
                     })
                 )
             )
         ),
         React.createElement(
             "button",
-            { className: "btn btn-secondary float-end mt-3" },
+            { className: "btn btn-secondary float-end mt-3", onClick: upload_class },
             "Add Class"
         )
     );

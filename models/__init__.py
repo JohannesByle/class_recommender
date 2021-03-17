@@ -15,6 +15,7 @@ class User(UserMixin, db.Model):
     email_verified = db.Column(db.Boolean())
     email_code = db.Column(db.String(64))
     password_reset_code = db.Column(db.String(64))
+    classes = db.Column(db.JSON)
 
 
 class Class(db.Model):

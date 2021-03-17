@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import render_classes from "./index";
 
 const subjects = Object.keys(courses_dict)
 
@@ -12,23 +13,47 @@ function ComboBox(label, options, custom_function) {
             options={options}
             renderInput={(params) => <TextField {...params} label={label} variant="standard"/>}
             onChange={custom_function}
+            error="true"
+            defaultValue={null}
         />
     );
 }
 
 
 function AddClassForm() {
-    function update_course_list(e, subject) {
-        const codes = Object.keys(courses_dict[subject]);
+    let subject = null;
+    let course = null;
+    let title = null;
+    let grade = null;
+    let cred = null;
+
+    function upload_class() {
+        fetch("/add_class",
+            {
+                method: "POST",
+                body: JSON.stringify({"subj": subject, "crse": course, "grade": grade, "title": title, "cred": cred})
+            }
+        ).then(r => r.json()).then(
+            (result) => render_classes(result),
+            (error) => console.log(error));
+    }
+
+    function update_course_list(e, subj) {
+        const codes = Object.keys(courses_dict[subj]);
         const courses = []
         for (let i = 0; i < codes.length; i++) {
-            courses.push(codes[i] + " " + courses_dict[subject][codes[i]])
+            courses.push(codes[i] + " " + courses_dict[subj][codes[i]]["title"])
         }
-
+        ReactDOM.unmountComponentAtNode(document.getElementById("course_input"))
         ReactDOM.render(
-            ComboBox("Course", courses, (e, val) => null),
+            ComboBox("Course", courses, (e, val) => {
+                course = codes[courses.indexOf(val)]
+                title = courses_dict[subj][course]["title"]
+                cred = courses_dict[subj][course]["cred"]
+            }),
             document.getElementById("course_input")
         );
+        subject = subj;
 
     }
 
@@ -43,11 +68,11 @@ function AddClassForm() {
                     <div className="mb-2" id="course_input">
                     </div>
                     <div className="mb-2" id="grade_input">
-                        {ComboBox("Grade", ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "P"], (e, val) => null)}
+                        {ComboBox("Grade", ["A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D+", "D", "D-", "F", "P"], (e, val) => grade = val)}
                     </div>
                 </div>
             </div>
-            <button className="btn btn-secondary float-end mt-3">Add Class</button>
+            <button className="btn btn-secondary float-end mt-3" onClick={upload_class}>Add Class</button>
         </div>
 
     );

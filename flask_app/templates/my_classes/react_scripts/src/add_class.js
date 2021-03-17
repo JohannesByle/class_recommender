@@ -27,6 +27,7 @@ function AddClassForm() {
     var cred = null;
 
     function upload_class() {
+        if (subject == null || course == null || grade == null) return;
         fetch("/add_class", {
             method: "POST",
             body: JSON.stringify({ "subj": subject, "crse": course, "grade": grade, "title": title, "cred": cred })
@@ -46,6 +47,7 @@ function AddClassForm() {
             courses.push(codes[i] + " " + courses_dict[subj][codes[i]]["title"]);
         }
         ReactDOM.unmountComponentAtNode(document.getElementById("course_input"));
+        course = null;
         ReactDOM.render(ComboBox("Course", courses, function (e, val) {
             course = codes[courses.indexOf(val)];
             title = courses_dict[subj][course]["title"];

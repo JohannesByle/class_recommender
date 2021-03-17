@@ -65,6 +65,15 @@ function Class(class_dict, remove) {
 }
 
 export default function render_classes(classes, remove) {
+    if (classes.length === 0) {
+        ReactDOM.render(
+            <div className="alert alert-secondary col-10 col-md-6 mx-auto" role="alert">
+                You have not added any classes yet
+            </div>,
+            document.getElementById("classes_container")
+        );
+        return
+    }
 
     function render_array(array) {
         const elements = array.map(
@@ -89,7 +98,7 @@ export default function render_classes(classes, remove) {
             render_slowly(i + 1)
         }, 100);
     }
-    
+
     let original_length = my_courses.length
     my_courses = classes;
     render_slowly(original_length)

@@ -87,6 +87,14 @@ function Class(class_dict, remove) {
 }
 
 export default function render_classes(classes, remove) {
+    if (classes.length === 0) {
+        ReactDOM.render(React.createElement(
+            'div',
+            { className: 'alert alert-secondary col-10 col-md-6 mx-auto', role: 'alert' },
+            'You have not added any classes yet'
+        ), document.getElementById("classes_container"));
+        return;
+    }
 
     function render_array(array) {
         var elements = array.map(function (class_dict, index) {

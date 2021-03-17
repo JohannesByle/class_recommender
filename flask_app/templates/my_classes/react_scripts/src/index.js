@@ -15,7 +15,20 @@ function grade_color(grade) {
     return "secondary";
 }
 
-function Class(class_dict) {
+function Class(class_dict, remove) {
+    var remove_icon = null;
+    if (remove) {
+        remove_icon = React.createElement(
+            'span',
+            { className: 'float-end ms-2' },
+            React.createElement(
+                'a',
+                { href: '#', className: 'stretched-link link-danger' },
+                React.createElement('i', { className: 'bi bi-x-circle-fill' })
+            )
+        );
+    }
+
     return React.createElement(
         'div',
         { className: 'card mb-2 bg-light class_card' },
@@ -24,7 +37,7 @@ function Class(class_dict) {
             { className: 'card-body py-1 px-3 row' },
             React.createElement(
                 'div',
-                { className: 'col-8 text-nowrap text-truncate' },
+                { className: 'col-7 col-md-8 text-nowrap text-truncate' },
                 React.createElement(
                     'span',
                     { className: 'badge bg-primary' },
@@ -41,7 +54,8 @@ function Class(class_dict) {
             ),
             React.createElement(
                 'div',
-                { className: 'col-4 my-auto' },
+                { className: 'col-5 col-md-4 my-auto' },
+                remove_icon,
                 React.createElement(
                     'span',
                     { className: 'float-end badge bg-dark ms-1' },
@@ -57,14 +71,14 @@ function Class(class_dict) {
     );
 }
 
-export default function render_classes(classes) {
+export default function render_classes(classes, remove) {
 
     function render_array(array) {
         var elements = array.map(function (class_dict, index) {
             return React.createElement(
                 'div',
                 { key: index, className: 'px-1 pb-1' },
-                Class(class_dict)
+                Class(class_dict, remove)
             );
         }).reverse();
         ReactDOM.render(React.createElement(
@@ -102,3 +116,10 @@ ReactDOM.render(React.createElement(
     { className: 'dropdown-item', href: '#', onClick: render_add_class_form },
     'Add Manually'
 ), document.getElementById("add_class_li"));
+import render_remove_form from "./remove_classes";
+
+ReactDOM.render(React.createElement(
+    'a',
+    { className: 'dropdown-item', href: '#', onClick: render_remove_form },
+    'Remove Classes'
+), document.getElementById("remove_form_li"));

@@ -18,32 +18,46 @@ function grade_color(grade) {
 }
 
 
-function Class(class_dict) {
+function Class(class_dict, remove) {
+    let remove_icon = null;
+    if (remove) {
+        remove_icon = (
+            <span className="float-end ms-2">
+                <a href="#" className="stretched-link link-danger">
+                    <i className="bi bi-x-circle-fill"></i>
+                </a>
+            </span>
+        );
+    }
+
     return (
         <div className="card mb-2 bg-light class_card">
             <div className="card-body py-1 px-3 row">
-                <div className="col-8 text-nowrap text-truncate">
+                <div className="col-7 col-md-8 text-nowrap text-truncate">
                     <span className="badge bg-primary">{class_dict["subj"]} {class_dict["crse"]}</span>
                     <span className="fs-6">{" "}{class_dict["title"]}</span>
                 </div>
-                <div className="col-4 my-auto">
+                <div className="col-5 col-md-4 my-auto">
+                    {remove_icon}
                     <span className="float-end badge bg-dark ms-1">{class_dict["cred"]}</span>
                     <span className={"float-end badge ms-1 bg-" + grade_color(class_dict["grade"])}>
                         {class_dict["grade"]}
                     </span>
+
+
                 </div>
             </div>
         </div>
     );
 }
 
-export default function render_classes(classes) {
+export default function render_classes(classes, remove) {
 
     function render_array(array) {
         const elements = array.map(
             (class_dict, index) =>
                 <div key={index} className="px-1 pb-1">
-                    {Class(class_dict)}
+                    {Class(class_dict, remove)}
                 </div>
         ).reverse();
         ReactDOM.render(
@@ -81,4 +95,10 @@ import render_add_class_form from "./add_class";
 ReactDOM.render(
     <a className="dropdown-item" href="#" onClick={render_add_class_form}>Add Manually</a>,
     document.getElementById("add_class_li")
+)
+import render_remove_form from "./remove_classes";
+
+ReactDOM.render(
+    <a className="dropdown-item" href="#" onClick={render_remove_form}>Remove Classes</a>,
+    document.getElementById("remove_form_li")
 )

@@ -48,7 +48,7 @@ export default function render_classes(classes) {
             if (i > classes_elements.length)
                 return
             ReactDOM.render(
-                <div className="d-flex flex-wrap justify-content-center">{classes_elements.slice(0, i)}</div>,
+                <div className="d-flex flex-wrap justify-content-center">{classes_elements.slice(0, i).reverse()}</div>,
                 document.getElementById("classes_container")
             );
             i++;

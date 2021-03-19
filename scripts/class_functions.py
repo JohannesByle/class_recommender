@@ -1,5 +1,3 @@
-from flask_login import UserMixin
-from flask_app import db
 import json
 import os
 import re

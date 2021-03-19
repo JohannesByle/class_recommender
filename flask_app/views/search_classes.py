@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, request, flash, redirect
+from flask import Blueprint, render_template
 import pandas as pd
-from models import Class, extract_attributes, get_time
+from models import Class
+from scripts.class_functions import get_time, extract_attributes
 from flask_app import db
 import re
 

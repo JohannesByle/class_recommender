@@ -22,5 +22,5 @@ def migrate_classes():
             course.data = new_course
         else:
             course = Class(**new_course)
-            # db.session.add(course)
-        # db.session.commit()
+            db.session.add(course)
+        db.session.commit()

@@ -3,32 +3,32 @@ from xml.etree import ElementTree
 import numpy as np
 
 
-def flatten_reqs(array, parent=None):
+def flatten_reqs(array, parent=None, depth=0):
     if isinstance(array, dict):
         assert len(array) == 1
         key = list(array.keys())[0]
         val = list(array.values())[0]
         new_parent = "{}: {}".format(parent, key) if parent else key
         if isinstance(val, bool) or isinstance(val, np.bool_):
-            return {new_parent: {"satisfied": val, "weight": int(val)}}
+            return {new_parent: {"satisfied": val, "weight": int(val), "depth": depth + 1}}
         else:
-            return flatten_reqs(val, parent=new_parent)
+            return flatten_reqs(val, parent=new_parent, depth=depth + 1)
     elif isinstance(array, list):
         new_dict = {}
         for item in array:
-            new_dict.update(flatten_reqs(item, parent=parent))
+            new_dict.update(flatten_reqs(item, parent=parent, depth=depth))
         return new_dict
     elif isinstance(array, tuple):
         assert isinstance(array[0], bool) or isinstance(array[0], np.bool_)
         assert all([isinstance(n, dict) for n in array[1]])
+        child_reqs = flatten_reqs(array[1], parent=parent, depth=depth)
+        child_reqs = {n: child_reqs[n] for n in child_reqs if child_reqs[n]["depth"] == depth + 1}
 
-        child_reqs = flatten_reqs(array[1], parent=parent)
-        print(child_reqs)
-        print(parent)
         new_weight = sum([child_reqs[n]["weight"] for n in child_reqs]) / len(child_reqs)
         for n in child_reqs:
             child_reqs[n]["weight"] = 0
-        new_dict = {parent: {"satisfied": array[0], "weight": new_weight}}
+        new_dict = {
+            parent: {"satisfied": array[0], "weight": new_weight, "num_options": len(child_reqs), "depth": depth}}
         new_dict.update(child_reqs)
         return new_dict
     assert False

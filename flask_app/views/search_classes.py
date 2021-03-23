@@ -3,8 +3,10 @@ import pandas as pd
 from models import Class
 from scripts.class_functions import get_time, extract_attributes, get_min_max
 from flask_app import db
-import re
+import os
 
+path = os.path.dirname(__file__)
+js_path = os.path.join(os.path.dirname(path), "templates/search_classes/react_scripts/dist/main.js")
 search_classes_blueprint = Blueprint("search_classes", __name__)
 
 
@@ -30,7 +32,7 @@ classes_df = df_from_sql()
 
 @search_classes_blueprint.route('/search_classes')
 def search_classes():
-    with open("flask_app/templates/search_classes/react_scripts/dist/main.js", "r", encoding="utf8") as f:
+    with open(js_path, "r", encoding="utf8") as f:
         js = f.read()
     return render_template("search_classes/search_classes.html", classes_list=classes_df.to_json(orient="records"),
                            js=js)

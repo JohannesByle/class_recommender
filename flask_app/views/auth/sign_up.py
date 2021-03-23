@@ -30,5 +30,5 @@ def sign_up_post():
     )
     db.session.add(new_user)
     db.session.commit()
-    send_email_verification_code(new_user)
+    # send_email_verification_code(new_user)
     return redirect("/sign_in")

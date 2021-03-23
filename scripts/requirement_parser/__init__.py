@@ -1,6 +1,5 @@
 from warnings import warn
 from xml.etree import ElementTree
-import numpy as np
 import itertools
 import os
 import pandas as pd
@@ -17,6 +16,8 @@ def convert_df_to_degree_works(input_df):
     output_df = input_df.copy()
     output_df = output_df.rename(axis=1, mapper={conversion_dict[n]: n for n in conversion_dict})
     output_df = output_df.rename(axis=1, mapper=column_conversion)
+    output_df = output_df[list(column_conversion.values()) + ["title", "term"]]
+    output_df = output_df.drop_duplicates(subset=list(column_conversion.values()) + ["title"])
     output_df["ATTRIBUTE"] = output_df["ATTRIBUTE"].apply(lambda x: extract_attributes(str(x)) if x else x)
     return output_df
 

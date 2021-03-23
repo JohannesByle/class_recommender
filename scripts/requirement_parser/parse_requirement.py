@@ -40,28 +40,20 @@ def parse_requirement(node):
 
     def requirement_function(courses):
         sat_courses = pd.DataFrame()
-        possible_sat_courses = pd.DataFrame()
         for course_node in node.findall("Course"):
             sat_courses = pd.concat([sat_courses, parse_course(courses, course_node)])
-            possible_sat_courses = pd.concat([sat_courses, parse_course(courses_df, course_node)])
         for exception_node in node.findall("Except"):
             sat_courses = parse_course(sat_courses, exception_node)
-            possible_sat_courses = parse_course(courses_df, exception_node)
-        min_weight = possible_sat_courses["Credits"][possible_sat_courses["Credits"] != 0].min()
-        min_weight = min_weight if min_weight != 0 else 1
-        weight = int(not courses.empty) * min_weight
-        # if min_weight:
-        #     print(possible_sat_courses[["title", "Credits"]].sort_values(by="Credits"))
-        if bool(weight):
+        satisfied = not courses.empty
+        if satisfied:
             assert not all([n in node.attrib for n in ["Classes_begin", "Credits_begin"]])
             if "Classes_begin" in node.attrib:
-                num_classes = int(node.attrib["Classes_begin"])
-                weight = int(len(courses.index) >= num_classes) * num_classes
-                weight = weight * min_weight if num_classes > 0 else 0
+                satisfied = len(courses.index) >= int(node.attrib["Classes_begin"])
             elif "Credits_begin" in node.attrib:
-                num_credits = int(int(node.attrib["Credits_begin"]))
-                weight = int(pd.to_numeric(courses["Credits"]).sum() >= num_credits) * num_credits
-                weight = weight if num_credits > 0 else 0
-        return weight
+                satisfied = pd.to_numeric(courses["Credits"]).sum() >= int(int(node.attrib["Credits_begin"]))
+        return satisfied, sat_courses
 
-    return [requirement_function]
+    all_satisfied, all_sat_courses = requirement_function(courses_df)
+    assert all_satisfied
+    min_weight = all_sat_courses["Credits"][all_sat_courses["Credits"] != 0].min()
+    return [(requirement_function, min_weight)]

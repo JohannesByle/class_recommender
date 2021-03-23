@@ -1,21 +1,11 @@
 from flask import Blueprint, render_template
 import pandas as pd
 from models import Class
-from scripts.class_functions import get_time, extract_attributes
+from scripts.class_functions import get_time, extract_attributes, get_min_max
 from flask_app import db
 import re
 
 search_classes_blueprint = Blueprint("search_classes", __name__)
-
-
-def get_min_max(num_string):
-    num_string = str(num_string)
-    matches = re.findall(r"-?\d+\.*\d*", num_string)
-    if matches:
-        numbers = [float(n) for n in matches]
-        return [min(numbers), max(numbers)]
-    else:
-        return [None, None]
 
 
 def df_from_sql():

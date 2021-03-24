@@ -1,5 +1,5 @@
 import pandas as pd
-from scripts.requirement_parser import parse_xml, clean_df, courses_df
+from scripts.requirement_parser import parse_xml, courses_df
 from xml.etree import ElementTree
 import os
 
@@ -30,10 +30,12 @@ def naive(reqs_df_input, credits_per_semester=18):
             temp_courses = temp_courses[temp_courses["Credits"] <= credits_per_semester - cred]
             weights = reqs_df.loc[temp_courses.index].sum(axis=1).sort_values(ascending=False)
             course = temp_courses.loc[weights.index[0]]
+            temp_courses = temp_courses.loc[weights.index[1:]]
             courses.append((course["title"], course["Credits"]))
             cred += course["Credits"]
             reqs = reqs_df.loc[weights.index[0]]
             satisfied_reqs += list(reqs[reqs != 0].index)
             reqs_df = reqs_df[[n for n in reqs_df.columns if n not in satisfied_reqs]]
         semesters.append({"credit_hours": cred, "courses": courses})
+        print(semesters)
     return semesters

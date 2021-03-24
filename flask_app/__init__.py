@@ -27,12 +27,14 @@ try:
     from .views.auth.verify_email import verify_email_blueprint
     from .views.search_classes import search_classes_blueprint
     from .views.my_classes import my_classes_blueprint
+    from .views.suggested_schedule import suggested_schedule_blueprint
 
     app.register_blueprint(sign_up_blueprint)
     app.register_blueprint(sign_in_blueprint)
     app.register_blueprint(verify_email_blueprint)
     app.register_blueprint(search_classes_blueprint)
     app.register_blueprint(my_classes_blueprint)
+    app.register_blueprint(suggested_schedule_blueprint)
 except OperationalError or ImportError:
     warn("Database not initialized yet. Ignore this warning if you currently creating the database")
 

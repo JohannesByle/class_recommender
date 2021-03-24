@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+    <div class="col-10 mx-auto">
+        <div class="row m-0 m-md-5">
+            <div id="options_form">
+            </div>
+        </div>
+        <div class="row m-0 m-md-5" id="schedule_container">
+        </div>
+    </div>
+    <script>
+        const majors = {{ majors|safe }};
+        const known_majors = {{ known_majors|safe }};
+        {{ js|safe }}
+    </script>
+{% endblock %}

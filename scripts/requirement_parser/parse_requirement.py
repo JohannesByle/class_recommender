@@ -16,7 +16,7 @@ def parse_course(courses_input, node):
     courses = courses_input.copy()
     for attrib in ["Disc", "Num"]:
         courses[attrib] = courses[attrib].astype(str)
-        courses = courses[courses[attrib].str.match(node.attrib[attrib].replace("@", ".+"))]
+        courses = courses[courses[attrib].str.match("^" + node.attrib[attrib].replace("@", ".+") + "$")]
     for child_node in node:
         fun = switch({"With": parse_with}, child_node.tag)
         courses = fun(courses, child_node) if fun else None

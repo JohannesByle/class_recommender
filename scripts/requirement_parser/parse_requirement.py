@@ -1,5 +1,5 @@
 import pandas as pd
-from . import switch, courses_df
+from . import switch, courses_df, column_conversion
 
 
 def parse_with(courses_input, node):
@@ -39,7 +39,7 @@ def parse_requirement(node):
     assert all([n in tracked_attributes for n in node.attrib])
 
     def requirement_function(courses):
-        sat_courses = pd.DataFrame()
+        sat_courses = pd.DataFrame(columns=column_conversion.values())
         for course_node in node.findall("Course"):
             sat_courses = pd.concat([sat_courses, parse_course(courses, course_node)])
         for exception_node in node.findall("Except"):

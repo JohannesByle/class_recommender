@@ -26,6 +26,7 @@ def naive(reqs_df_input, credits_per_semester=18):
         cred = 0
         courses = []
         temp_courses = courses_df.copy()
+        satisfied_reqs_original = satisfied_reqs.copy()
         while cred < credits_per_semester and not temp_courses.empty:
             temp_courses = temp_courses[temp_courses["Credits"] <= credits_per_semester - cred]
             weights = reqs_df.loc[temp_courses.index].sum(axis=1).sort_values(ascending=False)
@@ -37,4 +38,6 @@ def naive(reqs_df_input, credits_per_semester=18):
             satisfied_reqs += list(reqs[reqs != 0].index)
             reqs_df = reqs_df[[n for n in reqs_df.columns if n not in satisfied_reqs]]
         semesters.append({"credit_hours": cred, "courses": courses})
-    return semesters
+        if satisfied_reqs_original == satisfied_reqs:
+            break
+    return {"schedule": semesters, "unsatisfied": [n for n in reqs_df.columns if n not in satisfied_reqs]}

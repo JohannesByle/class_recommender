@@ -7,65 +7,79 @@ function render_schedule(schedule) {
     console.log(schedule);
     ReactDOM.render(React.createElement(
         "div",
-        { className: "d-flex flex-wrap" },
-        schedule.map(function (val, index) {
+        null,
+        schedule["unsatisfied"].map(function (val, index) {
             return React.createElement(
                 "div",
-                { key: index, className: "card m-2", style: { "width": "500px" } },
-                React.createElement(
+                { className: "alert alert-danger", key: index },
+                "Unsatisfied Requirement: ",
+                val
+            );
+        }),
+        React.createElement(
+            "div",
+            { className: "d-flex flex-wrap" },
+            schedule["schedule"].map(function (val, index) {
+                return React.createElement(
                     "div",
-                    { className: "card-body" },
+                    { key: index, className: "card m-2", style: { "width": "500px" } },
                     React.createElement(
                         "div",
-                        { className: "card-title" },
+                        { className: "card-body" },
                         React.createElement(
-                            "span",
-                            { className: "h5" },
-                            "Semester ",
-                            index + 1,
-                            ":",
-                            " "
+                            "div",
+                            { className: "card-title" },
+                            React.createElement(
+                                "span",
+                                { className: "h5" },
+                                "Semester ",
+                                index + 1,
+                                ":",
+                                " "
+                            ),
+                            React.createElement(
+                                "span",
+                                { className: "pill badge bg-secondary px-2" },
+                                val["credit_hours"],
+                                " Credit Hours"
+                            )
                         ),
                         React.createElement(
-                            "span",
-                            { className: "pill badge bg-secondary px-2" },
-                            val["credit_hours"],
-                            " Credit Hours"
-                        )
-                    ),
-                    React.createElement(
-                        "div",
-                        { className: "card-text" },
-                        React.createElement(
-                            "ul",
-                            { className: "list-group" },
-                            val["courses"].map(function (val, index) {
-                                return React.createElement(
-                                    "li",
-                                    { className: "list-group-item", key: index },
-                                    React.createElement(
-                                        "span",
-                                        { className: "pill badge bg-primary px-2" },
-                                        val["Disc"],
+                            "div",
+                            { className: "card-text" },
+                            React.createElement(
+                                "ul",
+                                { className: "list-group" },
+                                val["courses"].map(function (val, index) {
+                                    return React.createElement(
+                                        "li",
+                                        { className: "list-group-item", key: index },
+                                        React.createElement(
+                                            "span",
+                                            {
+                                                className: "pill badge bg-primary px-2" },
+                                            val["Disc"],
+                                            " ",
+                                            val["Num"]
+                                        ),
                                         " ",
-                                        val["Num"]
-                                    ),
-                                    " ",
-                                    val["title"],
-                                    " ",
-                                    React.createElement(
-                                        "span",
-                                        { className: "pill badge bg-secondary px-2" },
-                                        val["Credits"],
-                                        " Credits"
-                                    )
-                                );
-                            })
+                                        val["title"],
+                                        " ",
+                                        React.createElement(
+                                            "span",
+                                            {
+                                                className: "pill badge bg-secondary px-2" },
+                                            val["Credits"],
+                                            " Credits"
+                                        )
+                                    );
+                                })
+                            )
                         )
                     )
-                )
-            );
-        })
+                );
+            })
+        )
     ), document.getElementById("schedule_container"));
 }
 

@@ -6,29 +6,36 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 function render_schedule(schedule) {
     console.log(schedule)
     ReactDOM.render(
-        <div className="d-flex flex-wrap">{
-            schedule.map((val, index) =>
-                <div key={index} className="card m-2" style={{"width": "500px"}}>
-                    <div className="card-body">
-                        <div className="card-title">
-                            <span className="h5">Semester {index + 1}:{" "}</span>
-                            <span className="pill badge bg-secondary px-2">{val["credit_hours"]} Credit Hours</span>
-                        </div>
-                        <div className="card-text">
-                            <ul className="list-group">
-                                {val["courses"].map((val, index) =>
-                                    <li className="list-group-item" key={index}>
-                                        <span className="pill badge bg-primary px-2">{val["Disc"]} {val["Num"]}</span>
-                                        {" "}{val["title"]}{" "}
-                                        <span className="pill badge bg-secondary px-2">{val["Credits"]} Credits</span>
-                                    </li>
-                                )}
-                            </ul>
+        <div>
+            {schedule["unsatisfied"].map((val, index) =>
+                <div className="alert alert-danger" key={index}>Unsatisfied Requirement: {val}</div>
+            )}
+            <div className="d-flex flex-wrap">{
+                schedule["schedule"].map((val, index) =>
+                    <div key={index} className="card m-2" style={{"width": "500px"}}>
+                        <div className="card-body">
+                            <div className="card-title">
+                                <span className="h5">Semester {index + 1}:{" "}</span>
+                                <span className="pill badge bg-secondary px-2">{val["credit_hours"]} Credit Hours</span>
+                            </div>
+                            <div className="card-text">
+                                <ul className="list-group">
+                                    {val["courses"].map((val, index) =>
+                                        <li className="list-group-item" key={index}>
+                                            <span
+                                                className="pill badge bg-primary px-2">{val["Disc"]} {val["Num"]}</span>
+                                            {" "}{val["title"]}{" "}
+                                            <span
+                                                className="pill badge bg-secondary px-2">{val["Credits"]} Credits</span>
+                                        </li>
+                                    )}
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-            )
-        }</div>,
+                )
+            }</div>
+        </div>,
         document.getElementById("schedule_container")
     );
 }

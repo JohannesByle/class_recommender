@@ -4,20 +4,26 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function render_schedule(schedule) {
-
+    console.log(schedule)
     ReactDOM.render(
-        <div>{
+        <div className="d-flex flex-wrap">{
             schedule.map((val, index) =>
-                <div key={index} className="card m-2">
+                <div key={index} className="card m-2" style={{"width": "500px"}}>
                     <div className="card-body">
-                        <div className="card-title h3">
-                            Semester {index + 1}
+                        <div className="card-title">
+                            <span className="h5">Semester {index + 1}:{" "}</span>
+                            <span className="pill badge bg-secondary px-2">{val["credit_hours"]} Credit Hours</span>
                         </div>
-                        <div className="card-text d-flex flex-wrap">
-                            {val["courses"].map((val, index) =>
-                                <span className="rounded-pill bg-secondary p-1 px-3 m-2"
-                                      key={index}>{val[0]}, {val[1]}</span>
-                            )}
+                        <div className="card-text">
+                            <ul className="list-group">
+                                {val["courses"].map((val, index) =>
+                                    <li className="list-group-item" key={index}>
+                                        <span className="pill badge bg-primary px-2">{val["Disc"]} {val["Num"]}</span>
+                                        {" "}{val["title"]}{" "}
+                                        <span className="pill badge bg-secondary px-2">{val["Credits"]} Credits</span>
+                                    </li>
+                                )}
+                            </ul>
                         </div>
                     </div>
                 </div>

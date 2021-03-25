@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from tqdm import tqdm
 import json
+import re
 
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 auth_data = {"sid": os.environ["PORTAL_USER_ID"], "PIN": os.environ["PORTAL_PASSWORD"]}
@@ -17,14 +18,29 @@ def clean_df(df):
     return df
 
 
+def get_desc(session, subj, crse):
+    url_template = "https://catalog.wheaton.edu/ribbit/index.cgi?page=getcourse.rjs&code={subj}%20{crse}"
+    soup = BeautifulSoup(session.get(url_template.format(subj=subj, crse=crse)).text, features="lxml")
+    desc = soup.find(class_="courseblockdesc")
+    desc = desc.get_text() if desc else desc
+    co_reqs = None
+    pre_reqs = None
+    if desc:
+        co_req_start = desc.find("Pre or Corequisite:")
+        pre_req_start = desc.find("Prerequisite:")
+        pre_req_start = pre_req_start if pre_req_start != -1 else desc.find("Prerequisites:")
+        if pre_req_start:
+            co_reqs = re.findall(r"[A-Z]{3,6}\s\d{3}[A-Z]?", desc[co_req_start: pre_req_start])
+        pre_reqs = re.findall(r"[A-Z]{3,6}\s\d{3}[A-Z]?", desc[pre_req_start:])
+    return {"desc": desc, "co_reqs": co_reqs, "pre_reqs": pre_reqs}
+
+
 def course_to_pandas(html):
     table = pd.read_html(html)[5]
     year = table.columns.get_level_values(0)[0]
-    if [n for n in table.columns.get_level_values(0) if n != year]:
-        raise Exception("Not just one year")
+    assert not [n for n in table.columns.get_level_values(0) if n != year]
     major = table[year].columns.get_level_values(0)[0]
-    if [n for n in table[year].columns.get_level_values(0) if n != major]:
-        raise Exception("Not just one major")
+    assert not [n for n in table[year].columns.get_level_values(0) if n != major]
     return table[year][major]
 
 

@@ -1,5 +1,6 @@
 import pandas as pd
 from . import switch, courses_df, column_conversion
+from xml.etree import ElementTree
 
 
 def parse_with(courses_input, node):
@@ -43,7 +44,7 @@ def parse_requirement(node):
         for course_node in node.findall("Course"):
             sat_courses = pd.concat([sat_courses, parse_course(courses, course_node)])
         for exception_node in node.findall("Except"):
-            sat_courses = parse_course(sat_courses, exception_node)
+            sat_courses = parse_except(sat_courses, exception_node)
         satisfied = not courses.empty
         if satisfied:
             assert not all([n in node.attrib for n in ["Classes_begin", "Credits_begin"]])

@@ -40,6 +40,8 @@ def parse_rule(node):
         return to_return
     else:
         if len(to_return) == 1:
+            if isinstance(to_return[0], dict):
+                return [to_return[0]]
             return [{"name": node.attrib["Label"], "function": to_return[0][0], "weight": to_return[0][1]}]
         else:
             for item in to_return:

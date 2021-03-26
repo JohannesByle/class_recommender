@@ -31,7 +31,7 @@ def clean_df(input_df):
     return output_df
 
 
-courses_df = clean_df(pd.read_pickle(os.path.join(path, "../class_scraper/data/courses.p")))
+courses_df = clean_df(pd.read_pickle(os.path.join(os.path.dirname(path), "class_scraper/data/courses.p")))
 
 
 def switch(functions, option, ignored=None, silent=True):

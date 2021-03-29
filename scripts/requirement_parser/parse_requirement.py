@@ -1,6 +1,5 @@
 import pandas as pd
 from . import switch, courses_df, column_conversion
-from xml.etree import ElementTree
 
 
 def parse_with(courses_input, node):

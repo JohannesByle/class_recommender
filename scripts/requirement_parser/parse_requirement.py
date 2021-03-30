@@ -1,5 +1,5 @@
 import pandas as pd
-from . import switch, courses_df, column_conversion
+from . import switch, Requirement
 
 
 def parse_with(courses_input, node):
@@ -38,22 +38,27 @@ def parse_requirement(node):
     assert all([n.tag in ["Course", "Qualifier", "Except"] for n in node])
     assert all([n in tracked_attributes for n in node.attrib])
 
-    def requirement_function(courses):
-        sat_courses = pd.DataFrame(columns=column_conversion.values())
-        for course_node in node.findall("Course"):
-            sat_courses = pd.concat([sat_courses, parse_course(courses, course_node)])
-        for exception_node in node.findall("Except"):
-            sat_courses = parse_except(sat_courses, exception_node)
-        satisfied = not courses.empty
-        if satisfied:
+    class BaseRequirement(Requirement):
+        def __init__(self, courses):
+            Requirement.__init__(self)
+            sat_courses = pd.DataFrame(columns=courses.columns)
+            for course_node in node.findall("Course"):
+                sat_courses = pd.concat([sat_courses, parse_course(courses, course_node)])
+            for exception_node in node.findall("Except"):
+                sat_courses = parse_except(sat_courses, exception_node)
+            self.sat_courses = pd.Series(index=courses.index, data=courses.index.isin(sat_courses.index))
+
+        def is_satisfied(self, courses_input):
+            courses = courses_input.index.intersection(self.sat_courses.index)
+            satisfied = int(not courses.empty)
+            if satisfied == 0:
+                return satisfied
             assert not all([n in node.attrib for n in ["Classes_begin", "Credits_begin"]])
             if "Classes_begin" in node.attrib:
-                satisfied = len(courses.index) >= int(node.attrib["Classes_begin"])
+                satisfied = len(courses.index) / int(node.attrib["Classes_begin"])
             elif "Credits_begin" in node.attrib:
-                satisfied = pd.to_numeric(courses["Credits"]).sum() >= int(int(node.attrib["Credits_begin"]))
-        return satisfied, sat_courses
+                satisfied = pd.to_numeric(courses["Credits"]).sum() / int(int(node.attrib["Credits_begin"]))
+            satisfied = 1 if satisfied >= 1 else satisfied
+            return satisfied
 
-    all_satisfied, all_sat_courses = requirement_function(courses_df)
-    assert all_satisfied
-    min_weight = all_sat_courses["Credits"][all_sat_courses["Credits"] != 0].min()
-    return [(requirement_function, min_weight)]
+    return [BaseRequirement]

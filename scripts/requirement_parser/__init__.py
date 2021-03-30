@@ -1,37 +1,20 @@
 from warnings import warn
 from xml.etree import ElementTree
 import itertools
-import os
-import pandas as pd
-import json
-from scripts.class_functions import extract_attributes, get_min_max
-
-path = os.path.dirname(__file__)
-with open(os.path.join(path, "../class_scraper/class_conversion.json"), "r") as f:
-    conversion_dict = json.load(f)
-column_conversion = {"attribute": "ATTRIBUTE", "crse": "Num", "subj": "Disc", "cred": "Credits"}
+from abc import ABC, abstractmethod
 
 
-def convert_df_to_degree_works(input_df):
-    output_df = input_df.copy()
-    output_df = output_df.rename(axis=1, mapper={conversion_dict[n]: n for n in conversion_dict})
-    output_df = output_df.rename(axis=1, mapper=column_conversion)
-    output_df = output_df[list(column_conversion.values()) + ["title", "term"]]
-    output_df = output_df.drop_duplicates(subset=list(column_conversion.values()) + ["title"])
-    output_df["ATTRIBUTE"] = output_df["ATTRIBUTE"].apply(lambda x: extract_attributes(str(x)) if x else x)
-    return output_df
+class Requirement(ABC):
+    sat_courses = None
+    name = None
 
+    @abstractmethod
+    def __init__(self):
+        pass
 
-def clean_df(input_df):
-    output_df = input_df.copy()
-    output_df = convert_df_to_degree_works(output_df)
-    output_df["Credits"] = output_df["Credits"].apply(lambda x: get_min_max(str(x))[0] if x else x)
-    years = output_df["term"].apply(lambda x: int(x[-2:] if "Term" not in x else x[-7:-5]))
-    output_df = output_df[years >= years.max() - 4]
-    return output_df
-
-
-courses_df = clean_df(pd.read_pickle(os.path.join(os.path.dirname(path), "class_scraper/data/courses.p")))
+    @abstractmethod
+    def is_satisfied(self, courses):
+        pass
 
 
 def switch(functions, option, ignored=None, silent=True):

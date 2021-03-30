@@ -1,5 +1,4 @@
-from . import switch, flatten, courses_df
-from . import parse_xml
+from . import switch, flatten, parse_xml, Requirement
 import pandas as pd
 
 
@@ -9,22 +8,25 @@ def parse_if_statement(node):
 
 
 def parse_group(node):
-    num_groups = int(node.find("Requirement").attrib["NumGroups"])
-    reqs_satisfied = flatten([parse_rule(n) for n in node.findall("Rule")])
+    class OptionRequirement(Requirement):
+        num_groups = int(node.find("Requirement").attrib["NumGroups"])
+        reqs_satisfied = flatten([parse_rule(n) for n in node.findall("Rule")])
 
-    def requirement_function(courses, return_weight=False):
-        satisfied = [n["function"](courses) for n in reqs_satisfied]
-        num_satisfied = len([n for n in satisfied if n[0]])
-        sat_courses = pd.concat([n[1] for n in satisfied])
-        satisfied = num_satisfied >= num_groups
-        if not return_weight:
-            return satisfied, sat_courses
-        else:
-            weight_ = sum(sorted([n["weight"] for n in reqs_satisfied if not pd.isna(n)])[:num_groups])
-            return satisfied, sat_courses, weight_
+        def __init__(self, courses):
+            Requirement.__init__(self)
+            [n.__init__(n, courses) for n in self.reqs_satisfied]
+            courses_options = [n.sat_courses for n in self.reqs_satisfied]
+            sat_courses = pd.Series(index=courses.index)
+            for n in sat_courses.index:
+                sat_courses.loc[n] = any([courses_options[i].loc[n] for i in range(len(courses_options))])
+            self.sat_courses = sat_courses
 
-    _, _, weight = requirement_function(courses_df, return_weight=True)
-    return [(requirement_function, weight)]
+        def is_satisfied(self, courses):
+            num_satisfied = len([n for n in self.reqs_satisfied if n.is_satisfied(courses)])
+            satisfied = num_satisfied / self.num_groups
+            return 1 if satisfied >= 1 else satisfied
+
+    return [OptionRequirement]
 
 
 def parse_subset(node):
@@ -40,12 +42,10 @@ def parse_rule(node):
         return to_return
     else:
         if len(to_return) == 1:
-            if isinstance(to_return[0], dict):
-                return [to_return[0]]
-            return [{"name": node.attrib["Label"], "function": to_return[0][0], "weight": to_return[0][1]}]
+            requirement = to_return[0]
+            requirement.name = node.attrib["Label"]
+            return [requirement]
         else:
-            for item in to_return:
-                if not item:
-                    continue
-                item["name"] = "{}, {}".format(node.attrib["Label"], item["name"])
+            for requirement in to_return:
+                requirement.name = "{}, {}".format(node.attrib["Label"], requirement.name)
             return to_return

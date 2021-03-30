@@ -20,6 +20,11 @@ def parse_group(node):
             for n in sat_courses.index:
                 sat_courses.loc[n] = any([courses_options[i].loc[n] for i in range(len(courses_options))])
             self.sat_courses = sat_courses
+            self.get_weight(self)
+
+        def get_weight(self):
+            weights = sorted([n.weight for n in self.reqs_satisfied])
+            self.weight = sum(weights[:self.num_groups])
 
         def is_satisfied(self, courses):
             num_satisfied = len([n for n in self.reqs_satisfied if n.is_satisfied(courses)])

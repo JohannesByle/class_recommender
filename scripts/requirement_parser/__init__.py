@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 class Requirement(ABC):
     sat_courses = None
     name = None
+    weight = None
 
     @abstractmethod
     def __init__(self):

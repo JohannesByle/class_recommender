@@ -47,6 +47,17 @@ def parse_requirement(node):
             for exception_node in node.findall("Except"):
                 sat_courses = parse_except(sat_courses, exception_node)
             self.sat_courses = pd.Series(index=courses.index, data=courses.index.isin(sat_courses.index))
+            self.get_weight(self, courses)
+
+        def get_weight(self, courses):
+            sat_courses_sorted = courses[self.sat_courses].sort_values("Credits")
+            assert not all([n in node.attrib for n in ["Classes_begin", "Credits_begin"]])
+            if "Classes_begin" in node.attrib:
+                self.weight = int(sat_courses_sorted.iloc[:int(node.attrib["Classes_begin"])]["Credits"].sum())
+            elif "Credits_begin" in node.attrib:
+                self.weight = int(int(node.attrib["Credits_begin"]))
+            else:
+                self.weight = int(sat_courses_sorted.iloc[0, "Credits"])
 
         def is_satisfied(self, courses_input):
             courses = courses_input.index.intersection(self.sat_courses.index)

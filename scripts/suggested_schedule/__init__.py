@@ -51,8 +51,7 @@ def create_reqs_df(major):
     reqs_df = pd.DataFrame(index=courses_df.index, columns=[req.name for req in reqs])
     for req in reqs:
         reqs_df[req.name] = req.sat_courses
-    reqs_df = reqs_df.fillna(0)
-
+    reqs_df = reqs_df[reqs_df.apply(lambda x: any(x), axis=1)]
     return reqs_df, {req.name: req for req in reqs}
 
 

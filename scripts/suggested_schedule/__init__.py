@@ -4,6 +4,7 @@ from xml.etree import ElementTree
 import os
 import json
 from scripts.class_functions import extract_attributes, get_min_max
+from tqdm import tqdm
 
 path = os.path.dirname(os.path.dirname(__file__))
 with open(os.path.join(path, "class_scraper/class_conversion.json"), "r") as f:
@@ -15,18 +16,27 @@ def convert_df_to_degree_works(input_df):
     output_df = input_df.copy()
     output_df = output_df.rename(axis=1, mapper={conversion_dict[n]: n for n in conversion_dict})
     output_df = output_df.rename(axis=1, mapper=column_conversion)
-    output_df = output_df[list(column_conversion.values()) + ["title", "term"]]
-    output_df = output_df.drop_duplicates(subset=list(column_conversion.values()) + ["title"])
-    output_df["ATTRIBUTE"] = output_df["ATTRIBUTE"].apply(lambda x: extract_attributes(str(x)) if x else x)
     return output_df
 
 
 def clean_df(input_df):
     output_df = input_df.copy()
     output_df = convert_df_to_degree_works(output_df)
+    output_df = output_df[list(column_conversion.values()) + ["title", "term"]]
     output_df["Credits"] = output_df["Credits"].apply(lambda x: get_min_max(str(x))[0] if x else x)
-    years = output_df["term"].apply(lambda x: int(x[-2:] if "Term" not in x else x[-7:-5]))
+    output_df["term"] = output_df["term"].str.replace(" Term", "")
+    years = output_df["term"].apply(lambda x: int(x[-2:]))
     output_df = output_df[years >= years.max() - 4]
+    rows = []
+    for index, data in tqdm(output_df.groupby(by=["Disc", "Num", "title"])):
+        rows.append({"Disc": index[0],
+                     "Num": index[1],
+                     "title": index[2],
+                     "Credits": data["Credits"].max(),
+                     "terms": set(data["term"].unique()),
+                     "ATTRIBUTE": data.loc[data["ATTRIBUTE"].apply(lambda x: len(str(x))).idxmax(), "ATTRIBUTE"]})
+    output_df = pd.DataFrame(rows)
+    output_df["ATTRIBUTE"] = output_df["ATTRIBUTE"].apply(lambda x: extract_attributes(str(x)) if x else x)
     return output_df
 
 

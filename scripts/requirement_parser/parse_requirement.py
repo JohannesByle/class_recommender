@@ -1,5 +1,6 @@
 import pandas as pd
 from . import switch, Requirement
+import numpy as np
 
 
 def parse_with(courses_input, node):
@@ -53,7 +54,8 @@ def parse_requirement(node):
             sat_courses_sorted = courses[self.sat_courses].sort_values("Credits")
             assert not all([n in node.attrib for n in ["Classes_begin", "Credits_begin"]])
             if "Classes_begin" in node.attrib:
-                self.weight = int(sat_courses_sorted.iloc[:int(node.attrib["Classes_begin"])]["Credits"].sum())
+                if not sat_courses_sorted.empty:
+                    self.weight = int(sat_courses_sorted.iloc[:int(node.attrib["Classes_begin"])]["Credits"].sum())
             elif "Credits_begin" in node.attrib:
                 self.weight = int(int(node.attrib["Credits_begin"]))
             else:

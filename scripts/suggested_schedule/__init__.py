@@ -24,6 +24,7 @@ def clean_df(input_df):
     output_df = convert_df_to_degree_works(output_df)
     output_df = output_df[list(column_conversion.values()) + ["title", "term"]]
     output_df["Credits"] = output_df["Credits"].apply(lambda x: get_min_max(str(x))[0] if x else x)
+    output_df = output_df[~((output_df["Credits"] == 0) & (output_df["Num"].astype(str).str.endswith("L")))]
     output_df["term"] = output_df["term"].str.replace(" Term", "")
     years = output_df["term"].apply(lambda x: int(x[-2:]))
     output_df = output_df[years >= years.max() - 4]

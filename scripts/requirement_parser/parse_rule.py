@@ -10,12 +10,12 @@ def parse_if_statement(node):
 def parse_group(node):
     class OptionRequirement(Requirement):
         num_groups = int(node.find("Requirement").attrib["NumGroups"])
-        reqs_satisfied = flatten([parse_rule(n) for n in node.findall("Rule")])
+        reqs_options = flatten([parse_rule(n) for n in node.findall("Rule")])
 
         def __init__(self, courses):
             Requirement.__init__(self)
-            [n.__init__(n, courses) for n in self.reqs_satisfied]
-            courses_options = [n.sat_courses for n in self.reqs_satisfied]
+            [n.__init__(n, courses) for n in self.reqs_options]
+            courses_options = [n.sat_courses for n in self.reqs_options]
             sat_courses = pd.Series(index=courses.index)
             for n in sat_courses.index:
                 sat_courses.loc[n] = any([courses_options[i].loc[n] for i in range(len(courses_options))])
@@ -23,11 +23,12 @@ def parse_group(node):
             self.get_weight(self)
 
         def get_weight(self):
-            weights = sorted([n.weight for n in self.reqs_satisfied])
-            self.weight = sum(weights[:self.num_groups])
+            weights = sorted([n.weight for n in self.reqs_options if n.weight])
+            if len(weights) >= self.num_groups:
+                self.weight = sum(weights[:self.num_groups])
 
         def is_satisfied(self, courses):
-            num_satisfied = len([n for n in self.reqs_satisfied if n.is_satisfied(courses)])
+            num_satisfied = len([n for n in self.reqs_options if n.is_satisfied(courses)])
             satisfied = num_satisfied / self.num_groups
             return 1 if satisfied >= 1 else satisfied
 

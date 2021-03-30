@@ -51,7 +51,8 @@ def create_reqs_df(major):
     for req in reqs:
         reqs_df[req.name] = req.sat_courses
     reqs_df = reqs_df.fillna(0)
-    return reqs_df
+
+    return reqs_df, {req.name: req for req in reqs}
 
 
 def naive(reqs_df_input, credits_per_semester=18):

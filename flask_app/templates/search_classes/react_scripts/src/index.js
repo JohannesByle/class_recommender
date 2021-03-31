@@ -50,6 +50,7 @@ add_multi_select("Tags", "attributes");
 add_multi_select("Instructors", "instructors");
 add_multi_select("Subject", "subj");
 add_multi_select("Days", "days_list");
+add_multi_select("Title", "title");
 add_time_picker("Starts after", "start_time", "00:00:00", false);
 add_time_picker("Ends before", "end_time", "23:59:59", true);
 

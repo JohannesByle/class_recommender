@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 
+
 function grade_color(grade) {
     const grade_color_dict = {
         "A": "success",
@@ -18,8 +19,9 @@ function grade_color(grade) {
 }
 
 
-function Class(class_dict, remove) {
+function Class(class_dict, remove, rate) {
     let remove_icon = null;
+    let rate_icon = null;
 
     function remove_self() {
         console.log("WHAAAAT")
@@ -29,7 +31,25 @@ function Class(class_dict, remove) {
                 body: JSON.stringify(class_dict)
             }
         ).then(r => r.json()).then(
-            (result) => render_classes(result, true),
+            (result) => render_classes(result, true, false),
+            (error) => console.log(error));
+    }
+
+    function rate_self() {
+        console.log("rate")
+        fetch("/rate_class",
+            {
+                method: "POST",
+                body: JSON.stringify(class_dict)
+            }
+        ).then(r => r.json()).then(
+            (result) =>
+            ReactDOM.render(
+            <div className="d-flex flex-wrap justify-content-center">
+                {Class(result)}
+            </div>,
+            document.getElementById("add_class_form")
+        ),
             (error) => console.log(error));
     }
 
@@ -37,6 +57,15 @@ function Class(class_dict, remove) {
         remove_icon = (
             <span className="float-end ms-2">
                 <a href="#" className="stretched-link link-danger" onClick={remove_self}>
+                    <i className="bi bi-x-circle-fill"></i>
+                </a>
+            </span>
+        );
+    }
+    if (rate) {
+        rate_icon = (
+            <span className="float-end ms-2">
+                <a href="#" className="stretched-link link-success" onClick={rate_self}>
                     <i className="bi bi-x-circle-fill"></i>
                 </a>
             </span>
@@ -52,6 +81,7 @@ function Class(class_dict, remove) {
                 </div>
                 <div className="col-5 col-md-4 my-auto">
                     {remove_icon}
+                    {rate_icon}
                     <span className="float-end badge bg-dark ms-1">{class_dict["cred"]}</span>
                     <span className={"float-end badge ms-1 bg-" + grade_color(class_dict["grade"])}>
                         {class_dict["grade"]}
@@ -64,7 +94,7 @@ function Class(class_dict, remove) {
     );
 }
 
-export default function render_classes(classes, remove) {
+export default function render_classes(classes, remove, rate) {
     if (classes.length === 0) {
         ReactDOM.render(
             <div className="alert alert-secondary col-10 col-md-6 mx-auto" role="alert">
@@ -79,7 +109,7 @@ export default function render_classes(classes, remove) {
         const elements = array.map(
             (class_dict, index) =>
                 <div key={index} className="px-1 pb-1">
-                    {Class(class_dict, remove)}
+                    {Class(class_dict, remove, rate)}
                 </div>
         ).reverse();
         ReactDOM.render(
@@ -122,4 +152,10 @@ import render_remove_form from "./remove_classes";
 ReactDOM.render(
     <a className="dropdown-item" href="#" onClick={render_remove_form}>Remove Classes</a>,
     document.getElementById("remove_form_li")
+)
+
+import render_rate_form from "./rate_class";
+ReactDOM.render(
+    <a className="dropdown-item" href="#" onClick={render_rate_form}>Rate Classes</a>,
+    document.getElementById("rate_form_li")
 )

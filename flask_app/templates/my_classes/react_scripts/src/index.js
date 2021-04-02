@@ -15,8 +15,9 @@ function grade_color(grade) {
     return "secondary";
 }
 
-function Class(class_dict, remove) {
+function Class(class_dict, remove, rate) {
     var remove_icon = null;
+    var rate_icon = null;
 
     function remove_self() {
         console.log("WHAAAAT");
@@ -26,7 +27,25 @@ function Class(class_dict, remove) {
         }).then(function (r) {
             return r.json();
         }).then(function (result) {
-            return render_classes(result, true);
+            return render_classes(result, true, false);
+        }, function (error) {
+            return console.log(error);
+        });
+    }
+
+    function rate_self() {
+        console.log("rate");
+        fetch("/rate_class", {
+            method: "POST",
+            body: JSON.stringify(class_dict)
+        }).then(function (r) {
+            return r.json();
+        }).then(function (result) {
+            return ReactDOM.render(React.createElement(
+                'div',
+                { className: 'd-flex flex-wrap justify-content-center' },
+                Class(result)
+            ), document.getElementById("add_class_form"));
         }, function (error) {
             return console.log(error);
         });
@@ -39,6 +58,17 @@ function Class(class_dict, remove) {
             React.createElement(
                 'a',
                 { href: '#', className: 'stretched-link link-danger', onClick: remove_self },
+                React.createElement('i', { className: 'bi bi-x-circle-fill' })
+            )
+        );
+    }
+    if (rate) {
+        rate_icon = React.createElement(
+            'span',
+            { className: 'float-end ms-2' },
+            React.createElement(
+                'a',
+                { href: '#', className: 'stretched-link link-success', onClick: rate_self },
                 React.createElement('i', { className: 'bi bi-x-circle-fill' })
             )
         );
@@ -71,6 +101,7 @@ function Class(class_dict, remove) {
                 'div',
                 { className: 'col-5 col-md-4 my-auto' },
                 remove_icon,
+                rate_icon,
                 React.createElement(
                     'span',
                     { className: 'float-end badge bg-dark ms-1' },
@@ -86,7 +117,7 @@ function Class(class_dict, remove) {
     );
 }
 
-export default function render_classes(classes, remove) {
+export default function render_classes(classes, remove, rate) {
     if (classes.length === 0) {
         ReactDOM.render(React.createElement(
             'div',
@@ -101,7 +132,7 @@ export default function render_classes(classes, remove) {
             return React.createElement(
                 'div',
                 { key: index, className: 'px-1 pb-1' },
-                Class(class_dict, remove)
+                Class(class_dict, remove, rate)
             );
         }).reverse();
         ReactDOM.render(React.createElement(
@@ -145,3 +176,10 @@ ReactDOM.render(React.createElement(
     { className: 'dropdown-item', href: '#', onClick: render_remove_form },
     'Remove Classes'
 ), document.getElementById("remove_form_li"));
+
+import render_rate_form from "./rate_class";
+ReactDOM.render(React.createElement(
+    'a',
+    { className: 'dropdown-item', href: '#', onClick: render_rate_form },
+    'Rate Classes'
+), document.getElementById("rate_form_li"));

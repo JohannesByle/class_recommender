@@ -34,7 +34,7 @@ function AddClassForm() {
         }).then(function (r) {
             return r.json();
         }).then(function (result) {
-            return render_classes(result);
+            return render_classes(result, false, false);
         }, function (error) {
             return console.log(error);
         });

@@ -36,7 +36,7 @@ function AddClassForm() {
                 body: JSON.stringify({"subj": subject, "crse": course, "grade": grade, "title": title, "cred": cred})
             }
         ).then(r => r.json()).then(
-            (result) => render_classes(result),
+            (result) => render_classes(result, false, false),
             (error) => console.log(error));
     }
 

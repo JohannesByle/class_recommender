@@ -6,7 +6,7 @@ import render_classes from "./index";
 
 const subjects = Object.keys(courses_dict)
 
-function ComboBox(label, options, custom_function) {
+export function ComboBox(label, options, custom_function) {
     return (
         <Autocomplete
             id={label}

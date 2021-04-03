@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {RateClassForm} from "./rate_class";
 
 
 
@@ -37,20 +38,7 @@ function Class(class_dict, remove, rate) {
 
     function rate_self() {
         console.log("rate")
-        fetch("/rate_class",
-            {
-                method: "POST",
-                body: JSON.stringify(class_dict)
-            }
-        ).then(r => r.json()).then(
-            (result) =>
-            ReactDOM.render(
-            <div className="d-flex flex-wrap justify-content-center">
-                {Class(result)}
-            </div>,
-            document.getElementById("add_class_form")
-        ),
-            (error) => console.log(error));
+        RateClassForm(class_dict)
     }
 
     if (remove) {
@@ -154,8 +142,8 @@ ReactDOM.render(
     document.getElementById("remove_form_li")
 )
 
-import render_rate_form from "./rate_class";
+import render_rate_class_form from "./rate_class";
 ReactDOM.render(
-    <a className="dropdown-item" href="#" onClick={render_rate_form}>Rate Classes</a>,
+    <a className="dropdown-item" href="#" onClick={render_rate_class_form}>Rate Classes</a>,
     document.getElementById("rate_form_li")
 )

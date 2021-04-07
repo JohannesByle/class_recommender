@@ -67,7 +67,13 @@ def remove_class():
 @my_classes_blueprint.route("/rate_class", methods=['POST'])
 @login_required
 def rate_class():
-    return request.data.decode("utf-8")
+    # there's probably an easier way to do this?
+    full_class_dict = json.loads(request.data.decode("utf-8"))
+    current_user.classes = [n for n in current_user.classes if n["title"] != full_class_dict["title"]]
+    current_user.classes = current_user.classes + [full_class_dict]
+    db.session.commit()
+    return json.dumps(current_user.classes)
+
 
 
 

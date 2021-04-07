@@ -20,7 +20,7 @@ export function RateClassForm(course) {
                 body: JSON.stringify(course)
             }
         ).then(r => r.json()).then(
-            (result) => console.log(result),
+            (result) => render_classes(result, false, true),
             (error) => console.log(error));
     }
 

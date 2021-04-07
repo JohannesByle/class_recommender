@@ -5,6 +5,11 @@ import {ComboBox} from "./add_class";
 
 export function RateClassForm(course) {
 
+    function stop_rating() {
+        ReactDOM.unmountComponentAtNode(document.getElementById("add_class_form"))
+        render_classes(my_courses, false, false)
+    }
+
     console.log(course)
 
     let rating = null
@@ -25,7 +30,11 @@ export function RateClassForm(course) {
     }
 
     ReactDOM.render(
+
         <div className="mx-auto" style={{maxWidth: 400}}>
+            <div className="mx-auto mt-3 text-center">
+            <button className="btn btn-secondary" onClick={stop_rating}>Stop Rating Classes</button>
+            </div>
             <div className="container mt-3 card bg-light border-secondary border-2"
                  id="rate_class_form_container">
                 <div className="col m-3">
@@ -38,6 +47,7 @@ export function RateClassForm(course) {
                 </div>
             </div>
             <button className="btn btn-secondary float-end mt-3" onClick={add_rating}>Add Rating</button>
+
         </div>, document.getElementById("add_class_form")
 
     );

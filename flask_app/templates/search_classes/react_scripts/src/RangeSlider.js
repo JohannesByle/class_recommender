@@ -28,7 +28,7 @@ function RangeSlider(label, max, min, index) {
             min: min,
             max: max,
             valueLabelDisplay: 'auto',
-            onChange: filter_function
+            onChangeCommitted: filter_function
         })
     );
 }

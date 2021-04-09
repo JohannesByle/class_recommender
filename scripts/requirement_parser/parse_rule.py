@@ -8,31 +8,8 @@ def parse_if_statement(node):
 
 
 def parse_group(node):
-    class OptionRequirement(Requirement):
-        num_groups = int(node.find("Requirement").attrib["NumGroups"])
-        reqs_options = flatten([parse_rule(n) for n in node.findall("Rule")])
-
-        def __init__(self, courses):
-            Requirement.__init__(self)
-            [n.__init__(n, courses) for n in self.reqs_options]
-            courses_options = [n.sat_courses for n in self.reqs_options]
-            sat_courses = pd.Series(index=courses.index)
-            for n in sat_courses.index:
-                sat_courses.loc[n] = any([courses_options[i].loc[n] for i in range(len(courses_options))])
-            self.sat_courses = sat_courses
-            self.get_weight(self)
-
-        def get_weight(self):
-            weights = sorted([n.weight for n in self.reqs_options if n.weight])
-            if len(weights) >= self.num_groups:
-                self.weight = sum(weights[:self.num_groups])
-
-        def is_satisfied(self, courses):
-            num_satisfied = len([n for n in self.reqs_options if n.is_satisfied(courses)])
-            satisfied = num_satisfied / self.num_groups
-            return 1 if satisfied >= 1 else satisfied
-
-    return [OptionRequirement]
+    req = OptionRequirement(node)
+    return [req]
 
 
 def parse_subset(node):
@@ -55,3 +32,34 @@ def parse_rule(node):
             for requirement in to_return:
                 requirement.name = "{}, {}".format(node.attrib["Label"], requirement.name)
             return to_return
+
+
+class OptionRequirement(Requirement):
+    node = None
+    num_groups = None
+    reqs_options = None
+
+    def __init__(self, node):
+        Requirement.__init__(self)
+        self.node = node
+        self.num_groups = int(self.node.find("Requirement").attrib["NumGroups"])
+        self.reqs_options = flatten([parse_rule(n) for n in self.node.findall("Rule")])
+
+    def set_courses(self, courses):
+        [n.set_courses(courses) for n in self.reqs_options]
+        courses_options = [n.sat_courses for n in self.reqs_options]
+        sat_courses = pd.Series(index=courses.index)
+        for n in sat_courses.index:
+            sat_courses.loc[n] = any([courses_options[i].loc[n] for i in range(len(courses_options))])
+        self.sat_courses = sat_courses
+        self.get_weight()
+
+    def get_weight(self):
+        weights = sorted([n.weight for n in self.reqs_options if n.weight])
+        if len(weights) >= self.num_groups:
+            self.weight = sum(weights[:self.num_groups])
+
+    def is_satisfied(self, courses):
+        num_satisfied = len([n for n in self.reqs_options if n.is_satisfied(courses)])
+        satisfied = num_satisfied / self.num_groups
+        return 1 if satisfied >= 1 else satisfied

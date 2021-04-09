@@ -19,7 +19,6 @@ function AutocompleteMultiple(label, options, index) {
     return React.createElement(Autocomplete, {
         multiple: true,
         onChange: filter_function,
-        id: 'tags-standard',
         options: options,
         getOptionLabel: function getOptionLabel(option) {
             return option;

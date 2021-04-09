@@ -23,7 +23,6 @@ function AutocompleteMultiple(label, options, index) {
         <Autocomplete
             multiple
             onChange={filter_function}
-            id="tags-standard"
             options={options}
             getOptionLabel={(option) => option}
             renderInput={(params) => (

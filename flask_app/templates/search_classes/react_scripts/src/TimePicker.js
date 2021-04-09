@@ -32,7 +32,6 @@ function TimePicker(props) {
         { utils: DateFnsUtils },
         React.createElement(KeyboardTimePicker, {
             margin: 'normal',
-            id: 'time-picker',
             label: props.label,
             value: selectedDate,
             onChange: handleDateChange,

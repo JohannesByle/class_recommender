@@ -5,6 +5,8 @@ import os
 import json
 from scripts.class_functions import extract_attributes, get_min_max
 from tqdm import tqdm
+from datetime import datetime
+import numpy as np
 
 path = os.path.dirname(os.path.dirname(__file__))
 with open(os.path.join(path, "class_scraper/class_conversion.json"), "r") as f:
@@ -47,7 +49,7 @@ courses_df = clean_df(pd.read_pickle(os.path.join(path, "class_scraper/data/cour
 def create_reqs_df(major):
     root = ElementTree.parse(os.path.join(path, "class_scraper/data/requirements_xml/{}.xml").format(major)).getroot()
     reqs = parse_xml(root)
-    [req.__init__(req, courses_df) for req in reqs]
+    [req.set_courses(courses_df) for req in reqs]
     reqs_df = pd.DataFrame(index=courses_df.index, columns=[req.name for req in reqs])
     for req in reqs:
         reqs_df[req.name] = req.sat_courses
@@ -55,26 +57,39 @@ def create_reqs_df(major):
     return reqs_df, {req.name: req for req in reqs}
 
 
-def naive(reqs_df_input, credits_per_semester=18):
+def naive(reqs_df_input, reqs, credits_per_semester=18):
+    def get_weights(bool_df_input):
+        bool_df = bool_df_input.copy()
+        for index, row in bool_df.iterrows():
+            for col, value in dict(row).items():
+                if value:
+                    bool_df.loc[index, col] = reqs[col].is_satisfied(courses_df.loc[[index]]) * reqs[col].weight
+        bool_df = bool_df.replace(False, 0)
+        weights = bool_df.apply(lambda x: sum([n for n in x - reqs_weights if n > 0]), axis=1)
+        weights = weights[weights > 0]
+        return bool_df.loc[weights.sort_values(ascending=False).index]
+
     reqs_df = reqs_df_input.copy()
-    satisfied_reqs = []
+    reqs_df = reqs_df.loc[reqs_df.apply(lambda x: len([n for n in x if not n]), axis=1).sort_values().index]
+    total_satisfied_reqs = []
     semesters = []
-    while not all([n in satisfied_reqs for n in reqs_df.columns]):
-        cred = 0
-        courses = []
-        temp_courses = courses_df.copy()
-        satisfied_reqs_original = satisfied_reqs.copy()
-        while cred < credits_per_semester and not temp_courses.empty:
-            temp_courses = temp_courses[temp_courses["Credits"] <= credits_per_semester - cred]
-            weights = reqs_df.loc[temp_courses.index].sum(axis=1).sort_values(ascending=False)
-            course = temp_courses.loc[weights.index[0]]
-            temp_courses = temp_courses.loc[weights.index[1:]]
-            courses.append(dict(course))
-            cred += course["Credits"]
-            reqs = reqs_df.loc[weights.index[0]]
-            satisfied_reqs += list(reqs[reqs != 0].index)
-            reqs_df = reqs_df[[n for n in reqs_df.columns if n not in satisfied_reqs]]
-        semesters.append({"credit_hours": cred, "courses": courses})
-        if satisfied_reqs_original == satisfied_reqs:
+    reqs_weights = np.array([0 for n in reqs_df.columns])
+    while not total_satisfied_reqs == list(reqs):
+        semester = []
+        credits_taken = 0
+
+        while credits_taken < credits_per_semester:
+            fits_remaining = courses_df.loc[reqs_df.index, "Credits"] <= credits_per_semester - credits_taken
+            weights_df = get_weights(reqs_df.loc[fits_remaining])
+            if weights_df.empty:
+                break
+            course = dict(courses_df.loc[weights_df.index[0]])
+            semester.append(course)
+            credits_taken += course["Credits"]
+            reqs_weights = np.array(weights_df.iloc[0]) + reqs_weights
+            reqs_df = reqs_df.drop(weights_df.index[0])
+        if not semester:
             break
-    return {"schedule": semesters, "unsatisfied": [n for n in reqs_df.columns if n not in satisfied_reqs]}
+        semesters.append(semester)
+    unsatisfied = [reqs_df.columns[n] for n in range(len(reqs_weights)) if reqs_weights[n] == 0]
+    return {"schedule": semesters, "unsatisfied": unsatisfied}

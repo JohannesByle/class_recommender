@@ -16,7 +16,7 @@ def get_quads(df):
         dates = data["date"].value_counts().index[:3]
         start_end = [(int(n[:2]), int(n[-5:-3])) for n in dates]
         durations = [n[1] - n[0] for n in start_end]
-        assert len([n for n in durations if n == 4]) == 1
+        assert len([n for n in durations if n == 4]) <= 1
         dates = [dates[n] for n in range(3) if durations[n] != 4]
         start_end = [start_end[n] for n in range(3) if durations[n] != 4]
         if start_end[0][0] < start_end[1][0]:

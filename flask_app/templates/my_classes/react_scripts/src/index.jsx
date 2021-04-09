@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {RateClassForm} from "./rate_class";
+import {Rating} from "@material-ui/lab"
 
 
 
@@ -23,6 +24,7 @@ function grade_color(grade) {
 function Class(class_dict, remove, rate) {
     let remove_icon = null;
     let rate_icon = null;
+    let normal_icon = null;
 
     function remove_self() {
         console.log("WHAAAAT")
@@ -50,13 +52,33 @@ function Class(class_dict, remove, rate) {
             </span>
         );
     }
+
+
     if (rate) {
         rate_icon = (
-            <span className="float-end ms-2">
-                <a href="#" className="stretched-link link-success" onClick={rate_self}>
-                    <i className="bi bi-x-circle-fill"></i>
-                </a>
+            <div className="col-5 col-md-4 my-auto">
+                <span className="float-end ms-2">
+                    <a href="#" className="stretched-link link-success" onClick={rate_self}>
+                        <i className="bi bi-x-circle-fill"></i>
+                    </a>
+                </span>
+                <span className="float-end ms-1">
+                    <Rating name="read-only" value={class_dict["rating"] || 0 } readOnly size="small"/>
+                </span>
+
+            </div>
+        );
+
+
+    } else {
+        normal_icon = (
+        <div className="col-5 col-md-4 my-auto">
+            {remove_icon}
+            <span className="float-end badge bg-dark ms-1">{class_dict["cred"]}</span>
+            <span className={"float-end badge ms-1 bg-" + grade_color(class_dict["grade"])}>
+                {class_dict["grade"]}
             </span>
+        </div>
         );
     }
 
@@ -67,16 +89,8 @@ function Class(class_dict, remove, rate) {
                     <span className="badge bg-primary">{class_dict["subj"]} {class_dict["crse"]}</span>
                     <span className="fs-6">{" "}{class_dict["title"]}</span>
                 </div>
-                <div className="col-5 col-md-4 my-auto">
-                    {remove_icon}
-                    {rate_icon}
-                    <span className="float-end badge bg-dark ms-1">{class_dict["cred"]}</span>
-                    <span className={"float-end badge ms-1 bg-" + grade_color(class_dict["grade"])}>
-                        {class_dict["grade"]}
-                    </span>
-
-
-                </div>
+                {rate_icon}
+                {normal_icon}
             </div>
         </div>
     );

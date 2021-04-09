@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { RateClassForm } from "./rate_class";
+import { Rating } from "@material-ui/lab";
 
 function grade_color(grade) {
     var grade_color_dict = {
@@ -19,6 +20,7 @@ function grade_color(grade) {
 function Class(class_dict, remove, rate) {
     var remove_icon = null;
     var rate_icon = null;
+    var normal_icon = null;
 
     function remove_self() {
         console.log("WHAAAAT");
@@ -50,14 +52,40 @@ function Class(class_dict, remove, rate) {
             )
         );
     }
+
     if (rate) {
         rate_icon = React.createElement(
-            'span',
-            { className: 'float-end ms-2' },
+            'div',
+            { className: 'col-5 col-md-4 my-auto' },
             React.createElement(
-                'a',
-                { href: '#', className: 'stretched-link link-success', onClick: rate_self },
-                React.createElement('i', { className: 'bi bi-x-circle-fill' })
+                'span',
+                { className: 'float-end ms-2' },
+                React.createElement(
+                    'a',
+                    { href: '#', className: 'stretched-link link-success', onClick: rate_self },
+                    React.createElement('i', { className: 'bi bi-x-circle-fill' })
+                )
+            ),
+            React.createElement(
+                'span',
+                { className: 'float-end ms-1' },
+                React.createElement(Rating, { name: 'read-only', value: class_dict["rating"] || 0, readOnly: true, size: 'small' })
+            )
+        );
+    } else {
+        normal_icon = React.createElement(
+            'div',
+            { className: 'col-5 col-md-4 my-auto' },
+            remove_icon,
+            React.createElement(
+                'span',
+                { className: 'float-end badge bg-dark ms-1' },
+                class_dict["cred"]
+            ),
+            React.createElement(
+                'span',
+                { className: "float-end badge ms-1 bg-" + grade_color(class_dict["grade"]) },
+                class_dict["grade"]
             )
         );
     }
@@ -85,22 +113,8 @@ function Class(class_dict, remove, rate) {
                     class_dict["title"]
                 )
             ),
-            React.createElement(
-                'div',
-                { className: 'col-5 col-md-4 my-auto' },
-                remove_icon,
-                rate_icon,
-                React.createElement(
-                    'span',
-                    { className: 'float-end badge bg-dark ms-1' },
-                    class_dict["cred"]
-                ),
-                React.createElement(
-                    'span',
-                    { className: "float-end badge ms-1 bg-" + grade_color(class_dict["grade"]) },
-                    class_dict["grade"]
-                )
-            )
+            rate_icon,
+            normal_icon
         )
     );
 }

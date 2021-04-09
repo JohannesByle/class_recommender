@@ -2,6 +2,18 @@ import ReactDOM from "react-dom";
 import render_classes from "./index";
 import React from "react";
 import {ComboBox} from "./add_class";
+import {Rating} from "@material-ui/lab"
+
+function SimpleRating(custom_function) {
+        return (
+            <Rating
+          name="simple-controlled"
+          value = {null}
+          onChange={custom_function}
+        />
+        );
+    }
+
 
 export function RateClassForm(course) {
 
@@ -31,6 +43,7 @@ export function RateClassForm(course) {
 
     ReactDOM.render(
 
+
         <div className="mx-auto" style={{maxWidth: 400}}>
             <div className="mx-auto mt-3 text-center">
             <button className="btn btn-secondary" onClick={stop_rating}>Stop Rating Classes</button>
@@ -41,9 +54,13 @@ export function RateClassForm(course) {
                     <div className="mb-2" id="_input">
                         {course["title"]}
                     </div>
-                    <div className="mb-2" id="grade_input">
-                        {ComboBox("Rating", ["1", "2", "3", "4", "5"], (e, val) => rating = val)}
-                    </div>
+                    {/*<div className="mb-2" id="grade_input">*/}
+                    {/*    {ComboBox("Rating", [1, 2, 3, 4, 5], (e, val) => rating = val)}*/}
+                    {/*</div>*/}
+                    {SimpleRating((e, val) => {
+                        console.log(val)
+                        rating = val})
+                    }
                 </div>
             </div>
             <button className="btn btn-secondary float-end mt-3" onClick={add_rating}>Add Rating</button>

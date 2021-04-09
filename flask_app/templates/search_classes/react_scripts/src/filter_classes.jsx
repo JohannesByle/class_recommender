@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {filter_keys, filter_functions} from "./index";
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
 
 function Class(class_dict) {
     const rem_color = class_dict["rem"] > 0 ? "bg-primary" : "bg-secondary";
@@ -9,26 +14,48 @@ function Class(class_dict) {
     );
     return (
         <div className="card mb-2 bg-light border-secondary border-2">
-            <div className="card-body py-1 px-3 row">
-                <div className="col my-auto">
-                    <span className="fs-6">{class_dict["title"]}</span>
-                    <footer className="text-secondary fw-light">
-                        <span className="badge bg-dark">
-                            {class_dict["subj"]} {class_dict["crse"]}
-                        </span>
-                        {attributes}
-                        {" "}{class_dict["instructor"]}
-                    </footer>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon/>}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <div className="card-body p-0 row">
+                        <div className="col my-auto">
+                            <span className="fs-6">{class_dict["title"]}</span>
+                            <footer className="text-secondary fw-light">
+                                <span className="badge bg-dark">
+                                    {class_dict["subj"]} {class_dict["crse"]}
+                                </span>
+                                <span className="badge bg-secondary ms-1">{class_dict["cred"]}</span>
+                                {attributes}
+                                {" "}{class_dict["instructor"]}
+                            </footer>
 
-                </div>
-                <div className="col my-auto">
-                    <span className="float-end badge bg-dark ms-1">{class_dict["cred"]}</span>
-                    <span className={"float-end badge " + rem_color}>{class_dict["rem"]}</span>
-                    <span className="float-end me-1">{class_dict["time"]}</span>
-                    <span className="float-end badge bg-secondary me-1">{class_dict["days"]}</span>
-                </div>
-            </div>
+                        </div>
+                        <div className="col my-auto">
+                            <span className="float-end me-1">{class_dict["time"]}</span>
+                            <span className="float-end badge bg-secondary me-1">{class_dict["days"]}</span>
+                            <span className="float-end badge bg-primary me-1">{class_dict["quad"]}</span>
+                        </div>
+                    </div>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <div>
+                        <div className="row">
+                            <span>
+                                <span className={"badge " + rem_color}>{class_dict["rem"]}</span>
+                                {" "}Open Slot{class_dict["rem"] === 1 ? " " : "s "}
+                            </span>
+                        </div>
+                        <div className="row">
+                            <span><span className="badge bg-primary">{class_dict["location"]}</span></span>
+                        </div>
+                    </div>
+                </AccordionDetails>
+            </Accordion>
         </div>
+
     );
 }
 

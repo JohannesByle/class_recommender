@@ -14,6 +14,10 @@ class Requirement(ABC):
         pass
 
     @abstractmethod
+    def set_courses(self, courses):
+        pass
+
+    @abstractmethod
     def is_satisfied(self, courses):
         pass
 

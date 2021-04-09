@@ -10,9 +10,30 @@ js_path = os.path.join(os.path.dirname(path), "templates/search_classes/react_sc
 search_classes_blueprint = Blueprint("search_classes", __name__)
 
 
+def get_quads(df):
+    df["quad"] = None
+    for term, data in df.groupby("term"):
+        dates = data["date"].value_counts().index[:3]
+        start_end = [(int(n[:2]), int(n[-5:-3])) for n in dates]
+        durations = [n[1] - n[0] for n in start_end]
+        assert len([n for n in durations if n == 4]) == 1
+        dates = [dates[n] for n in range(3) if durations[n] != 4]
+        start_end = [start_end[n] for n in range(3) if durations[n] != 4]
+        if start_end[0][0] < start_end[1][0]:
+            a_quad = dates[0]
+            b_quad = dates[1]
+        else:
+            a_quad = dates[1]
+            b_quad = dates[0]
+        df.loc[df["date"] == a_quad, "quad"] = "A"
+        df.loc[df["date"] == b_quad, "quad"] = "B"
+    return df
+
+
 def df_from_sql():
     df = pd.read_sql(Class.query.statement, db.engine)
     df["term"] = df["term"].apply(lambda x: x.replace(" Term", ""))
+    df = get_quads(df)
     df["attributes"] = df["attribute"].apply(lambda x: extract_attributes(str(x)))
     df["instructor"] = df["instructor"].apply(lambda x: str(x).replace(" (P)", ""))
     df["instructors"] = df["instructor"].apply(lambda x: x.split(", "))

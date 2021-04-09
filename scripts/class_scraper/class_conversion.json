@@ -21,5 +21,6 @@
   "instructor": "Instructor",
   "date": "Date (MM/DD)",
   "location": "Location",
-  "attribute": "Attribute"
+  "attribute": "Attribute",
+  "desc": "desc"
 }

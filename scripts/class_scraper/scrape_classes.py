@@ -13,7 +13,9 @@ auth_data = {"sid": os.environ["PORTAL_USER_ID"], "PIN": os.environ["PORTAL_PASS
 def clean_df(df):
     df = df.dropna(subset=["CRN"]).drop_duplicates().reset_index(drop=True)
     df = df[df["Associated Term"] != "Associated Term"]
-    df = df[[not all([df.iloc[n, 0] == df.iloc[n, i] for i in range(len(df.iloc[n]))]) for n in range(len(df.index))]]
+    df = df[
+        [not all([df.iloc[n, 0] == df.iloc[n, i] for i in range(len(df.iloc[n])) if df.columns[i] not in ["desc"]]) for
+         n in range(len(df.index))]]
     df["CRN"] = df["CRN"].astype(int)
     return df
 
@@ -22,17 +24,7 @@ def get_desc(session, subj, crse):
     url_template = "https://catalog.wheaton.edu/ribbit/index.cgi?page=getcourse.rjs&code={subj}%20{crse}"
     soup = BeautifulSoup(session.get(url_template.format(subj=subj, crse=crse)).text, features="lxml")
     desc = soup.find(class_="courseblockdesc")
-    desc = desc.get_text() if desc else desc
-    co_reqs = None
-    pre_reqs = None
-    if desc:
-        co_req_start = desc.find("Pre or Corequisite:")
-        pre_req_start = desc.find("Prerequisite:")
-        pre_req_start = pre_req_start if pre_req_start != -1 else desc.find("Prerequisites:")
-        if pre_req_start:
-            co_reqs = re.findall(r"[A-Z]{3,6}\s\d{3}[A-Z]?", desc[co_req_start: pre_req_start])
-        pre_reqs = re.findall(r"[A-Z]{3,6}\s\d{3}[A-Z]?", desc[pre_req_start:])
-    return {"desc": desc, "co_reqs": co_reqs, "pre_reqs": pre_reqs}
+    return desc.get_text() if desc else desc
 
 
 def course_to_pandas(html):
@@ -99,5 +91,7 @@ def get_all_courses():
                 if not (subj, course) in courses:
                     courses.append((subj, course))
                     p = s.post("https://bannerweb.wheaton.edu/db1/bwskfcls.P_GetCrse", data=form + years_form)
-                    dfs.append(course_to_pandas(p.text))
+                    courses_df = course_to_pandas(p.text)
+                    courses_df["desc"] = get_desc(s, subj, course)
+                    dfs.append(courses_df)
         clean_df(pd.concat(dfs)).to_pickle("data/courses.p")

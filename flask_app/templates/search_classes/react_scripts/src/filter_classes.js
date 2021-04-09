@@ -85,35 +85,44 @@ function Class(class_dict) {
                 null,
                 React.createElement(
                     'div',
-                    null,
+                    { className: 'row w-100' },
                     React.createElement(
                         'div',
-                        { className: 'row' },
+                        { className: 'col-2' },
                         React.createElement(
-                            'span',
-                            null,
+                            'div',
+                            { className: 'row' },
                             React.createElement(
                                 'span',
-                                { className: "badge " + rem_color },
-                                class_dict["rem"]
-                            ),
-                            " ",
-                            'Open Slot',
-                            class_dict["rem"] === 1 ? " " : "s "
+                                null,
+                                React.createElement(
+                                    'span',
+                                    { className: "badge " + rem_color },
+                                    class_dict["rem"]
+                                ),
+                                " ",
+                                'Open Slot',
+                                class_dict["rem"] === 1 ? " " : "s "
+                            )
+                        ),
+                        React.createElement(
+                            'div',
+                            { className: 'row' },
+                            React.createElement(
+                                'span',
+                                null,
+                                React.createElement(
+                                    'span',
+                                    { className: 'badge bg-primary' },
+                                    class_dict["location"]
+                                )
+                            )
                         )
                     ),
                     React.createElement(
                         'div',
-                        { className: 'row' },
-                        React.createElement(
-                            'span',
-                            null,
-                            React.createElement(
-                                'span',
-                                { className: 'badge bg-primary' },
-                                class_dict["location"]
-                            )
-                        )
+                        { className: 'col text-secondary' },
+                        class_dict["desc"]
                     )
                 )
             )

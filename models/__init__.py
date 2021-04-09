@@ -42,3 +42,4 @@ class Class(db.Model):
     date = db.Column(db.String(15))
     location = db.Column(db.String(25))
     attribute = db.Column(db.String(200))
+    desc = db.Column(db.String(500))

@@ -41,15 +41,20 @@ function Class(class_dict) {
                     </div>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <div>
-                        <div className="row">
+                    <div className="row w-100">
+                        <div className="col-2">
+                            <div className="row">
                             <span>
                                 <span className={"badge " + rem_color}>{class_dict["rem"]}</span>
                                 {" "}Open Slot{class_dict["rem"] === 1 ? " " : "s "}
                             </span>
+                            </div>
+                            <div className="row">
+                                <span><span className="badge bg-primary">{class_dict["location"]}</span></span>
+                            </div>
                         </div>
-                        <div className="row">
-                            <span><span className="badge bg-primary">{class_dict["location"]}</span></span>
+                        <div className="col text-secondary">
+                            {class_dict["desc"]}
                         </div>
                     </div>
                 </AccordionDetails>

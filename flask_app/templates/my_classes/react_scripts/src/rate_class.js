@@ -39,17 +39,22 @@ import React from "react";
 
 export default function render_rate_class_form() {
     function stop_rating() {
-        ReactDOM.unmountComponentAtNode(document.getElementById("add_class_form"))
-        render_classes(my_courses, false, false)
+        ReactDOM.unmountComponentAtNode(document.getElementById("add_class_form"));
+        render_classes(my_courses, false, false);
     }
 
-    ReactDOM.render(
-        <div className="mx-auto" style={{maxWidth: 400}}>
-            <div className="mx-auto mt-3 text-center">
-                <button className="btn btn-secondary" onClick={stop_rating}>Stop Rating Classes</button>
-            </div>
-        </div>,
-        document.getElementById("add_class_form")
-    );
-    render_classes(my_courses, false, true)
+    ReactDOM.render(React.createElement(
+        "div",
+        { className: "mx-auto", style: { maxWidth: 400 } },
+        React.createElement(
+            "div",
+            { className: "mx-auto mt-3 text-center" },
+            React.createElement(
+                "button",
+                { className: "btn btn-secondary", onClick: stop_rating },
+                "Stop Rating Classes"
+            )
+        )
+    ), document.getElementById("add_class_form"));
+    render_classes(my_courses, false, true);
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { RateClassForm } from "./rate_class";
 import { Rating } from "@material-ui/lab";
 
 function grade_color(grade) {
@@ -20,10 +19,8 @@ function grade_color(grade) {
 function Class(class_dict, remove, rate) {
     var remove_icon = null;
     var rate_icon = null;
-    var normal_icon = null;
 
     function remove_self() {
-        console.log("WHAAAAT");
         fetch("/remove_class", {
             method: "POST",
             body: JSON.stringify(class_dict)
@@ -36,10 +33,36 @@ function Class(class_dict, remove, rate) {
         });
     }
 
-    function rate_self() {
-        console.log("rate");
-        RateClassForm(class_dict);
+    function add_rating(e, rating) {
+        if (rating == null) return;
+
+        class_dict["rating"] = rating;
+        fetch("/rate_class", {
+            method: "POST",
+            body: JSON.stringify(class_dict)
+        }).then(function (r) {
+            return r.json();
+        }).then(function (result) {
+            return render_classes(result, false, true);
+        }, function (error) {
+            return console.log(error);
+        });
     }
+
+    var normal_icons = React.createElement(
+        'div',
+        null,
+        React.createElement(
+            'span',
+            { className: 'float-end badge bg-dark ms-1' },
+            class_dict["cred"]
+        ),
+        React.createElement(
+            'span',
+            { className: "float-end badge ms-1 bg-" + grade_color(class_dict["grade"]) },
+            class_dict["grade"]
+        )
+    );
 
     if (remove) {
         remove_icon = React.createElement(
@@ -55,39 +78,11 @@ function Class(class_dict, remove, rate) {
 
     if (rate) {
         rate_icon = React.createElement(
-            'div',
-            { className: 'col-5 col-md-4 my-auto' },
-            React.createElement(
-                'span',
-                { className: 'float-end ms-2' },
-                React.createElement(
-                    'a',
-                    { href: '#', className: 'stretched-link link-success', onClick: rate_self },
-                    React.createElement('i', { className: 'bi bi-x-circle-fill' })
-                )
-            ),
-            React.createElement(
-                'span',
-                { className: 'float-end ms-1' },
-                React.createElement(Rating, { name: 'read-only', value: class_dict["rating"] || 0, readOnly: true, size: 'small' })
-            )
+            'span',
+            { className: 'float-end ms-1' },
+            React.createElement(Rating, { value: class_dict["rating"] || 0, size: 'small', onChange: add_rating })
         );
-    } else {
-        normal_icon = React.createElement(
-            'div',
-            { className: 'col-5 col-md-4 my-auto' },
-            remove_icon,
-            React.createElement(
-                'span',
-                { className: 'float-end badge bg-dark ms-1' },
-                class_dict["cred"]
-            ),
-            React.createElement(
-                'span',
-                { className: "float-end badge ms-1 bg-" + grade_color(class_dict["grade"]) },
-                class_dict["grade"]
-            )
-        );
+        normal_icons = null;
     }
 
     return React.createElement(
@@ -113,8 +108,13 @@ function Class(class_dict, remove, rate) {
                     class_dict["title"]
                 )
             ),
-            rate_icon,
-            normal_icon
+            React.createElement(
+                'div',
+                { className: 'col-5 col-md-4 my-auto' },
+                rate_icon,
+                remove_icon,
+                normal_icons
+            )
         )
     );
 }
@@ -180,6 +180,7 @@ ReactDOM.render(React.createElement(
 ), document.getElementById("remove_form_li"));
 
 import render_rate_class_form from "./rate_class";
+
 ReactDOM.render(React.createElement(
     'a',
     { className: 'dropdown-item', href: '#', onClick: render_rate_class_form },

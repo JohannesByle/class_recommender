@@ -1,9 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {RateClassForm} from "./rate_class";
 import {Rating} from "@material-ui/lab"
-
-
 
 function grade_color(grade) {
     const grade_color_dict = {
@@ -24,10 +21,8 @@ function grade_color(grade) {
 function Class(class_dict, remove, rate) {
     let remove_icon = null;
     let rate_icon = null;
-    let normal_icon = null;
 
     function remove_self() {
-        console.log("WHAAAAT")
         fetch("/remove_class",
             {
                 method: "POST",
@@ -38,10 +33,28 @@ function Class(class_dict, remove, rate) {
             (error) => console.log(error));
     }
 
-    function rate_self() {
-        console.log("rate")
-        RateClassForm(class_dict)
+    function add_rating(e, rating) {
+        if (rating == null)
+            return
+
+        class_dict["rating"] = rating
+        fetch("/rate_class",
+            {
+                method: "POST",
+                body: JSON.stringify(class_dict)
+            }
+        ).then(r => r.json()).then(
+            (result) => render_classes(result, false, true),
+            (error) => console.log(error));
     }
+
+
+    let normal_icons = (
+        <div>
+            <span className="float-end badge bg-dark ms-1">{class_dict["cred"]}</span>
+            <span className={"float-end badge ms-1 bg-" + grade_color(class_dict["grade"])}>{class_dict["grade"]}</span>
+        </div>
+    );
 
     if (remove) {
         remove_icon = (
@@ -56,30 +69,12 @@ function Class(class_dict, remove, rate) {
 
     if (rate) {
         rate_icon = (
-            <div className="col-5 col-md-4 my-auto">
-                <span className="float-end ms-2">
-                    <a href="#" className="stretched-link link-success" onClick={rate_self}>
-                        <i className="bi bi-x-circle-fill"></i>
-                    </a>
-                </span>
-                <span className="float-end ms-1">
-                    <Rating name="read-only" value={class_dict["rating"] || 0 } readOnly size="small"/>
-                </span>
-
-            </div>
-        );
-
-
-    } else {
-        normal_icon = (
-        <div className="col-5 col-md-4 my-auto">
-            {remove_icon}
-            <span className="float-end badge bg-dark ms-1">{class_dict["cred"]}</span>
-            <span className={"float-end badge ms-1 bg-" + grade_color(class_dict["grade"])}>
-                {class_dict["grade"]}
+            <span className="float-end ms-1">
+                    <Rating value={class_dict["rating"] || 0} size="small" onChange={add_rating}/>
             </span>
-        </div>
         );
+        normal_icons = null;
+
     }
 
     return (
@@ -89,8 +84,11 @@ function Class(class_dict, remove, rate) {
                     <span className="badge bg-primary">{class_dict["subj"]} {class_dict["crse"]}</span>
                     <span className="fs-6">{" "}{class_dict["title"]}</span>
                 </div>
-                {rate_icon}
-                {normal_icon}
+                <div className="col-5 col-md-4 my-auto">
+                    {rate_icon}
+                    {remove_icon}
+                    {normal_icons}
+                </div>
             </div>
         </div>
     );
@@ -157,6 +155,7 @@ ReactDOM.render(
 )
 
 import render_rate_class_form from "./rate_class";
+
 ReactDOM.render(
     <a className="dropdown-item" href="#" onClick={render_rate_class_form}>Rate Classes</a>,
     document.getElementById("rate_form_li")

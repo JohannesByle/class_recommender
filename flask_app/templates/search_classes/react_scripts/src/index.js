@@ -26,7 +26,7 @@ export function FilterElement(input_element, index) {
             { theme: theme },
             React.createElement(
                 'div',
-                { className: 'm-2 mt-3 border-bottom' },
+                { className: 'm-2 mt-3' },
                 input_element
             )
         )

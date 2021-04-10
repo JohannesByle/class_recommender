@@ -22,7 +22,7 @@ export function FilterElement(input_element, index) {
     return (
         <div key={index}>
             <ThemeProvider theme={theme}>
-                <div className="m-2 mt-3 border-bottom">
+                <div className="m-2 mt-3">
                     {input_element}
                 </div>
             </ThemeProvider>

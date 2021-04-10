@@ -73,7 +73,8 @@ function AutocompleteMultiple(label, options, index, is_and) {
                         label: label,
                         placeholder: label
                     }));
-                }
+                },
+                style: { maxWidth: is_and == null ? null : 196 }
             })
         ),
         and_or_switch

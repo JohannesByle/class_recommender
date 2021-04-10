@@ -10,7 +10,7 @@ import MuiAccordion from '@material-ui/core/Accordion';
 var Accordion = withStyles({
     expanded: {}
 })(MuiAccordion);
-
+var num_rows = 50;
 var AccordionSummary = withStyles({
     root: {
         marginBottom: -1,
@@ -167,7 +167,6 @@ function Class(class_dict) {
 }
 
 export default function filter_classes() {
-    var num_rows = 50;
     var filtered_classes_list = [];
     for (var i = 0; i < classes_list.length; i++) {
         var include_row = true;
@@ -182,9 +181,57 @@ export default function filter_classes() {
         ));
         if (filtered_classes_list.length >= num_rows) break;
     }
+
+    function show_more() {
+        num_rows += 50;
+        filter_classes();
+    }
+
+    var num_classes_alert = null;
+    if (filtered_classes_list.length >= num_rows) {
+        num_classes_alert = React.createElement(
+            'div',
+            { className: 'row mt-3' },
+            React.createElement(
+                'div',
+                { className: 'col' },
+                React.createElement(
+                    'div',
+                    { className: 'alert alert-dark' },
+                    'Only showing first ',
+                    num_rows,
+                    ' courses.'
+                )
+            ),
+            React.createElement(
+                'div',
+                { className: 'col' },
+                React.createElement(
+                    'button',
+                    { className: 'btn btn-secondary my-auto float-end', onClick: show_more },
+                    'Show more'
+                )
+            )
+        );
+    } else if (filtered_classes_list.length === 0) {
+        num_classes_alert = React.createElement(
+            'div',
+            { className: 'row mt-3' },
+            React.createElement(
+                'div',
+                { className: 'col' },
+                React.createElement(
+                    'div',
+                    { className: 'alert alert-dark' },
+                    'No courses found'
+                )
+            )
+        );
+    }
     ReactDOM.render(React.createElement(
         'div',
         null,
-        filtered_classes_list
+        filtered_classes_list,
+        num_classes_alert
     ), document.getElementById("classes_container"));
 }

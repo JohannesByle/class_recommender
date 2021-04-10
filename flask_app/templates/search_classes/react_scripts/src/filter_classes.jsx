@@ -10,7 +10,7 @@ import MuiAccordion from '@material-ui/core/Accordion';
 const Accordion = withStyles({
     expanded: {},
 })(MuiAccordion);
-
+let num_rows = 50;
 const AccordionSummary = withStyles({
     root: {
         marginBottom: -1,
@@ -88,7 +88,6 @@ function Class(class_dict) {
 }
 
 export default function filter_classes() {
-    let num_rows = 50;
     let filtered_classes_list = [];
     for (let i = 0; i < classes_list.length; i++) {
         let include_row = true;
@@ -103,8 +102,39 @@ export default function filter_classes() {
         if (filtered_classes_list.length >= num_rows)
             break;
     }
+
+    function show_more() {
+        num_rows += 50;
+        filter_classes();
+    }
+
+    let num_classes_alert = null;
+    if (filtered_classes_list.length >= num_rows) {
+        num_classes_alert = (
+            <div className="row mt-3">
+                <div className="col">
+                    <div className="alert alert-dark">Only showing first {num_rows} courses.</div>
+                </div>
+                <div className="col">
+                    <button className="btn btn-secondary my-auto float-end" onClick={show_more}>Show more</button>
+                </div>
+            </div>
+
+        );
+    } else if (filtered_classes_list.length === 0) {
+        num_classes_alert = (
+            <div className="row mt-3">
+                <div className="col">
+                    <div className="alert alert-dark">No courses found</div>
+                </div>
+            </div>
+        );
+    }
     ReactDOM.render(
-        <div>{filtered_classes_list}</div>,
+        <div>
+            {filtered_classes_list}
+            {num_classes_alert}
+        </div>,
         document.getElementById("classes_container")
     );
 }

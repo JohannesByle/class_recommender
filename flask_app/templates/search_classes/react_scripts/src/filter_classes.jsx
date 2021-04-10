@@ -30,7 +30,7 @@ const AccordionSummary = withStyles({
 function Class(class_dict) {
     const rem_color = class_dict["rem"] > 0 ? "bg-primary" : "bg-secondary";
     const attributes = class_dict["attributes"].map((attribute) =>
-        <span key={attribute} className="pill badge bg-primary ms-1">{attribute}</span>
+        <span key={attribute} className="pill badge bg-secondary ms-1">{attribute}</span>
     );
     return (
         <div className="card mb-2 bg-light border-secondary border-2">
@@ -47,7 +47,7 @@ function Class(class_dict) {
                                 <span className="badge bg-dark">
                                     {class_dict["subj"]} {class_dict["crse"]}
                                 </span>
-                                <span className="badge bg-secondary ms-1">{class_dict["cred"]}</span>
+                                <span className="badge bg-primary ms-1">{class_dict["cred"]}</span>
                                 {attributes}
                                 {" "}{class_dict["instructor"]}
                             </footer>

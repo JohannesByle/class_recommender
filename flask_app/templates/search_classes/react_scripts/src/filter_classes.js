@@ -32,7 +32,7 @@ function Class(class_dict) {
     var attributes = class_dict["attributes"].map(function (attribute) {
         return React.createElement(
             'span',
-            { key: attribute, className: 'pill badge bg-primary ms-1' },
+            { key: attribute, className: 'pill badge bg-secondary ms-1' },
             attribute
         );
     });
@@ -72,7 +72,7 @@ function Class(class_dict) {
                             ),
                             React.createElement(
                                 'span',
-                                { className: 'badge bg-secondary ms-1' },
+                                { className: 'badge bg-primary ms-1' },
                                 class_dict["cred"]
                             ),
                             attributes,

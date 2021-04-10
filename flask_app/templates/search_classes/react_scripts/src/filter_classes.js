@@ -37,7 +37,7 @@ function Class(class_dict) {
         );
     });
     console.log(class_dict["offered_terms"]);
-    var offered_terms = class_dict["offered_terms"].map(function (term) {
+    var offered_terms = class_dict["offered_terms_readable"].map(function (term) {
         return React.createElement(
             'span',
             { key: term, className: 'pill badge bg-secondary ms-1' },

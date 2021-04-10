@@ -37,14 +37,25 @@ def get_offered_terms(df):
     df["offered_terms"] = None
 
     for index, data in tqdm(df.groupby(["subj", "crse", "title"])):
-        df.loc[data.index, "offered_terms"] = pd.Series(index=data.index,
-                                                        data=[list(data["term"].unique())] * len(data.index))
+        offered_terms = list(data["term"].unique())
+        years = [int(n[-4:]) for n in offered_terms]
+        semesters = []
+        for semester in set([n[:-5] for n in offered_terms]):
+            if len([n for n in offered_terms if semester in n]) == len(set(years)):
+                semesters.append("Every {} semester".format(semester))
+                offered_terms = [n for n in offered_terms if semester not in n]
+        offered_terms_readable = semesters + offered_terms
+        df.loc[data.index, "offered_terms"] = pd.Series(index=data.index, data=[offered_terms] * len(data.index))
+        df.loc[data.index, "offered_terms_readable"] = pd.Series(index=data.index,
+                                                                 data=[offered_terms_readable] * len(data.index))
     return df
 
 
 def df_from_sql():
     df = pd.read_sql(Class.query.statement, db.engine)
     df["term"] = df["term"].apply(lambda x: x.replace(" Term", ""))
+    df["year"] = df["term"].apply(lambda x: int(x[-4:]))
+    df = df[df["year"] > df["year"].max() - 5]
     df = get_quads(df)
     df = get_offered_terms(df)
     df["attributes"] = df["attribute"].apply(lambda x: extract_attributes(str(x)))

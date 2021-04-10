@@ -1,41 +1,6 @@
 import ReactDOM from "react-dom";
 import render_classes from "./index";
 import React from "react";
-// import {Rating} from "@material-ui/lab"
-//
-// function SimpleRating(custom_function) {
-//     return (
-//         <Rating
-//             name="simple-controlled"
-//             value={null}
-//             onChange={custom_function}
-//         />
-//     );
-// }
-
-// export function RateClassForm(course) {
-//
-//
-//     let rating = null
-//
-//     function add_rating() {
-//         if (rating == null)
-//             return
-//
-//         course["rating"] = rating
-//         fetch("/rate_class",
-//             {
-//                 method: "POST",
-//                 body: JSON.stringify(course)
-//             }
-//         ).then(r => r.json()).then(
-//             (result) => render_classes(result, false, true),
-//             (error) => console.log(error));
-//     }
-//
-//
-// }
-
 
 export default function render_rate_class_form() {
     function stop_rating() {

@@ -33,8 +33,8 @@ function Class(class_dict) {
         <span key={attribute} className="pill badge bg-secondary ms-1">{attribute}</span>
     );
     console.log(class_dict["offered_terms"]);
-    const offered_terms = class_dict["offered_terms_readable"].map((term) =>
-        <span key={term} className="pill badge bg-secondary ms-1">{term}</span>
+    const offered_terms = class_dict["offered_terms_readable"].map((term, index) =>
+        <span key={term} className={"pill badge bg-secondary" + (index === 0 ? "" : " ms-1")}>{term}</span>
     );
     return (
         <div className="card mb-2 bg-light border-secondary border-2">

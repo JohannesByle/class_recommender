@@ -4,13 +4,105 @@ import { filter_keys, filter_functions, get_values } from "./index";
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import { Checkbox, withStyles } from "@material-ui/core";
+import { Checkbox, IconButton, withStyles } from "@material-ui/core";
+import AddIcon from '@material-ui/icons/AddCircle';
 import MuiAccordion from '@material-ui/core/Accordion';
 
 var current_year = Math.max.apply(Math, get_values("term_float"));
 var show_archived = false;
 var base_num_rows = 25;
 var num_rows = base_num_rows;
+var worksheet_classes = [];
+
+function update_worksheet(new_class) {
+    function remove_class(course) {
+        var index = worksheet_classes.indexOf(course);
+        if (index > -1) {
+            worksheet_classes.splice(index, 1);
+        }
+        update_worksheet();
+    }
+
+    function worksheet_class(class_dict) {
+        return React.createElement(
+            'div',
+            { className: 'row m-2' },
+            React.createElement(
+                'span',
+                { key: class_dict["id"], className: 'mx-0 px-0' },
+                React.createElement(
+                    'span',
+                    { className: 'badge bg-secondary' },
+                    class_dict["subj"],
+                    ' ',
+                    class_dict["crse"]
+                ),
+                React.createElement(
+                    'span',
+                    { className: 'text-secondary fw-light ms-1 overflow-hidden' },
+                    class_dict["crn"]
+                ),
+                React.createElement(
+                    'a',
+                    { href: '#', className: 'stretched-link link-danger float-end', onClick: function onClick() {
+                            return remove_class(class_dict);
+                        } },
+                    React.createElement('i', { className: 'bi bi-x-circle-fill' })
+                )
+            )
+        );
+    }
+
+    if (new_class != null) {
+        var already_contains = false;
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
+
+        try {
+            for (var _iterator = worksheet_classes[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                var course = _step.value;
+
+                if (course["crn"] === new_class["crn"]) {
+                    already_contains = true;
+                    break;
+                }
+            }
+        } catch (err) {
+            _didIteratorError = true;
+            _iteratorError = err;
+        } finally {
+            try {
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                    _iterator.return();
+                }
+            } finally {
+                if (_didIteratorError) {
+                    throw _iteratorError;
+                }
+            }
+        }
+
+        if (!already_contains) worksheet_classes.push(new_class);
+    }
+    if (worksheet_classes.length === 0) {
+        ReactDOM.render(React.createElement(
+            'div',
+            { className: 'badge pill rounded-pill my-2 bg-secondary' },
+            'No courses in worksheet'
+        ), document.getElementById("worksheet_container"));
+    } else {
+        ReactDOM.render(React.createElement(
+            'div',
+            null,
+            worksheet_classes.map(function (class_dict) {
+                return worksheet_class(class_dict);
+            })
+        ), document.getElementById("worksheet_container"));
+    }
+}
+
+update_worksheet();
 
 export function showArchived() {
     function change(e, val) {
@@ -69,149 +161,179 @@ function Class(class_dict) {
         );
     });
     var archived = null;
+    var add_to_worksheet_button = null;
+
     if (class_dict["term_float"] !== current_year) {
         archived = React.createElement(
             'span',
             { className: 'badge bg-danger me-1' },
             class_dict["term"]
         );
+    } else {
+        add_to_worksheet_button = React.createElement(
+            IconButton,
+            { 'aria-label': 'delete',
+                size: 'small',
+                onClick: function onClick() {
+                    return update_worksheet(class_dict);
+                }
+
+            },
+            React.createElement(AddIcon, { style: { color: "#FFFFFF" } })
+        );
     }
+
     return React.createElement(
         'div',
-        { className: 'card mb-2 bg-light border-secondary border-2' },
+        { className: 'row' },
         React.createElement(
-            Accordion,
-            null,
+            'div',
+            { className: 'col my-auto p-0', style: { maxWidth: 24 } },
+            add_to_worksheet_button
+        ),
+        React.createElement(
+            'div',
+            { className: 'col' },
             React.createElement(
-                AccordionSummary,
-                {
-                    expandIcon: React.createElement(ExpandMoreIcon, null),
-                    'aria-controls': 'panel1a-content',
-                    id: 'panel1a-header'
-                },
+                'div',
+                { className: 'card mb-2 bg-light border-secondary border-2' },
                 React.createElement(
-                    'div',
-                    { className: 'card-body p-0 row' },
+                    Accordion,
+                    null,
                     React.createElement(
-                        'div',
-                        { className: 'col my-auto' },
-                        React.createElement(
-                            'span',
-                            { className: 'fs-6' },
-                            archived,
-                            class_dict["title"]
-                        ),
-                        React.createElement(
-                            'footer',
-                            { className: 'text-secondary fw-light' },
-                            React.createElement(
-                                'span',
-                                { className: 'badge bg-dark' },
-                                class_dict["subj"],
-                                ' ',
-                                class_dict["crse"]
-                            ),
-                            React.createElement(
-                                'span',
-                                { className: 'badge bg-primary ms-1' },
-                                class_dict["cred"]
-                            ),
-                            attributes,
-                            " ",
-                            class_dict["instructor"]
-                        )
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'col my-auto' },
-                        React.createElement(
-                            'span',
-                            { className: 'float-end me-1' },
-                            class_dict["time"]
-                        ),
-                        React.createElement(
-                            'span',
-                            { className: 'float-end badge bg-secondary me-1' },
-                            class_dict["days"]
-                        ),
-                        React.createElement(
-                            'span',
-                            { className: 'float-end badge bg-primary me-1' },
-                            class_dict["quad"]
-                        )
-                    )
-                )
-            ),
-            React.createElement(
-                AccordionDetails,
-                null,
-                React.createElement(
-                    'div',
-                    { className: 'col' },
-                    React.createElement(
-                        'div',
-                        { className: 'row w-100' },
+                        AccordionSummary,
+                        {
+                            expandIcon: React.createElement(ExpandMoreIcon, null),
+                            'aria-controls': 'panel1a-content',
+                            id: 'panel1a-header'
+                        },
                         React.createElement(
                             'div',
-                            { className: 'col-2' },
+                            { className: 'card-body p-0 row' },
                             React.createElement(
                                 'div',
-                                { className: 'row' },
+                                { className: 'col my-auto' },
                                 React.createElement(
                                     'span',
-                                    null,
-                                    React.createElement(
-                                        'span',
-                                        { className: "badge " + rem_color },
-                                        class_dict["rem"]
-                                    ),
-                                    " ",
-                                    'Open Slot',
-                                    class_dict["rem"] === 1 ? " " : "s "
-                                )
-                            ),
-                            React.createElement(
-                                'div',
-                                { className: 'row' },
+                                    { className: 'fs-6' },
+                                    archived,
+                                    class_dict["title"]
+                                ),
                                 React.createElement(
-                                    'span',
-                                    null,
-                                    React.createElement(
-                                        'span',
-                                        { className: 'badge bg-primary' },
-                                        class_dict["location"]
-                                    )
-                                )
-                            ),
-                            React.createElement(
-                                'div',
-                                { className: 'row' },
-                                React.createElement(
-                                    'span',
-                                    null,
+                                    'footer',
+                                    { className: 'text-secondary fw-light' },
                                     React.createElement(
                                         'span',
                                         { className: 'badge bg-dark' },
-                                        'CRN'
+                                        class_dict["subj"],
+                                        ' ',
+                                        class_dict["crse"]
                                     ),
+                                    React.createElement(
+                                        'span',
+                                        { className: 'badge bg-primary ms-1' },
+                                        class_dict["cred"]
+                                    ),
+                                    attributes,
                                     " ",
-                                    class_dict["crn"]
+                                    class_dict["instructor"]
+                                )
+                            ),
+                            React.createElement(
+                                'div',
+                                { className: 'col my-auto' },
+                                React.createElement(
+                                    'span',
+                                    { className: 'float-end me-1' },
+                                    class_dict["time"]
+                                ),
+                                React.createElement(
+                                    'span',
+                                    { className: 'float-end badge bg-secondary me-1' },
+                                    class_dict["days"]
+                                ),
+                                React.createElement(
+                                    'span',
+                                    { className: 'float-end badge bg-primary me-1' },
+                                    class_dict["quad"]
                                 )
                             )
-                        ),
-                        React.createElement(
-                            'div',
-                            { className: 'col text-secondary' },
-                            class_dict["desc"]
                         )
                     ),
                     React.createElement(
-                        'div',
-                        { className: 'row' },
+                        AccordionDetails,
+                        null,
                         React.createElement(
-                            'span',
-                            null,
-                            offered_terms
+                            'div',
+                            { className: 'col' },
+                            React.createElement(
+                                'div',
+                                { className: 'row w-100' },
+                                React.createElement(
+                                    'div',
+                                    { className: 'col-2' },
+                                    React.createElement(
+                                        'div',
+                                        { className: 'row' },
+                                        React.createElement(
+                                            'span',
+                                            null,
+                                            React.createElement(
+                                                'span',
+                                                { className: "badge " + rem_color },
+                                                class_dict["rem"]
+                                            ),
+                                            " ",
+                                            'Open Slot',
+                                            class_dict["rem"] === 1 ? " " : "s "
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        { className: 'row' },
+                                        React.createElement(
+                                            'span',
+                                            null,
+                                            React.createElement(
+                                                'span',
+                                                {
+                                                    className: 'badge bg-primary' },
+                                                class_dict["location"]
+                                            )
+                                        )
+                                    ),
+                                    React.createElement(
+                                        'div',
+                                        { className: 'row' },
+                                        React.createElement(
+                                            'span',
+                                            null,
+                                            React.createElement(
+                                                'span',
+                                                {
+                                                    className: 'badge bg-dark' },
+                                                'CRN'
+                                            ),
+                                            " ",
+                                            class_dict["crn"]
+                                        )
+                                    )
+                                ),
+                                React.createElement(
+                                    'div',
+                                    { className: 'col text-secondary' },
+                                    class_dict["desc"]
+                                )
+                            ),
+                            React.createElement(
+                                'div',
+                                { className: 'row' },
+                                React.createElement(
+                                    'span',
+                                    null,
+                                    offered_terms
+                                )
+                            )
                         )
                     )
                 )

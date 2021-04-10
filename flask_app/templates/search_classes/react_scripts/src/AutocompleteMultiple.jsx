@@ -68,7 +68,7 @@ function AutocompleteMultiple(label, options, index, is_and) {
                             placeholder={label}
                         />
                     )}
-                    style={{maxWidth: is_and == null ? null : 196}}
+                    style={{maxWidth: is_and == null ? null : 169}}
                 />
             </div>
             {and_or_switch}

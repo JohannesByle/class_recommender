@@ -51,6 +51,19 @@ def get_offered_terms(df):
     return df
 
 
+def term_to_float(term):
+    year = int(term[-4:])
+    if "Spring" in term:
+        term = year
+    elif "Summer" in term:
+        term = year + 1 / 3
+    elif "Fall" in term:
+        term = year + 2 / 3
+    else:
+        assert False
+    return term
+
+
 def df_from_sql():
     df = pd.read_sql(Class.query.statement, db.engine)
     df["term"] = df["term"].apply(lambda x: x.replace(" Term", ""))
@@ -68,7 +81,7 @@ def df_from_sql():
     df["end_time"] = df["time"].apply(lambda x: get_time(x)[1])
     df["time"] = df["time"].apply(lambda x: str(x).replace(" ", ""))
     df["days_list"] = df["days"].apply(lambda x: list(x) if x and x != "TBA" else "TBA")
-    df = df[df["term"] == "Spring 2021"]
+    df["term_float"] = df["term"].apply(lambda x: term_to_float(x))
     return df
 
 

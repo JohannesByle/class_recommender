@@ -1,16 +1,40 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {filter_keys, filter_functions} from "./index";
+import {filter_keys, filter_functions, get_values} from "./index";
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import {withStyles} from "@material-ui/core";
+import {Checkbox, withStyles} from "@material-ui/core";
 import MuiAccordion from '@material-ui/core/Accordion';
+
+const current_year = Math.max.apply(Math, get_values("term_float"));
+let show_archived = false;
+const base_num_rows = 25;
+let num_rows = base_num_rows;
+
+export function showArchived() {
+    function change(e, val) {
+        show_archived = val;
+        filter_classes();
+    }
+
+    return (
+        <div>
+            <Checkbox
+                name="showArchived"
+                color="primary"
+                onChange={change}
+                defaultChecked={false}
+            />
+            Show past courses
+        </div>
+    );
+}
 
 const Accordion = withStyles({
     expanded: {},
 })(MuiAccordion);
-let num_rows = 50;
+
 const AccordionSummary = withStyles({
     root: {
         marginBottom: -1,
@@ -32,10 +56,15 @@ function Class(class_dict) {
     const attributes = class_dict["attributes"].map((attribute) =>
         <span key={attribute} className="pill badge bg-secondary ms-1">{attribute}</span>
     );
-    console.log(class_dict["offered_terms"]);
     const offered_terms = class_dict["offered_terms_readable"].map((term, index) =>
         <span key={term} className={"pill badge bg-secondary" + (index === 0 ? "" : " ms-1")}>{term}</span>
     );
+    let archived = null;
+    if (class_dict["term_float"] !== current_year) {
+        archived = (
+            <span className="badge bg-danger me-1">{class_dict["term"]}</span>
+        );
+    }
     return (
         <div className="card mb-2 bg-light border-secondary border-2">
             <Accordion>
@@ -46,7 +75,7 @@ function Class(class_dict) {
                 >
                     <div className="card-body p-0 row">
                         <div className="col my-auto">
-                            <span className="fs-6">{class_dict["title"]}</span>
+                            <span className="fs-6">{archived}{class_dict["title"]}</span>
                             <footer className="text-secondary fw-light">
                                 <span className="badge bg-dark">
                                     {class_dict["subj"]} {class_dict["crse"]}
@@ -102,6 +131,8 @@ export default function filter_classes() {
     let filtered_classes_list = [];
     for (let i = 0; i < classes_list.length; i++) {
         let include_row = true;
+        if (!show_archived && classes_list[i]["term_float"] !== current_year)
+            continue
         for (let j = 0; j < filter_functions.length; j++) {
             if (typeof filter_functions[j] === "function")
                 include_row = filter_functions[j](classes_list[i][filter_keys[j]]);
@@ -115,7 +146,7 @@ export default function filter_classes() {
     }
 
     function show_more() {
-        num_rows += 50;
+        num_rows += base_num_rows;
         filter_classes();
     }
 

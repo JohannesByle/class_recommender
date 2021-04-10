@@ -1,16 +1,40 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { filter_keys, filter_functions } from "./index";
+import { filter_keys, filter_functions, get_values } from "./index";
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import { withStyles } from "@material-ui/core";
+import { Checkbox, withStyles } from "@material-ui/core";
 import MuiAccordion from '@material-ui/core/Accordion';
+
+var current_year = Math.max.apply(Math, get_values("term_float"));
+var show_archived = false;
+var base_num_rows = 25;
+var num_rows = base_num_rows;
+
+export function showArchived() {
+    function change(e, val) {
+        show_archived = val;
+        filter_classes();
+    }
+
+    return React.createElement(
+        'div',
+        null,
+        React.createElement(Checkbox, {
+            name: 'showArchived',
+            color: 'primary',
+            onChange: change,
+            defaultChecked: false
+        }),
+        'Show past courses'
+    );
+}
 
 var Accordion = withStyles({
     expanded: {}
 })(MuiAccordion);
-var num_rows = 50;
+
 var AccordionSummary = withStyles({
     root: {
         marginBottom: -1,
@@ -36,7 +60,6 @@ function Class(class_dict) {
             attribute
         );
     });
-    console.log(class_dict["offered_terms"]);
     var offered_terms = class_dict["offered_terms_readable"].map(function (term, index) {
         return React.createElement(
             'span',
@@ -44,6 +67,14 @@ function Class(class_dict) {
             term
         );
     });
+    var archived = null;
+    if (class_dict["term_float"] !== current_year) {
+        archived = React.createElement(
+            'span',
+            { className: 'badge bg-danger me-1' },
+            class_dict["term"]
+        );
+    }
     return React.createElement(
         'div',
         { className: 'card mb-2 bg-light border-secondary border-2' },
@@ -66,6 +97,7 @@ function Class(class_dict) {
                         React.createElement(
                             'span',
                             { className: 'fs-6' },
+                            archived,
                             class_dict["title"]
                         ),
                         React.createElement(
@@ -191,6 +223,7 @@ export default function filter_classes() {
     var filtered_classes_list = [];
     for (var i = 0; i < classes_list.length; i++) {
         var include_row = true;
+        if (!show_archived && classes_list[i]["term_float"] !== current_year) continue;
         for (var j = 0; j < filter_functions.length; j++) {
             if (typeof filter_functions[j] === "function") include_row = filter_functions[j](classes_list[i][filter_keys[j]]);
             if (!include_row) break;
@@ -204,7 +237,7 @@ export default function filter_classes() {
     }
 
     function show_more() {
-        num_rows += 50;
+        num_rows += base_num_rows;
         filter_classes();
     }
 

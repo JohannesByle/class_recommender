@@ -1,11 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {filter_keys, filter_functions} from "./index";
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
+import {withStyles} from "@material-ui/core";
+import MuiAccordion from '@material-ui/core/Accordion';
 
+const Accordion = withStyles({
+    expanded: {},
+})(MuiAccordion);
+
+const AccordionSummary = withStyles({
+    root: {
+        marginBottom: -1,
+        minHeight: 56,
+        '&$expanded': {
+            minHeight: 56,
+        },
+    },
+    content: {
+        '&$expanded': {
+            margin: '12px 0',
+        },
+    },
+    expanded: {},
+})(MuiAccordionSummary);
 
 function Class(class_dict) {
     const rem_color = class_dict["rem"] > 0 ? "bg-primary" : "bg-secondary";
@@ -51,6 +71,9 @@ function Class(class_dict) {
                             </div>
                             <div className="row">
                                 <span><span className="badge bg-primary">{class_dict["location"]}</span></span>
+                            </div>
+                            <div className="row">
+                                <span><span className="badge bg-dark">CRN</span>{" "}{class_dict["crn"]}</span>
                             </div>
                         </div>
                         <div className="col text-secondary">

@@ -75,7 +75,7 @@ def df_from_sql():
     df["instructor"] = df["instructor"].apply(lambda x: str(x).replace(" (P)", ""))
     df["instructors"] = df["instructor"].apply(lambda x: x.split(", "))
     df["cred"] = df["cred"].apply(lambda x: str(x).replace(".000", "").replace(".0", ""))
-    df["cred_num"] = df["cred"].apply(lambda x: get_min_max(x))
+    df["cred_num"] = df["cred"].apply(lambda x: [abs(n) for n in get_min_max(x)])
     df["rem_num"] = df["rem"].apply(lambda x: get_min_max(x))
     df["start_time"] = df["time"].apply(lambda x: get_time(x)[0])
     df["end_time"] = df["time"].apply(lambda x: get_time(x)[1])

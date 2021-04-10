@@ -25,8 +25,9 @@ export function showArchived() {
                 color="primary"
                 onChange={change}
                 defaultChecked={false}
+                size="small"
             />
-            Show past courses
+            Show past terms
         </div>
     );
 }

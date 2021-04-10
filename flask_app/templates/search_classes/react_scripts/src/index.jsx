@@ -8,7 +8,9 @@ export const filter_keys = [];
 export const filter_elements = [];
 
 
-export function FilterElement(input_element, index) {
+export function FilterElement(input_element, index, margins) {
+    if (margins == null)
+        margins = "m-2 mt-3"
     const theme = createMuiTheme({
         palette: {
             primary: {
@@ -22,7 +24,7 @@ export function FilterElement(input_element, index) {
     return (
         <div key={index}>
             <ThemeProvider theme={theme}>
-                <div className="m-2 mt-3">
+                <div className={margins}>
                     {input_element}
                 </div>
             </ThemeProvider>
@@ -44,7 +46,7 @@ import add_slider from "./RangeSlider";
 import add_multi_select from "./AutocompleteMultiple";
 import add_time_picker from "./TimePicker";
 
-filter_elements.push(FilterElement(showArchived(), 0));
+filter_elements.push(FilterElement(showArchived(), 0, "m-0 mt-3 mb-2"));
 add_slider("Remaining Slots", "rem_num");
 add_slider("Credits", "cred_num");
 add_multi_select("Tags", "attributes", true);

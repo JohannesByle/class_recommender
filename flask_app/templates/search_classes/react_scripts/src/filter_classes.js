@@ -25,9 +25,10 @@ export function showArchived() {
             name: 'showArchived',
             color: 'primary',
             onChange: change,
-            defaultChecked: false
+            defaultChecked: false,
+            size: 'small'
         }),
-        'Show past courses'
+        'Show past terms'
     );
 }
 

@@ -70,7 +70,10 @@ function Class(class_dict, remove, rate) {
     if (rate) {
         rate_icon = (
             <span className="float-end ms-1">
-                    <Rating value={class_dict["rating"] || 0} size="small" onChange={add_rating}/>
+                    <Rating name={class_dict["title"]}
+                            value={parseInt(class_dict["rating"]) || 0}
+                            size="small"
+                            onChange={add_rating}/>
             </span>
         );
         normal_icons = null;

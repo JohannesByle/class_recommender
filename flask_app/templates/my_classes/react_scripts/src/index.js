@@ -80,7 +80,10 @@ function Class(class_dict, remove, rate) {
         rate_icon = React.createElement(
             'span',
             { className: 'float-end ms-1' },
-            React.createElement(Rating, { value: class_dict["rating"] || 0, size: 'small', onChange: add_rating })
+            React.createElement(Rating, { name: class_dict["title"],
+                value: parseInt(class_dict["rating"]) || 0,
+                size: 'small',
+                onChange: add_rating })
         );
         normal_icons = null;
     }

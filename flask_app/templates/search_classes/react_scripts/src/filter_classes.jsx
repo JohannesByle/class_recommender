@@ -32,6 +32,10 @@ function Class(class_dict) {
     const attributes = class_dict["attributes"].map((attribute) =>
         <span key={attribute} className="pill badge bg-secondary ms-1">{attribute}</span>
     );
+    console.log(class_dict["offered_terms"]);
+    const offered_terms = class_dict["offered_terms"].map((term) =>
+        <span key={term} className="pill badge bg-secondary ms-1">{term}</span>
+    );
     return (
         <div className="card mb-2 bg-light border-secondary border-2">
             <Accordion>
@@ -61,23 +65,30 @@ function Class(class_dict) {
                     </div>
                 </AccordionSummary>
                 <AccordionDetails>
-                    <div className="row w-100">
-                        <div className="col-2">
-                            <div className="row">
+                    <div className="col">
+                        <div className="row w-100">
+                            <div className="col-2">
+                                <div className="row">
                             <span>
                                 <span className={"badge " + rem_color}>{class_dict["rem"]}</span>
                                 {" "}Open Slot{class_dict["rem"] === 1 ? " " : "s "}
                             </span>
+                                </div>
+                                <div className="row">
+                                    <span><span className="badge bg-primary">{class_dict["location"]}</span></span>
+                                </div>
+                                <div className="row">
+                                    <span><span className="badge bg-dark">CRN</span>{" "}{class_dict["crn"]}</span>
+                                </div>
                             </div>
-                            <div className="row">
-                                <span><span className="badge bg-primary">{class_dict["location"]}</span></span>
-                            </div>
-                            <div className="row">
-                                <span><span className="badge bg-dark">CRN</span>{" "}{class_dict["crn"]}</span>
+                            <div className="col text-secondary">
+                                {class_dict["desc"]}
                             </div>
                         </div>
-                        <div className="col text-secondary">
-                            {class_dict["desc"]}
+                        <div className="row">
+                            <span>
+                            {offered_terms}
+                            </span>
                         </div>
                     </div>
                 </AccordionDetails>

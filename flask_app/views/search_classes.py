@@ -4,6 +4,7 @@ from models import Class
 from scripts.class_functions import get_time, extract_attributes, get_min_max
 from flask_app import db
 import os
+from tqdm import tqdm
 
 path = os.path.dirname(__file__)
 js_path = os.path.join(os.path.dirname(path), "templates/search_classes/react_scripts/dist/main.js")
@@ -13,6 +14,8 @@ search_classes_blueprint = Blueprint("search_classes", __name__)
 def get_quads(df):
     df["quad"] = None
     for term, data in df.groupby("term"):
+        if "Summer" in term:
+            continue
         dates = data["date"].value_counts().index[:3]
         start_end = [(int(n[:2]), int(n[-5:-3])) for n in dates]
         durations = [n[1] - n[0] for n in start_end]
@@ -30,10 +33,20 @@ def get_quads(df):
     return df
 
 
+def get_offered_terms(df):
+    df["offered_terms"] = None
+
+    for index, data in tqdm(df.groupby(["subj", "crse", "title"])):
+        df.loc[data.index, "offered_terms"] = pd.Series(index=data.index,
+                                                        data=[list(data["term"].unique())] * len(data.index))
+    return df
+
+
 def df_from_sql():
     df = pd.read_sql(Class.query.statement, db.engine)
     df["term"] = df["term"].apply(lambda x: x.replace(" Term", ""))
     df = get_quads(df)
+    df = get_offered_terms(df)
     df["attributes"] = df["attribute"].apply(lambda x: extract_attributes(str(x)))
     df["instructor"] = df["instructor"].apply(lambda x: str(x).replace(" (P)", ""))
     df["instructors"] = df["instructor"].apply(lambda x: x.split(", "))

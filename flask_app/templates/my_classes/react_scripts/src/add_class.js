@@ -90,5 +90,6 @@ function AddClassForm() {
 }
 
 export default function render_add_class_form() {
+    render_classes(my_courses, false, false);
     ReactDOM.render(React.createElement(AddClassForm, null), document.getElementById("add_class_form"));
 }

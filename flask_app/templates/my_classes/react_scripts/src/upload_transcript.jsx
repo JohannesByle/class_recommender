@@ -36,6 +36,7 @@ function UploadForm() {
 
 
 export default function render_upload_form() {
+    render_classes(my_courses, false, false);
     ReactDOM.render(
         <UploadForm/>,
         document.getElementById("add_class_form")

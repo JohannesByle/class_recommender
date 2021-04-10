@@ -37,9 +37,24 @@ function AutocompleteMultiple(label, options, index, is_and) {
         filter_classes();
     }
 
+    let and_or_switch = null;
+    if (is_and != null) {
+        and_or_switch = (
+            <div className="col-2 text-center small p-0">
+                <Switch
+                    color="primary"
+                    size="small"
+                    onChange={switch_and_or}
+                    defaultChecked={is_and}
+                />
+                <span id={index.toString() + "toggle_label"} className="small">{is_and ? "and" : "or"}</span>
+            </div>
+        );
+    }
+
     return (
         <div className="row">
-            <div className="col-10">
+            <div className="col">
                 <Autocomplete
                     multiple
                     onChange={filter_function}
@@ -55,15 +70,7 @@ function AutocompleteMultiple(label, options, index, is_and) {
                     )}
                 />
             </div>
-            <div className="col-2 text-center small p-0">
-                <Switch
-                    color="primary"
-                    size="small"
-                    onChange={switch_and_or}
-                    defaultChecked={is_and}
-                />
-                <span id={index.toString() + "toggle_label"} className="small">{is_and ? "and" : "or"}</span>
-            </div>
+            {and_or_switch}
         </div>
     );
 }

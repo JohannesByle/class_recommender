@@ -35,12 +35,31 @@ function AutocompleteMultiple(label, options, index, is_and) {
         filter_classes();
     }
 
+    var and_or_switch = null;
+    if (is_and != null) {
+        and_or_switch = React.createElement(
+            'div',
+            { className: 'col-2 text-center small p-0' },
+            React.createElement(Switch, {
+                color: 'primary',
+                size: 'small',
+                onChange: switch_and_or,
+                defaultChecked: is_and
+            }),
+            React.createElement(
+                'span',
+                { id: index.toString() + "toggle_label", className: 'small' },
+                is_and ? "and" : "or"
+            )
+        );
+    }
+
     return React.createElement(
         'div',
         { className: 'row' },
         React.createElement(
             'div',
-            { className: 'col-10' },
+            { className: 'col' },
             React.createElement(Autocomplete, {
                 multiple: true,
                 onChange: filter_function,
@@ -57,21 +76,7 @@ function AutocompleteMultiple(label, options, index, is_and) {
                 }
             })
         ),
-        React.createElement(
-            'div',
-            { className: 'col-2 text-center small p-0' },
-            React.createElement(Switch, {
-                color: 'primary',
-                size: 'small',
-                onChange: switch_and_or,
-                defaultChecked: is_and
-            }),
-            React.createElement(
-                'span',
-                { id: index.toString() + "toggle_label", className: 'small' },
-                is_and ? "and" : "or"
-            )
-        )
+        and_or_switch
     );
 }
 

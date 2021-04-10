@@ -46,7 +46,6 @@ import add_slider from "./RangeSlider";
 import add_multi_select from "./AutocompleteMultiple";
 import add_time_picker from "./TimePicker";
 
-filter_elements.push(FilterElement(showArchived(), 0, "m-0 mt-3 mb-2"));
 add_slider("Remaining Slots", "rem_num");
 add_slider("Credits", "cred_num");
 add_multi_select("Tags", "attributes", true);
@@ -60,7 +59,7 @@ add_time_picker("Ends before", "end_time", "23:59:59", true);
 
 
 ReactDOM.render(
-    <div>{filter_elements}</div>,
+    <div>{FilterElement(showArchived(), 0, "m-0 mt-3 mb-2")}{filter_elements}</div>,
     // FilterElement(<TimePicker time={"00:00:00"}/>, 0),
     document.getElementById("filters_container")
 );

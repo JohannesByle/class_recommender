@@ -35,13 +35,13 @@ def get_quads(df):
 
 def get_offered_terms(df):
     df["offered_terms"] = None
+    years = df["year"].unique()
 
     for index, data in tqdm(df.groupby(["subj", "crse", "title"])):
         offered_terms = list(data["term"].unique())
-        years = [int(n[-4:]) for n in offered_terms]
         semesters = []
         for semester in set([n[:-5] for n in offered_terms]):
-            if len([n for n in offered_terms if semester in n]) == len(set(years)):
+            if len([n for n in offered_terms if semester in n]) >= len(set(years)) - 1:
                 semesters.append("Every {} semester".format(semester))
                 offered_terms = [n for n in offered_terms if semester not in n]
         offered_terms_readable = semesters + offered_terms

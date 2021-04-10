@@ -271,7 +271,7 @@ export default function filter_classes() {
     } else if (filtered_classes_list.length === 0) {
         num_classes_alert = React.createElement(
             'div',
-            { className: 'row mt-3' },
+            { className: 'row' },
             React.createElement(
                 'div',
                 { className: 'col' },

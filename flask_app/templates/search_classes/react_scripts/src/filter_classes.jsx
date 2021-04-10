@@ -166,7 +166,7 @@ export default function filter_classes() {
         );
     } else if (filtered_classes_list.length === 0) {
         num_classes_alert = (
-            <div className="row mt-3">
+            <div className="row">
                 <div className="col">
                     <div className="alert alert-dark">No courses found</div>
                 </div>

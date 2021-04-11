@@ -229,7 +229,7 @@ function Class(class_dict) {
 function intersects(start1, start2, end1, end2) {
     if (start1 == null || start2 == null || end1 == null || end2 == null)
         return false
-    return (start1 >= start2 && start1 < end2) || (start2 >= start1 && start2 < end1)
+    return (start1 >= start2 && start1 <= end2) || (start2 >= start1 && start2 <= end1)
 }
 
 export default function filter_classes() {
@@ -248,10 +248,10 @@ export default function filter_classes() {
                     }
                 }
                 if (!same_day)
-                    break;
+                    continue;
 
                 if (!intersects(course["start_date"], classes_list[i]["start_date"], course["end_date"], classes_list[i]["end_date"])) {
-                    break;
+                    continue;
                 }
                 if (intersects(course["start_time"], classes_list[i]["start_time"], course["end_time"], classes_list[i]["end_time"])) {
                     include_row = false;

@@ -26,6 +26,18 @@ def get_time(time_str):
         return times
 
 
+def get_date(date_str):
+    match = re.findall(r"\d{2}/\d{2}", date_str)
+    if not len(match) == 2:
+        return None, None
+    else:
+        dates = []
+        for time in match:
+            month, day = re.findall(r"\d{2}", time)
+            dates.append(pd.Timestamp(year=2000, month=int(month), day=int(day)).isoformat())
+        return dates
+
+
 def get_min_max(num_string):
     num_string = str(num_string)
     matches = re.findall(r"-?\d+\.*\d*", num_string)

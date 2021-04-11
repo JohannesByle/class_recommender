@@ -47,6 +47,7 @@ export function get_values(key) {
 }
 
 import { showArchived } from "./filter_classes";
+import { hideConflicts } from "./filter_classes";
 import add_slider from "./RangeSlider";
 import add_multi_select from "./AutocompleteMultiple";
 import add_time_picker from "./TimePicker";
@@ -65,7 +66,8 @@ add_time_picker("Ends before", "end_time", "23:59:59", true);
 ReactDOM.render(React.createElement(
     'div',
     null,
-    FilterElement(showArchived(), 0, "m-0 mt-3 mb-2"),
+    FilterElement(showArchived(), -1, "m-0 mt-3 mb-2"),
+    FilterElement(hideConflicts(), -2, "m-0 mb-2"),
     filter_elements
 ),
 // FilterElement(<TimePicker time={"00:00:00"}/>, 0),

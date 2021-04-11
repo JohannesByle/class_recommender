@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 import pandas as pd
 from models import Class
-from scripts.class_functions import get_time, extract_attributes, get_min_max
+from scripts.class_functions import get_time, extract_attributes, get_min_max, get_date
 from flask_app import db
 import os
 from tqdm import tqdm
@@ -79,6 +79,8 @@ def df_from_sql():
     df["rem_num"] = df["rem"].apply(lambda x: get_min_max(x))
     df["start_time"] = df["time"].apply(lambda x: get_time(x)[0])
     df["end_time"] = df["time"].apply(lambda x: get_time(x)[1])
+    df["start_date"] = df["date"].apply(lambda x: get_date(x)[0])
+    df["end_date"] = df["date"].apply(lambda x: get_date(x)[1])
     df["time"] = df["time"].apply(lambda x: str(x).replace(" ", ""))
     df["days_list"] = df["days"].apply(lambda x: list(x) if x and x != "TBA" else "TBA")
     df["term_float"] = df["term"].apply(lambda x: term_to_float(x))

@@ -13,6 +13,7 @@ let show_archived = false;
 const base_num_rows = 25;
 let num_rows = base_num_rows;
 let worksheet_classes = []
+let hide_conflicts = false;
 
 function update_worksheet(new_class) {
     function remove_class(course) {
@@ -21,7 +22,6 @@ function update_worksheet(new_class) {
             worksheet_classes.splice(index, 1);
         }
         update_worksheet()
-                        
     }
 
     function worksheet_class(class_dict) {
@@ -61,11 +61,9 @@ function update_worksheet(new_class) {
             document.getElementById("worksheet_container")
         )
     }
-
+    filter_classes()
 
 }
-
-update_worksheet()
 
 export function showArchived() {
     function change(e, val) {
@@ -83,6 +81,26 @@ export function showArchived() {
                 size="small"
             />
             Show past terms
+        </div>
+    );
+}
+
+export function hideConflicts() {
+    function change(e, val) {
+        hide_conflicts = val;
+        filter_classes();
+    }
+
+    return (
+        <div>
+            <Checkbox
+                name="showArchived"
+                color="primary"
+                onChange={change}
+                defaultChecked={false}
+                size="small"
+            />
+            Hide conflicting classes
         </div>
     );
 }
@@ -208,17 +226,44 @@ function Class(class_dict) {
     );
 }
 
+function intersects(start1, start2, end1, end2) {
+    if (start1 == null || start2 == null || end1 == null || end2 == null)
+        return false
+    return (start1 >= start2 && start1 < end2) || (start2 >= start1 && start2 < end1)
+}
+
 export default function filter_classes() {
     let filtered_classes_list = [];
     for (let i = 0; i < classes_list.length; i++) {
         let include_row = true;
         if (!show_archived && classes_list[i]["term_float"] !== current_year)
             continue
+        if (hide_conflicts) {
+            for (let course of worksheet_classes) {
+                let same_day = false;
+                for (let letter of course["days"]) {
+                    if (classes_list[i]["days"] != null && classes_list[i]["days"].indexOf(letter) !== -1) {
+                        same_day = true;
+                        break;
+                    }
+                }
+                if (!same_day)
+                    break;
+
+                if (!intersects(course["start_date"], classes_list[i]["start_date"], course["end_date"], classes_list[i]["end_date"])) {
+                    break;
+                }
+                if (intersects(course["start_time"], classes_list[i]["start_time"], course["end_time"], classes_list[i]["end_time"])) {
+                    include_row = false;
+                    break;
+                }
+            }
+        }
         for (let j = 0; j < filter_functions.length; j++) {
-            if (typeof filter_functions[j] === "function")
-                include_row = filter_functions[j](classes_list[i][filter_keys[j]]);
             if (!include_row)
                 break;
+            if (typeof filter_functions[j] === "function")
+                include_row = filter_functions[j](classes_list[i][filter_keys[j]]);
         }
         if (include_row)
             filtered_classes_list.push(<div key={classes_list[i]["id"]}>{Class(classes_list[i])}</div>)

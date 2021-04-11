@@ -7,6 +7,10 @@ export const filter_functions = [];
 export const filter_keys = [];
 export const filter_elements = [];
 
+for (let i = 0; i < classes_list.length; i++) {
+    classes_list[i]["start_time"] = new Date(classes_list[i]["start_time"]);
+    classes_list[i]["end_time"] = new Date(classes_list[i]["end_time"]);
+}
 
 export function FilterElement(input_element, index, margins) {
     if (margins == null)

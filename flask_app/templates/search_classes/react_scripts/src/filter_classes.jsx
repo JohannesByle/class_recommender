@@ -21,7 +21,7 @@ function update_worksheet(new_class) {
             worksheet_classes.splice(index, 1);
         }
         update_worksheet()
-
+                        
     }
 
     function worksheet_class(class_dict) {

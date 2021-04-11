@@ -2,6 +2,8 @@ import json
 import os
 import re
 
+import pandas as pd
+
 with open(os.path.join(os.path.dirname(__file__), "tags.json"), "r") as f:
     tags = json.load(f)
 
@@ -19,8 +21,8 @@ def get_time(time_str):
         for time in match:
             hour, minute = re.findall(r"\d{2}", time)
             if "pm" in time:
-                hour = int(hour) + 12
-            times.append("{}:{}".format(hour, minute))
+                hour = int(hour) + 12 - 1
+            times.append(pd.Timestamp(hour=int(hour), minute=int(minute), year=2000, month=1, day=1).isoformat())
         return times
 
 

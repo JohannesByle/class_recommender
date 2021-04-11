@@ -7,6 +7,11 @@ export var filter_functions = [];
 export var filter_keys = [];
 export var filter_elements = [];
 
+for (var i = 0; i < classes_list.length; i++) {
+    classes_list[i]["start_time"] = new Date(classes_list[i]["start_time"]);
+    classes_list[i]["end_time"] = new Date(classes_list[i]["end_time"]);
+}
+
 export function FilterElement(input_element, index, margins) {
     if (margins == null) margins = "m-2 mt-3";
     var theme = createMuiTheme({
@@ -36,8 +41,8 @@ export function FilterElement(input_element, index, margins) {
 
 export function get_values(key) {
     var values = [];
-    for (var i = 0; i < classes_list.length; i++) {
-        values.push(classes_list[i][key]);
+    for (var _i = 0; _i < classes_list.length; _i++) {
+        values.push(classes_list[_i][key]);
     }return values;
 }
 

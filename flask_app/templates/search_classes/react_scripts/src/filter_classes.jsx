@@ -26,8 +26,8 @@ function update_worksheet(new_class) {
 
     function worksheet_class(class_dict) {
         return (
-            <div className="row m-2">
-            <span key={class_dict["id"]} className="mx-0 px-0">
+            <div className="row m-2" key={class_dict["id"]}>
+            <span className="mx-0 px-0">
                 <span className="badge bg-secondary">{class_dict["subj"]} {class_dict["crse"]}</span>
                 <span className="text-secondary fw-light ms-1 overflow-hidden">{class_dict["crn"]}</span>
                 <a href="#" className="stretched-link link-danger float-end" onClick={() => remove_class(class_dict)}>

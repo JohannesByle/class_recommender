@@ -26,10 +26,10 @@ function update_worksheet(new_class) {
     function worksheet_class(class_dict) {
         return React.createElement(
             'div',
-            { className: 'row m-2' },
+            { className: 'row m-2', key: class_dict["id"] },
             React.createElement(
                 'span',
-                { key: class_dict["id"], className: 'mx-0 px-0' },
+                { className: 'mx-0 px-0' },
                 React.createElement(
                     'span',
                     { className: 'badge bg-secondary' },

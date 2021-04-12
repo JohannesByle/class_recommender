@@ -1,7 +1,7 @@
 import React from 'react';
 import {Typography, Slider} from '@material-ui/core';
-import {filter_elements, filter_functions, filter_keys, get_values, FilterElement} from "./index";
-import filter_classes from "./filter_classes";
+import {filter_elements, filter_functions, filter_keys, get_values, FilterElement} from "../index";
+import filter_classes from "../filter_classes";
 
 function RangeSlider(label, max, min, index) {
     function filter_function(e, val) {

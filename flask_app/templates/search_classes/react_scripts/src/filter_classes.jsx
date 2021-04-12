@@ -4,106 +4,16 @@ import {filter_keys, filter_functions, get_values} from "./index";
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import {Checkbox, IconButton, withStyles} from "@material-ui/core";
+import {IconButton, withStyles} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/AddCircle';
 import MuiAccordion from '@material-ui/core/Accordion';
+import {update_worksheet} from "./update_worksheet";
+import {checkbox_vars} from "./index";
+import {worksheet_classes} from "./update_worksheet";
 
 const current_year = Math.max.apply(Math, get_values("term_float"));
-let show_archived = false;
 const base_num_rows = 25;
 let num_rows = base_num_rows;
-let worksheet_classes = []
-let hide_conflicts = false;
-
-function update_worksheet(new_class) {
-    function remove_class(course) {
-        const index = worksheet_classes.indexOf(course);
-        if (index > -1) {
-            worksheet_classes.splice(index, 1);
-        }
-        update_worksheet()
-    }
-
-    function worksheet_class(class_dict) {
-        return (
-            <div className="row m-2" key={class_dict["id"]}>
-            <span className="mx-0 px-0">
-                <span className="badge bg-secondary">{class_dict["subj"]} {class_dict["crse"]}</span>
-                <span className="text-secondary fw-light ms-1 overflow-hidden">{class_dict["crn"]}</span>
-                <a href="#" className="stretched-link link-danger float-end" onClick={() => remove_class(class_dict)}>
-                    <i className="bi bi-x-circle-fill"></i>
-                </a>
-            </span>
-            </div>
-        );
-
-    }
-
-    if (new_class != null) {
-        let already_contains = false;
-        for (const course of worksheet_classes) {
-            if (course["crn"] === new_class["crn"]) {
-                already_contains = true
-                break;
-            }
-        }
-        if (!already_contains)
-            worksheet_classes.push(new_class)
-    }
-    if (worksheet_classes.length === 0) {
-        ReactDOM.render(
-            <div className="badge pill rounded-pill my-2 bg-secondary">No courses in worksheet</div>,
-            document.getElementById("worksheet_container")
-        )
-    } else {
-        ReactDOM.render(
-            <div>{worksheet_classes.map((class_dict) => worksheet_class(class_dict))}</div>,
-            document.getElementById("worksheet_container")
-        )
-    }
-    filter_classes()
-
-}
-
-export function showArchived() {
-    function change(e, val) {
-        show_archived = val;
-        filter_classes();
-    }
-
-    return (
-        <div>
-            <Checkbox
-                name="showArchived"
-                color="primary"
-                onChange={change}
-                defaultChecked={false}
-                size="small"
-            />
-            Show past terms
-        </div>
-    );
-}
-
-export function hideConflicts() {
-    function change(e, val) {
-        hide_conflicts = val;
-        filter_classes();
-    }
-
-    return (
-        <div>
-            <Checkbox
-                name="showArchived"
-                color="primary"
-                onChange={change}
-                defaultChecked={false}
-                size="small"
-            />
-            Hide conflicting classes
-        </div>
-    );
-}
 
 const Accordion = withStyles({
     expanded: {},
@@ -236,9 +146,9 @@ export default function filter_classes() {
     let filtered_classes_list = [];
     for (let i = 0; i < classes_list.length; i++) {
         let include_row = true;
-        if (!show_archived && classes_list[i]["term_float"] !== current_year)
+        if (!checkbox_vars["show_archived"] && classes_list[i]["term_float"] !== current_year)
             continue
-        if (hide_conflicts) {
+        if (checkbox_vars["hide_conflicts"]) {
             for (let course of worksheet_classes) {
                 let same_day = false;
                 for (let letter of course["days"]) {

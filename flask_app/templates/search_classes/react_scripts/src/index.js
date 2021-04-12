@@ -2,56 +2,51 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import filter_classes from "./filter_classes";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { update_worksheet } from "./update_worksheet";
+export const filter_functions = [];
+export const filter_keys = [];
+export const filter_elements = [];
+export const checkbox_vars = {
+  "hide_conflicts": false,
+  "show_archived": false
+};
 
-export var filter_functions = [];
-export var filter_keys = [];
-export var filter_elements = [];
-
-for (var i = 0; i < classes_list.length; i++) {
-    classes_list[i]["start_time"] = new Date(classes_list[i]["start_time"]);
-    classes_list[i]["end_time"] = new Date(classes_list[i]["end_time"]);
+for (let i = 0; i < classes_list.length; i++) {
+  classes_list[i]["start_time"] = new Date(classes_list[i]["start_time"]);
+  classes_list[i]["end_time"] = new Date(classes_list[i]["end_time"]);
 }
 
 export function FilterElement(input_element, index, margins) {
-    if (margins == null) margins = "m-2 mt-3";
-    var theme = createMuiTheme({
-        palette: {
-            primary: {
-                main: "#000000"
-            },
-            secondary: {
-                main: '#f44336'
-            }
-        }
-    });
-    return React.createElement(
-        'div',
-        { key: index },
-        React.createElement(
-            ThemeProvider,
-            { theme: theme },
-            React.createElement(
-                'div',
-                { className: margins },
-                input_element
-            )
-        )
-    );
+  if (margins == null) margins = "m-2 mt-3";
+  const theme = createMuiTheme({
+    palette: {
+      primary: {
+        main: "#000000"
+      },
+      secondary: {
+        main: '#f44336'
+      }
+    }
+  });
+  return /*#__PURE__*/React.createElement("div", {
+    key: index
+  }, /*#__PURE__*/React.createElement(ThemeProvider, {
+    theme: theme
+  }, /*#__PURE__*/React.createElement("div", {
+    className: margins
+  }, input_element)));
 }
-
 export function get_values(key) {
-    var values = [];
-    for (var _i = 0; _i < classes_list.length; _i++) {
-        values.push(classes_list[_i][key]);
-    }return values;
+  const values = [];
+
+  for (let i = 0; i < classes_list.length; i++) values.push(classes_list[i][key]);
+
+  return values;
 }
-
-import { showArchived } from "./filter_classes";
-import { hideConflicts } from "./filter_classes";
-import add_slider from "./RangeSlider";
-import add_multi_select from "./AutocompleteMultiple";
-import add_time_picker from "./TimePicker";
-
+import { CustomCheckBox } from "./filter_elements/CheckBox";
+import add_slider from "./filter_elements/RangeSlider";
+import add_multi_select from "./filter_elements/AutocompleteMultiple";
+import add_time_picker from "./filter_elements/TimePicker";
 add_slider("Remaining Slots", "rem_num");
 add_slider("Credits", "cred_num");
 add_multi_select("Tags", "attributes", true);
@@ -62,15 +57,6 @@ add_multi_select("Title", "title");
 add_multi_select("Term", "term");
 add_time_picker("Starts after", "start_time", "00:00:00", false);
 add_time_picker("Ends before", "end_time", "23:59:59", true);
-
-ReactDOM.render(React.createElement(
-    'div',
-    null,
-    FilterElement(showArchived(), -1, "m-0 mt-3 mb-2"),
-    FilterElement(hideConflicts(), -2, "m-0 mb-2"),
-    filter_elements
-),
-// FilterElement(<TimePicker time={"00:00:00"}/>, 0),
-document.getElementById("filters_container"));
-
+ReactDOM.render( /*#__PURE__*/React.createElement("div", null, FilterElement(CustomCheckBox("show_archived", "Show past terms"), -1, "m-0 mt-3 mb-2"), FilterElement(CustomCheckBox("hide_conflicts", "Hide conflicting classes"), -2, "m-0 mb-2"), filter_elements), document.getElementById("filters_container"));
 filter_classes();
+update_worksheet(null);

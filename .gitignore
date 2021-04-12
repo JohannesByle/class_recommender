@@ -4,6 +4,6 @@
 /config.bat
 /flask_app/*.sqlite
 /flask_app/templates/*/react_scripts/node_modules/
-/flask_app/templates/*/react_scripts/package.json
 /flask_app/templates/*/react_scripts/package-lock.json
 /flask_app/templates/*/react_scripts/dist/main.js.LICENSE.txt
+/.idea

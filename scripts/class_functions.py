@@ -20,7 +20,7 @@ def get_time(time_str):
         times = []
         for time in match:
             hour, minute = re.findall(r"\d{2}", time)
-            if "pm" in time:
+            if "pm" in time and int(hour) != 12:
                 hour = int(hour) + 12 - 1
             times.append(pd.Timestamp(hour=int(hour), minute=int(minute), year=2000, month=1, day=1).isoformat())
         return times

@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import filter_classes from "./filter_classes";
 export let worksheet_classes = new Set();
 export function update_worksheet(new_class) {
   function remove_class(course) {
@@ -41,4 +42,5 @@ export function update_worksheet(new_class) {
   }
 
   ReactDOM.render(classes_elements, document.getElementById("worksheet_container"));
+  filter_classes();
 }

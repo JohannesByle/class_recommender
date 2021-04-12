@@ -136,10 +136,33 @@ function Class(class_dict) {
     );
 }
 
-function intersects(start1, start2, end1, end2) {
-    if (start1 == null || start2 == null || end1 == null || end2 == null)
-        return false
-    return (start1 >= start2 && start1 <= end2) || (start2 >= start1 && start2 <= end1)
+
+function classes_intersect(class1, class2) {
+    function intersects(start1, start2, end1, end2) {
+        if (start1 == null || start2 == null || end1 == null || end2 == null)
+            return false
+        return (start1 <= end2) && (end1 >= start2)
+    }
+
+    let same_day = false;
+    if (class1["days"] != null && class2["days"] != null) {
+        for (let letter of class1["days"]) {
+            if (class2["days"] != null && class2["days"].indexOf(letter) !== -1) {
+                same_day = true;
+                break;
+            }
+        }
+    }
+
+    if (!same_day)
+        return false;
+
+    if (!intersects(class1["start_date"], class2["start_date"], class1["end_date"], class2["end_date"])) {
+        return false;
+    }
+    if (intersects(class1["start_time"], class2["start_time"], class1["end_time"], class2["end_time"])) {
+        return true
+    }
 }
 
 export default function filter_classes() {
@@ -150,20 +173,7 @@ export default function filter_classes() {
             continue
         if (checkbox_vars["hide_conflicts"]) {
             for (let course of worksheet_classes) {
-                let same_day = false;
-                for (let letter of course["days"]) {
-                    if (classes_list[i]["days"] != null && classes_list[i]["days"].indexOf(letter) !== -1) {
-                        same_day = true;
-                        break;
-                    }
-                }
-                if (!same_day)
-                    continue;
-
-                if (!intersects(course["start_date"], classes_list[i]["start_date"], course["end_date"], classes_list[i]["end_date"])) {
-                    continue;
-                }
-                if (intersects(course["start_time"], classes_list[i]["start_time"], course["end_time"], classes_list[i]["end_time"])) {
+                if (classes_intersect(course, classes_list[i])) {
                     include_row = false;
                     break;
                 }

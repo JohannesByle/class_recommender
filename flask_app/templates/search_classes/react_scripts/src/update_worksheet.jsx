@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import filter_classes from "./filter_classes";
 
 export let worksheet_classes = new Set();
 
@@ -34,4 +35,5 @@ export function update_worksheet(new_class) {
         classes_elements = <div>{Array.from(worksheet_classes).map((class_dict) => worksheet_class(class_dict))}</div>
     }
     ReactDOM.render(classes_elements, document.getElementById("worksheet_container"))
+    filter_classes()
 }

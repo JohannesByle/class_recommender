@@ -6,6 +6,7 @@ export function update_worksheet(new_class) {
   function remove_class(course) {
     worksheet_classes.delete(course);
     update_worksheet();
+    filter_classes();
   }
 
   function worksheet_class(class_dict) {
@@ -29,6 +30,7 @@ export function update_worksheet(new_class) {
 
   if (new_class != null) {
     worksheet_classes.add(new_class);
+    filter_classes();
   }
 
   let classes_elements;
@@ -42,5 +44,4 @@ export function update_worksheet(new_class) {
   }
 
   ReactDOM.render(classes_elements, document.getElementById("worksheet_container"));
-  filter_classes();
 }

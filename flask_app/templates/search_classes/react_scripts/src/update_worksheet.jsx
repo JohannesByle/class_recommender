@@ -8,6 +8,7 @@ export function update_worksheet(new_class) {
     function remove_class(course) {
         worksheet_classes.delete(course)
         update_worksheet()
+        filter_classes()
     }
 
     function worksheet_class(class_dict) {
@@ -27,6 +28,7 @@ export function update_worksheet(new_class) {
 
     if (new_class != null) {
         worksheet_classes.add(new_class)
+        filter_classes()
     }
     let classes_elements;
     if (worksheet_classes.size === 0) {
@@ -35,5 +37,4 @@ export function update_worksheet(new_class) {
         classes_elements = <div>{Array.from(worksheet_classes).map((class_dict) => worksheet_class(class_dict))}</div>
     }
     ReactDOM.render(classes_elements, document.getElementById("worksheet_container"))
-    filter_classes()
 }

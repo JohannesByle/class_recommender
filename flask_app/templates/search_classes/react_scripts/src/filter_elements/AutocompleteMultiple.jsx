@@ -1,10 +1,11 @@
 import React from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import {filter_elements, filter_functions, filter_keys, get_values, FilterElement} from "./index";
-import filter_classes from "./filter_classes";
+import {filter_elements, filter_functions, filter_keys, get_values, FilterElement} from "../index";
+import filter_classes from "../filter_classes";
 import {Switch} from "@material-ui/core";
 import ReactDOM from "react-dom";
+
 
 function AutocompleteMultiple(label, options, index, is_and) {
     function filter_function(e, val) {

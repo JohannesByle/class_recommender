@@ -64,7 +64,7 @@ function Class(class_dict) {
   return /*#__PURE__*/React.createElement("div", {
     className: "row"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "col my-auto p-0",
+    className: "col my-auto p-0 ms-3",
     style: {
       maxWidth: 24
     }

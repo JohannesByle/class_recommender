@@ -68,7 +68,7 @@ function Class(class_dict) {
 
     return (
         <div className="row">
-            <div className="col my-auto p-0" style={{maxWidth: 24}}>
+            <div className="col my-auto p-0 ms-3" style={{maxWidth: 24}}>
                 {add_to_worksheet_button}
             </div>
             <div className="col">

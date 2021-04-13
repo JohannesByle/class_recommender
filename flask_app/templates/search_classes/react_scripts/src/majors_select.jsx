@@ -38,12 +38,14 @@ export default function MajorsAutocomplete() {
                             }
                         }
                     }
+                    reqs = Array.from(reqs)
+                    reqs.sort()
                     ReactDOM.render(
                         FilterElement(
                             <Autocomplete
                                 multiple
                                 onChange={update_req}
-                                options={Array.from(reqs)}
+                                options={reqs}
                                 getOptionLabel={(option) => option}
                                 renderInput={(params) => (
                                     <TextField
@@ -62,10 +64,12 @@ export default function MajorsAutocomplete() {
 
     }
 
+    let options = Object.keys(majors_list)
+    options.sort()
     return (
         <Autocomplete
             onChange={get_reqs}
-            options={Object.keys(majors_list)}
+            options={options}
             getOptionLabel={(option) => option}
             renderInput={(params) => (
                 <TextField

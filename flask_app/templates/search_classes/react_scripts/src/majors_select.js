@@ -37,10 +37,12 @@ export default function MajorsAutocomplete() {
         }
       }
 
+      reqs = Array.from(reqs);
+      reqs.sort();
       ReactDOM.render(FilterElement( /*#__PURE__*/React.createElement(Autocomplete, {
         multiple: true,
         onChange: update_req,
-        options: Array.from(reqs),
+        options: reqs,
         getOptionLabel: option => option,
         renderInput: params => /*#__PURE__*/React.createElement(TextField, _extends({}, params, {
           variant: "standard",
@@ -51,9 +53,11 @@ export default function MajorsAutocomplete() {
     }, error => console.log(error));
   }
 
+  let options = Object.keys(majors_list);
+  options.sort();
   return /*#__PURE__*/React.createElement(Autocomplete, {
     onChange: get_reqs,
-    options: Object.keys(majors_list),
+    options: options,
     getOptionLabel: option => option,
     renderInput: params => /*#__PURE__*/React.createElement(TextField, _extends({}, params, {
       variant: "standard",

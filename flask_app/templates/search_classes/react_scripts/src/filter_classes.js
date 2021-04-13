@@ -50,7 +50,7 @@ function Class(class_dict) {
     }, req));
     reqs_count = /*#__PURE__*/React.createElement("span", {
       className: "pill badge bg-primary ms-1"
-    }, class_dict["reqs"].length, " major requirement", class_dict["reqs"].length === 1 ? "" : "s");
+    }, class_dict["reqs"].length, " major req", class_dict["reqs"].length === 1 ? "" : "s");
   }
 
   const offered_terms = class_dict["offered_terms_readable"].map((term, index) => /*#__PURE__*/React.createElement("span", {

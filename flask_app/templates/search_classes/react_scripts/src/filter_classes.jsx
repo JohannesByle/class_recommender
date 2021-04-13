@@ -50,7 +50,7 @@ function Class(class_dict) {
         )
         reqs_count = (
             <span className="pill badge bg-primary ms-1">
-                {class_dict["reqs"].length} major requirement{class_dict["reqs"].length === 1 ? "" : "s"}
+                {class_dict["reqs"].length} major req{class_dict["reqs"].length === 1 ? "" : "s"}
             </span>
         );
     }

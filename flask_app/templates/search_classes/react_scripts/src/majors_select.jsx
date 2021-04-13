@@ -17,6 +17,10 @@ export default function MajorsAutocomplete() {
     }
 
     function get_reqs(e, major) {
+        if (major == null) {
+            ReactDOM.unmountComponentAtNode(document.getElementById("major_filters_container"))
+            return;
+        }
         let reqs = null;
         let label = "Requirement";
         fetch("/search_classes/get_reqs/" + majors_list[major])

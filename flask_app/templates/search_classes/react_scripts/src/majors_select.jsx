@@ -59,6 +59,7 @@ export default function MajorsAutocomplete() {
                         ),
                         document.getElementById("major_filters_container")
                     )
+                    filter_classes()
                 },
                 (error) => console.log(error));
 

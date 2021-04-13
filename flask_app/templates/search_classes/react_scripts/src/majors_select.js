@@ -50,6 +50,7 @@ export default function MajorsAutocomplete() {
           placeholder: label
         }))
       })), document.getElementById("major_filters_container"));
+      filter_classes();
     }, error => console.log(error));
   }
 

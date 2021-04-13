@@ -156,6 +156,7 @@ export default function filter_classes() {
     }
 
     if (!checkbox_vars["show_archived"] && classes_list[i]["term_float"] !== current_year) continue;
+    if (checkbox_vars["hide_tba"] && classes_list[i]["time"] === "TBA") continue;
 
     if (checkbox_vars["hide_conflicts"]) {
       for (let course of worksheet_classes) {

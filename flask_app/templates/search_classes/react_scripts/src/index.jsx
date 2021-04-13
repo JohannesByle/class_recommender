@@ -7,7 +7,7 @@ import {update_worksheet} from "./update_worksheet";
 export const filter_functions = [];
 export const filter_keys = [];
 export const filter_elements = [];
-export const checkbox_vars = {"hide_conflicts": false, "show_archived": false}
+export const checkbox_vars = {"hide_conflicts": false, "show_archived": false, "hide_tba": false}
 
 for (let i = 0; i < classes_list.length; i++) {
     classes_list[i]["start_time"] = new Date(classes_list[i]["start_time"]);
@@ -75,6 +75,7 @@ ReactDOM.render(
         {FilterElement(SortSelect(), -2, "m-2")}
         {FilterElement(CustomCheckBox("show_archived", "Show past terms"), -3, "m-0 mt-3 mb-2")}
         {FilterElement(CustomCheckBox("hide_conflicts", "Hide conflicting classes"), -4, "m-0 mb-2")}
+        {FilterElement(CustomCheckBox("hide_tba", "Hide TBA classes"), -5, "m-0 mb-2")}
         {filter_elements}
     </div>,
     document.getElementById("filters_container")

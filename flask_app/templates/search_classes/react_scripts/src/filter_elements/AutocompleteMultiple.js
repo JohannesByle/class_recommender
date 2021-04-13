@@ -9,6 +9,8 @@ import { Switch } from "@material-ui/core";
 import ReactDOM from "react-dom";
 
 function AutocompleteMultiple(label, options, index, is_and) {
+  options.sort();
+
   function filter_function(e, val) {
     filter_functions[index] = x => {
       if (val.length === 0) return true;

@@ -52,6 +52,7 @@ import MajorsAutocomplete from "./majors_select";
 ReactDOM.render(FilterElement(MajorsAutocomplete(), -1, "m-2"), document.getElementById("major_container"))
 
 
+import {SortSelect} from "./sort";
 import {CustomCheckBox} from "./filter_elements/CheckBox";
 import add_slider from "./filter_elements/RangeSlider";
 import add_multi_select from "./filter_elements/AutocompleteMultiple";
@@ -71,8 +72,9 @@ add_time_picker("Ends before", "end_time", "23:59:59", true);
 
 ReactDOM.render(
     <div>
-        {FilterElement(CustomCheckBox("show_archived", "Show past terms"), -2, "m-0 mt-3 mb-2")}
-        {FilterElement(CustomCheckBox("hide_conflicts", "Hide conflicting classes"), -3, "m-0 mb-2")}
+        {FilterElement(SortSelect(), -2, "m-2")}
+        {FilterElement(CustomCheckBox("show_archived", "Show past terms"), -3, "m-0 mt-3 mb-2")}
+        {FilterElement(CustomCheckBox("hide_conflicts", "Hide conflicting classes"), -4, "m-0 mb-2")}
         {filter_elements}
     </div>,
     document.getElementById("filters_container")

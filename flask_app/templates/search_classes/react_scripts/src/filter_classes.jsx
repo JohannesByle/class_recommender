@@ -12,6 +12,7 @@ import {checkbox_vars} from "./index";
 import {worksheet_classes} from "./update_worksheet";
 import {classes_intersect} from "./utils";
 import {req} from "./majors_select";
+import {sort_functions, sort_function} from "./sort";
 
 const current_year = Math.max.apply(Math, get_values("term_float"));
 const base_num_rows = 25;
@@ -152,6 +153,8 @@ function Class(class_dict) {
 export default function filter_classes() {
     ReactDOM.unmountComponentAtNode(document.getElementById("worksheet_alert"))
     let filtered_classes_list = [];
+    if (sort_function != null)
+        classes_list.sort(sort_functions[sort_function])
 
     for (let i = 0; i < classes_list.length; i++) {
         let include_row = true;

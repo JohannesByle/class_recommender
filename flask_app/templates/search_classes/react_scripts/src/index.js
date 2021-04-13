@@ -45,6 +45,7 @@ export function get_values(key) {
 }
 import MajorsAutocomplete from "./majors_select";
 ReactDOM.render(FilterElement(MajorsAutocomplete(), -1, "m-2"), document.getElementById("major_container"));
+import { SortSelect } from "./sort";
 import { CustomCheckBox } from "./filter_elements/CheckBox";
 import add_slider from "./filter_elements/RangeSlider";
 import add_multi_select from "./filter_elements/AutocompleteMultiple";
@@ -59,6 +60,6 @@ add_multi_select("Title", "title");
 add_multi_select("Term", "term");
 add_time_picker("Starts after", "start_time", "00:00:00", false);
 add_time_picker("Ends before", "end_time", "23:59:59", true);
-ReactDOM.render( /*#__PURE__*/React.createElement("div", null, FilterElement(CustomCheckBox("show_archived", "Show past terms"), -2, "m-0 mt-3 mb-2"), FilterElement(CustomCheckBox("hide_conflicts", "Hide conflicting classes"), -3, "m-0 mb-2"), filter_elements), document.getElementById("filters_container"));
+ReactDOM.render( /*#__PURE__*/React.createElement("div", null, FilterElement(SortSelect(), -2, "m-2"), FilterElement(CustomCheckBox("show_archived", "Show past terms"), -3, "m-0 mt-3 mb-2"), FilterElement(CustomCheckBox("hide_conflicts", "Hide conflicting classes"), -4, "m-0 mb-2"), filter_elements), document.getElementById("filters_container"));
 filter_classes();
 update_worksheet(null);

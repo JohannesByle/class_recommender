@@ -19,6 +19,11 @@ export default function MajorsAutocomplete() {
   function get_reqs(e, major) {
     if (major == null) {
       ReactDOM.unmountComponentAtNode(document.getElementById("major_filters_container"));
+
+      for (let i = 0; i < classes_list.length; i++) {
+        if ("reqs" in classes_list[i]) delete classes_list[i].reqs;
+      }
+
       filter_classes();
       return;
     }

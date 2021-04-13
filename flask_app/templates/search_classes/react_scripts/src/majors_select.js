@@ -19,6 +19,7 @@ export default function MajorsAutocomplete() {
   function get_reqs(e, major) {
     if (major == null) {
       ReactDOM.unmountComponentAtNode(document.getElementById("major_filters_container"));
+      filter_classes();
       return;
     }
 
@@ -54,7 +55,7 @@ export default function MajorsAutocomplete() {
           label: label,
           placeholder: label
         }))
-      })), document.getElementById("major_filters_container"));
+      }), -1, "m-2 mt-2 mb-3"), document.getElementById("major_filters_container"));
       filter_classes();
     }, error => console.log(error));
   }

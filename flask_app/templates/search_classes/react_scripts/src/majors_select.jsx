@@ -19,6 +19,7 @@ export default function MajorsAutocomplete() {
     function get_reqs(e, major) {
         if (major == null) {
             ReactDOM.unmountComponentAtNode(document.getElementById("major_filters_container"))
+            filter_classes()
             return;
         }
         let reqs = null;
@@ -59,7 +60,9 @@ export default function MajorsAutocomplete() {
                                         placeholder={label}
                                     />
                                 )}
-                            />
+                            />,
+                            -1,
+                            "m-2 mt-2 mb-3"
                         ),
                         document.getElementById("major_filters_container")
                     )

@@ -41,12 +41,16 @@ function Class(class_dict) {
     className: "pill badge bg-secondary ms-1"
   }, attribute));
   let reqs = null;
+  let reqs_count = null;
 
   if (class_dict["reqs"] != null) {
     reqs = class_dict["reqs"].map(req => /*#__PURE__*/React.createElement("span", {
       key: req,
-      className: "pill badge bg-primary ms-1"
+      className: "pill badge bg-primary me-1"
     }, req));
+    reqs_count = /*#__PURE__*/React.createElement("span", {
+      className: "pill badge bg-primary ms-1"
+    }, class_dict["reqs"].length, " major requirement", class_dict["reqs"].length === 1 ? "" : "s");
   }
 
   const offered_terms = class_dict["offered_terms_readable"].map((term, index) => /*#__PURE__*/React.createElement("span", {
@@ -93,7 +97,7 @@ function Class(class_dict) {
     className: "col my-auto"
   }, /*#__PURE__*/React.createElement("span", {
     className: "fs-6"
-  }, archived, class_dict["title"], reqs), /*#__PURE__*/React.createElement("footer", {
+  }, archived, class_dict["title"], reqs_count), /*#__PURE__*/React.createElement("footer", {
     className: "text-secondary fw-light"
   }, /*#__PURE__*/React.createElement("span", {
     className: "badge bg-dark"
@@ -129,7 +133,7 @@ function Class(class_dict) {
     className: "col text-secondary"
   }, class_dict["desc"])), /*#__PURE__*/React.createElement("div", {
     className: "row"
-  }, /*#__PURE__*/React.createElement("span", null, offered_terms))))))));
+  }, /*#__PURE__*/React.createElement("span", null, offered_terms)), reqs))))));
 }
 
 export default function filter_classes() {

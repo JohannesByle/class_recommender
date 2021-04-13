@@ -43,11 +43,18 @@ function Class(class_dict) {
         <span key={attribute} className="pill badge bg-secondary ms-1">{attribute}</span>
     );
     let reqs = null
+    let reqs_count = null
     if (class_dict["reqs"] != null) {
         reqs = class_dict["reqs"].map((req) =>
-            <span key={req} className="pill badge bg-primary ms-1">{req}</span>
+            <span key={req} className="pill badge bg-primary me-1">{req}</span>
         )
+        reqs_count = (
+            <span className="pill badge bg-primary ms-1">
+                {class_dict["reqs"].length} major requirement{class_dict["reqs"].length === 1 ? "" : "s"}
+            </span>
+        );
     }
+
     const offered_terms = class_dict["offered_terms_readable"].map((term, index) =>
         <span key={term} className={"pill badge bg-secondary" + (index === 0 ? "" : " ms-1")}>{term}</span>
     );
@@ -89,7 +96,7 @@ function Class(class_dict) {
                         >
                             <div className="card-body p-0 row">
                                 <div className="col my-auto">
-                                    <span className="fs-6">{archived}{class_dict["title"]}{reqs}</span>
+                                    <span className="fs-6">{archived}{class_dict["title"]}{reqs_count}</span>
                                     <footer className="text-secondary fw-light">
                                 <span className="badge bg-dark">
                                     {class_dict["subj"]} {class_dict["crse"]}
@@ -130,11 +137,8 @@ function Class(class_dict) {
                                         {class_dict["desc"]}
                                     </div>
                                 </div>
-                                <div className="row">
-                            <span>
-                            {offered_terms}
-                            </span>
-                                </div>
+                                <div className="row"><span>{offered_terms}</span></div>
+                                {reqs}
                             </div>
                         </AccordionDetails>
                     </Accordion>

@@ -22,7 +22,7 @@ export function update_worksheet(new_class) {
       className: "text-secondary fw-light ms-1 overflow-hidden"
     }, class_dict["crn"]), /*#__PURE__*/React.createElement("a", {
       href: "#",
-      className: "stretched-link link-danger float-end",
+      className: "link-danger float-end",
       onClick: () => remove_class(class_dict)
     }, /*#__PURE__*/React.createElement("i", {
       className: "bi bi-x-circle-fill"

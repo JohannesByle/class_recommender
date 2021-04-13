@@ -18,7 +18,7 @@ export function update_worksheet(new_class) {
             <span className="mx-0 px-0">
                 <span className="badge bg-secondary">{class_dict["subj"]} {class_dict["crse"]}</span>
                 <span className="text-secondary fw-light ms-1 overflow-hidden">{class_dict["crn"]}</span>
-                <a href="#" className="stretched-link link-danger float-end" onClick={() => remove_class(class_dict)}>
+                <a href="#" className="link-danger float-end" onClick={() => remove_class(class_dict)}>
                     <i className="bi bi-x-circle-fill"></i>
                 </a>
             </span>

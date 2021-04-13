@@ -11,6 +11,7 @@ import { update_worksheet } from "./update_worksheet";
 import { checkbox_vars } from "./index";
 import { worksheet_classes } from "./update_worksheet";
 import { classes_intersect } from "./utils";
+import { req } from "./majors_select";
 const current_year = Math.max.apply(Math, get_values("term_float"));
 const base_num_rows = 25;
 let num_rows = base_num_rows;
@@ -39,6 +40,15 @@ function Class(class_dict) {
     key: attribute,
     className: "pill badge bg-secondary ms-1"
   }, attribute));
+  let reqs = null;
+
+  if (class_dict["reqs"] != null) {
+    reqs = class_dict["reqs"].map(req => /*#__PURE__*/React.createElement("span", {
+      key: req,
+      className: "pill badge bg-primary ms-1"
+    }, req));
+  }
+
   const offered_terms = class_dict["offered_terms_readable"].map((term, index) => /*#__PURE__*/React.createElement("span", {
     key: term,
     className: "pill badge bg-secondary" + (index === 0 ? "" : " ms-1")
@@ -83,7 +93,7 @@ function Class(class_dict) {
     className: "col my-auto"
   }, /*#__PURE__*/React.createElement("span", {
     className: "fs-6"
-  }, archived, class_dict["title"]), /*#__PURE__*/React.createElement("footer", {
+  }, archived, class_dict["title"], reqs), /*#__PURE__*/React.createElement("footer", {
     className: "text-secondary fw-light"
   }, /*#__PURE__*/React.createElement("span", {
     className: "badge bg-dark"
@@ -128,6 +138,17 @@ export default function filter_classes() {
 
   for (let i = 0; i < classes_list.length; i++) {
     let include_row = true;
+
+    if (req != null) {
+      for (let single_req of req) {
+        if (!("reqs" in classes_list[i]) || !classes_list[i]["reqs"].includes(single_req)) {
+          include_row = false;
+        }
+      }
+
+      if (!include_row) continue;
+    }
+
     if (!checkbox_vars["show_archived"] && classes_list[i]["term_float"] !== current_year) continue;
 
     if (checkbox_vars["hide_conflicts"]) {

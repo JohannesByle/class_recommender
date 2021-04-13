@@ -11,6 +11,7 @@ import {update_worksheet} from "./update_worksheet";
 import {checkbox_vars} from "./index";
 import {worksheet_classes} from "./update_worksheet";
 import {classes_intersect} from "./utils";
+import {req} from "./majors_select";
 
 const current_year = Math.max.apply(Math, get_values("term_float"));
 const base_num_rows = 25;
@@ -41,6 +42,12 @@ function Class(class_dict) {
     const attributes = class_dict["attributes"].map((attribute) =>
         <span key={attribute} className="pill badge bg-secondary ms-1">{attribute}</span>
     );
+    let reqs = null
+    if (class_dict["reqs"] != null) {
+        reqs = class_dict["reqs"].map((req) =>
+            <span key={req} className="pill badge bg-primary ms-1">{req}</span>
+        )
+    }
     const offered_terms = class_dict["offered_terms_readable"].map((term, index) =>
         <span key={term} className={"pill badge bg-secondary" + (index === 0 ? "" : " ms-1")}>{term}</span>
     );
@@ -82,7 +89,7 @@ function Class(class_dict) {
                         >
                             <div className="card-body p-0 row">
                                 <div className="col my-auto">
-                                    <span className="fs-6">{archived}{class_dict["title"]}</span>
+                                    <span className="fs-6">{archived}{class_dict["title"]}{reqs}</span>
                                     <footer className="text-secondary fw-light">
                                 <span className="badge bg-dark">
                                     {class_dict["subj"]} {class_dict["crse"]}
@@ -141,8 +148,18 @@ function Class(class_dict) {
 export default function filter_classes() {
     ReactDOM.unmountComponentAtNode(document.getElementById("worksheet_alert"))
     let filtered_classes_list = [];
+
     for (let i = 0; i < classes_list.length; i++) {
         let include_row = true;
+        if (req != null) {
+            for (let single_req of req) {
+                if (!("reqs" in classes_list[i]) || !(classes_list[i]["reqs"].includes(single_req))) {
+                    include_row = false
+                }
+            }
+            if (!include_row)
+                continue;
+        }
         if (!checkbox_vars["show_archived"] && classes_list[i]["term_float"] !== current_year)
             continue
         if (checkbox_vars["hide_conflicts"]) {

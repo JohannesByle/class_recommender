@@ -25,4 +25,4 @@ def suggested_schedule():
 @suggested_schedule_blueprint.route("/suggested_schedule_post", methods=['POST'])
 def get_suggested_schedule():
     course_code = request.data.decode("utf-8")
-    return json.dumps(naive(create_reqs_df(course_code)))
+    return json.dumps(naive(*create_reqs_df(course_code)))

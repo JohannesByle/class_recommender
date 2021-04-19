@@ -4,88 +4,19 @@ import {filter_keys, filter_functions, get_values} from "./index";
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
-import {Checkbox, IconButton, withStyles} from "@material-ui/core";
+import {IconButton, withStyles} from "@material-ui/core";
 import AddIcon from '@material-ui/icons/AddCircle';
 import MuiAccordion from '@material-ui/core/Accordion';
+import {update_worksheet} from "./update_worksheet";
+import {checkbox_vars} from "./index";
+import {worksheet_classes} from "./update_worksheet";
+import {classes_intersect} from "./utils";
+import {req} from "./majors_select";
+import {sort_functions, sort_function} from "./sort";
 
 const current_year = Math.max.apply(Math, get_values("term_float"));
-let show_archived = false;
 const base_num_rows = 25;
 let num_rows = base_num_rows;
-let worksheet_classes = []
-
-function update_worksheet(new_class) {
-    function remove_class(course) {
-        const index = worksheet_classes.indexOf(course);
-        if (index > -1) {
-            worksheet_classes.splice(index, 1);
-        }
-        update_worksheet()
-                        
-    }
-
-    function worksheet_class(class_dict) {
-        return (
-            <div className="row m-2" key={class_dict["id"]}>
-            <span className="mx-0 px-0">
-                <span className="badge bg-secondary">{class_dict["subj"]} {class_dict["crse"]}</span>
-                <span className="text-secondary fw-light ms-1 overflow-hidden">{class_dict["crn"]}</span>
-                <a href="#" className="stretched-link link-danger float-end" onClick={() => remove_class(class_dict)}>
-                    <i className="bi bi-x-circle-fill"></i>
-                </a>
-            </span>
-            </div>
-        );
-
-    }
-
-    if (new_class != null) {
-        let already_contains = false;
-        for (const course of worksheet_classes) {
-            if (course["crn"] === new_class["crn"]) {
-                already_contains = true
-                break;
-            }
-        }
-        if (!already_contains)
-            worksheet_classes.push(new_class)
-    }
-    if (worksheet_classes.length === 0) {
-        ReactDOM.render(
-            <div className="badge pill rounded-pill my-2 bg-secondary">No courses in worksheet</div>,
-            document.getElementById("worksheet_container")
-        )
-    } else {
-        ReactDOM.render(
-            <div>{worksheet_classes.map((class_dict) => worksheet_class(class_dict))}</div>,
-            document.getElementById("worksheet_container")
-        )
-    }
-
-
-}
-
-update_worksheet()
-
-export function showArchived() {
-    function change(e, val) {
-        show_archived = val;
-        filter_classes();
-    }
-
-    return (
-        <div>
-            <Checkbox
-                name="showArchived"
-                color="primary"
-                onChange={change}
-                defaultChecked={false}
-                size="small"
-            />
-            Show past terms
-        </div>
-    );
-}
 
 const Accordion = withStyles({
     expanded: {},
@@ -112,6 +43,19 @@ function Class(class_dict) {
     const attributes = class_dict["attributes"].map((attribute) =>
         <span key={attribute} className="pill badge bg-secondary ms-1">{attribute}</span>
     );
+    let reqs = null
+    let reqs_count = null
+    if (class_dict["reqs"] != null) {
+        reqs = class_dict["reqs"].map((req) =>
+            <span key={req} className="pill badge bg-primary me-1">{req}</span>
+        )
+        reqs_count = (
+            <span className="pill badge bg-primary ms-1">
+                {class_dict["reqs"].length} major req{class_dict["reqs"].length === 1 ? "" : "s"}
+            </span>
+        );
+    }
+
     const offered_terms = class_dict["offered_terms_readable"].map((term, index) =>
         <span key={term} className={"pill badge bg-secondary" + (index === 0 ? "" : " ms-1")}>{term}</span>
     );
@@ -140,7 +84,7 @@ function Class(class_dict) {
 
     return (
         <div className="row">
-            <div className="col my-auto p-0" style={{maxWidth: 24}}>
+            <div className="col my-auto p-0 ms-3" style={{maxWidth: 24}}>
                 {add_to_worksheet_button}
             </div>
             <div className="col">
@@ -153,7 +97,7 @@ function Class(class_dict) {
                         >
                             <div className="card-body p-0 row">
                                 <div className="col my-auto">
-                                    <span className="fs-6">{archived}{class_dict["title"]}</span>
+                                    <span className="fs-6">{archived}{class_dict["title"]}{reqs_count}</span>
                                     <footer className="text-secondary fw-light">
                                 <span className="badge bg-dark">
                                     {class_dict["subj"]} {class_dict["crse"]}
@@ -194,11 +138,8 @@ function Class(class_dict) {
                                         {class_dict["desc"]}
                                     </div>
                                 </div>
-                                <div className="row">
-                            <span>
-                            {offered_terms}
-                            </span>
-                                </div>
+                                <div className="row"><span>{offered_terms}</span></div>
+                                {reqs}
                             </div>
                         </AccordionDetails>
                     </Accordion>
@@ -208,17 +149,41 @@ function Class(class_dict) {
     );
 }
 
+
 export default function filter_classes() {
+    ReactDOM.unmountComponentAtNode(document.getElementById("worksheet_alert"))
     let filtered_classes_list = [];
+    if (sort_function != null)
+        classes_list.sort(sort_functions[sort_function])
+
     for (let i = 0; i < classes_list.length; i++) {
         let include_row = true;
-        if (!show_archived && classes_list[i]["term_float"] !== current_year)
+        if (req != null) {
+            for (let single_req of req) {
+                if (!("reqs" in classes_list[i]) || !(classes_list[i]["reqs"].includes(single_req))) {
+                    include_row = false
+                }
+            }
+            if (!include_row)
+                continue;
+        }
+        if (!checkbox_vars["show_archived"] && classes_list[i]["term_float"] !== current_year)
             continue
+        if (checkbox_vars["hide_tba"] && classes_list[i]["time"] === "TBA")
+            continue
+        if (checkbox_vars["hide_conflicts"]) {
+            for (let course of worksheet_classes) {
+                if (classes_intersect(course, classes_list[i])) {
+                    include_row = false;
+                    break;
+                }
+            }
+        }
         for (let j = 0; j < filter_functions.length; j++) {
-            if (typeof filter_functions[j] === "function")
-                include_row = filter_functions[j](classes_list[i][filter_keys[j]]);
             if (!include_row)
                 break;
+            if (typeof filter_functions[j] === "function")
+                include_row = filter_functions[j](classes_list[i][filter_keys[j]]);
         }
         if (include_row)
             filtered_classes_list.push(<div key={classes_list[i]["id"]}>{Class(classes_list[i])}</div>)

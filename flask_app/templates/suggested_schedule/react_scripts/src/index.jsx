@@ -16,11 +16,11 @@ function render_schedule(schedule) {
                         <div className="card-body">
                             <div className="card-title">
                                 <span className="h5">Semester {index + 1}:{" "}</span>
-                                <span className="pill badge bg-secondary px-2">{val["credit_hours"]} Credit Hours</span>
+                                {/*<span className="pill badge bg-secondary px-2">{val["credit_hours"]} Credit Hours</span>*/}
                             </div>
                             <div className="card-text">
                                 <ul className="list-group">
-                                    {val["courses"].map((val, index) =>
+                                    {val.map((val, index) =>
                                         <li className="list-group-item" key={index}>
                                             <span
                                                 className="pill badge bg-primary px-2">{val["Disc"]} {val["Num"]}</span>

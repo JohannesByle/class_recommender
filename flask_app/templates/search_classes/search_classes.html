@@ -4,11 +4,13 @@
         <div class="row">
             <div class="col d-none d-md-block" style="max-width: 300px">
                 <div class="row">
-                    <div class="container card border-secondary border-2 mb-4 px-1" id="worksheet_container">
-
+                    <div class="container card border-secondary border-2 mb-4 px-1" id="worksheet_container"></div>
+                    <div id="worksheet_alert"></div>
+                    <div class="container card border-secondary border-2 mb-4 px-1">
+                        <div id="major_container"></div>
+                        <div id="major_filters_container"></div>
                     </div>
-                    <div class="container card border-secondary border-2" id="filters_container">
-                    </div>
+                    <div class="container card border-secondary border-2" id="filters_container"></div>
                 </div>
             </div>
             <div class="col mx-xl-auto" id="classes_container" style="max-width: 1000px">
@@ -16,6 +18,7 @@
         </div>
     </div>
     <script>
+        const majors_list = {{ majors_list|safe }};
         const classes_list = {{ classes_list|safe }};
         {{ js|safe }}
     </script>

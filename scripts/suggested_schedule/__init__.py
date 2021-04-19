@@ -92,4 +92,10 @@ def naive(reqs_df_input, reqs, credits_per_semester=18):
             break
         semesters.append(semester)
     unsatisfied = [reqs_df.columns[n] for n in range(len(reqs_weights)) if reqs_weights[n] == 0]
+    for n in range(len(semesters)):
+        for course in range(len(semesters[n])):
+            for key in semesters[n][course]:
+                if isinstance(semesters[n][course][key], set):
+                    semesters[n][course][key] = list(semesters[n][course][key])
+
     return {"schedule": semesters, "unsatisfied": unsatisfied}

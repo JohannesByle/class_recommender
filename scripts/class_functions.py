@@ -20,10 +20,22 @@ def get_time(time_str):
         times = []
         for time in match:
             hour, minute = re.findall(r"\d{2}", time)
-            if "pm" in time:
+            if "pm" in time and int(hour) != 12:
                 hour = int(hour) + 12 - 1
             times.append(pd.Timestamp(hour=int(hour), minute=int(minute), year=2000, month=1, day=1).isoformat())
         return times
+
+
+def get_date(date_str):
+    match = re.findall(r"\d{2}/\d{2}", date_str)
+    if not len(match) == 2:
+        return None, None
+    else:
+        dates = []
+        for time in match:
+            month, day = re.findall(r"\d{2}", time)
+            dates.append(pd.Timestamp(year=2000, month=int(month), day=int(day)).isoformat())
+        return dates
 
 
 def get_min_max(num_string):

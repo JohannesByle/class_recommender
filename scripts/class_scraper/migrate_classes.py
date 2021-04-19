@@ -11,7 +11,6 @@ with open(os.path.join(path, "class_conversion.json"), "r") as f:
 
 
 def migrate_classes():
-    path = os.path.dirname(__file__)
     df = pd.read_pickle(os.path.join(path, "data/courses.p"))
     for index, row in tqdm(df.iterrows(), total=len(df.index)):
         new_course = {n: row[conversion_dict[n]] for n in conversion_dict}

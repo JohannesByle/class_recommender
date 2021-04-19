@@ -9,13 +9,20 @@ import re
 requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += ':HIGH:!DH:!aNULL'
 auth_data = {"sid": os.environ["PORTAL_USER_ID"], "PIN": os.environ["PORTAL_PASSWORD"]}
 
+# added for getting prereqs and coreqs
+term_conversion = {"Spring ": "01", "Fall ": "08", "Summer ": "05"}
+
+with open(os.path.join(os.path.dirname(__file__), "subjects.json"), "r") as f:
+    json_subj = json.load(f)
+    subjects = json_subj["subjs"]
+
 
 def clean_df(df):
     df = df.dropna(subset=["CRN"]).drop_duplicates().reset_index(drop=True)
     df = df[df["Associated Term"] != "Associated Term"]
     df = df[
-        [not all([df.iloc[n, 0] == df.iloc[n, i] for i in range(len(df.iloc[n])) if df.columns[i] not in ["desc"]]) for
-         n in range(len(df.index))]]
+        [not all([df.iloc[n, 0] == df.iloc[n, i] for i in range(len(df.iloc[n])-5) if (df.columns[i] not in ["desc"]
+                  or df.columns[i] not in ["prereqs"] or df.columns[i] not in ["coreqs"])]) for n in range(len(df.index))]]
     df["CRN"] = df["CRN"].astype(int)
     return df
 
@@ -66,6 +73,55 @@ def get_course(subject, course, year):
         return course_to_pandas(p.text)
 
 
+# added logic for getting prereqs
+def parse_req(req_string):
+    by_ands = re.split(r'and', req_string)
+    output = []
+
+    for by_and in by_ands:
+        by_ors = re.split(r'and', by_and)
+        inner_list = []
+        for by_or in by_ors:
+
+            words = re.split(r' +', by_or)
+
+            for i in range(len(words)):
+                if words[i] in subjects:
+                    inner_list.append((words[i], words[i + 1]))
+
+        output.append(inner_list)
+
+    return output
+
+
+def get_pre_reqs(session, termm, crn):
+    base_url = "https://bannerweb.wheaton.edu/db1/bwckschd.p_disp_detail_sched?term_in={}&crn_in={}"
+
+    # to remove all html tags
+    cleanr = re.compile('<.*?>')
+    without_tags = re.sub(cleanr, '', session.get(base_url.format(termm, crn)).text)
+
+    listy = re.split(r'\n+', without_tags)
+
+    prereqs_json = None
+    coreqs_json = None
+
+    for i in range(len(listy)):
+        if listy[i] == "Prerequisites: ":
+            # output is a list of tuples that can be used whereever, it's just printed here
+            output = parse_req(listy[i+1])
+            prereqs_json = json.dumps(output)
+
+        if listy[i] == "Corequisites: ":
+            output = parse_req(listy[i + 1])
+            coreqs_json = json.dumps(output)
+
+    return prereqs_json, coreqs_json
+
+
+# end of added prereq stuff
+
+
 def get_all_courses():
     dfs = []
     with requests.session() as s:
@@ -93,5 +149,18 @@ def get_all_courses():
                     p = s.post("https://bannerweb.wheaton.edu/db1/bwskfcls.P_GetCrse", data=form + years_form)
                     courses_df = course_to_pandas(p.text)
                     courses_df["desc"] = get_desc(s, subj, course)
+
+                    # added logic for prereqs
+                    sample_course = dict(courses_df.iloc[0])
+                    crn = sample_course["CRN"]
+
+                    term = year[1]
+
+                    scraped_reqs = get_pre_reqs(s, term, crn)
+                    courses_df["prereqs"] = scraped_reqs[0]
+                    courses_df["coreqs"] = scraped_reqs[1]
+
+                    # end of added logic for prereqs and coreqs
+
                     dfs.append(courses_df)
         clean_df(pd.concat(dfs)).to_pickle("data/courses.p")

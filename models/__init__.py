@@ -43,3 +43,7 @@ class Class(db.Model):
     location = db.Column(db.String(25))
     attribute = db.Column(db.String(200))
     desc = db.Column(db.String(500))
+    prereqs = db.Column(db.JSON)
+    coreqs = db.Column(db.JSON)
+
+

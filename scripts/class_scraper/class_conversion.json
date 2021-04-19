@@ -22,5 +22,7 @@
   "date": "Date (MM/DD)",
   "location": "Location",
   "attribute": "Attribute",
-  "desc": "desc"
+  "desc": "desc",
+  "prereqs": "prereqs",
+  "coreqs": "coreqs"
 }

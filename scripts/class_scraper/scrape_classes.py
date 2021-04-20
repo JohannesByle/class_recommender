@@ -21,8 +21,8 @@ def clean_df(df):
     df = df.dropna(subset=["CRN"]).drop_duplicates().reset_index(drop=True)
     df = df[df["Associated Term"] != "Associated Term"]
     df = df[
-        [not all([df.iloc[n, 0] == df.iloc[n, i] for i in range(len(df.iloc[n])-5) if (df.columns[i] not in ["desc"]
-                  or df.columns[i] not in ["prereqs"] or df.columns[i] not in ["coreqs"])]) for n in range(len(df.index))]]
+        [not all([df.iloc[n, 0] == df.iloc[n, i] for i in range(len(df.iloc[n]) - 5) if
+                  df.columns[i] not in ["desc", "prereqs", "coreqs"]]) for n in range(len(df.index))]]
     df["CRN"] = df["CRN"].astype(int)
     return df
 
@@ -109,7 +109,7 @@ def get_pre_reqs(session, termm, crn):
     for i in range(len(listy)):
         if listy[i] == "Prerequisites: ":
             # output is a list of tuples that can be used whereever, it's just printed here
-            output = parse_req(listy[i+1])
+            output = parse_req(listy[i + 1])
             prereqs_json = json.dumps(output)
 
         if listy[i] == "Corequisites: ":

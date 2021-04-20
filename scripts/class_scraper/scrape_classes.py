@@ -21,7 +21,7 @@ def clean_df(df):
     df = df.dropna(subset=["CRN"]).drop_duplicates().reset_index(drop=True)
     df = df[df["Associated Term"] != "Associated Term"]
     df = df[
-        [not all([df.iloc[n, 0] == df.iloc[n, i] for i in range(len(df.iloc[n]) - 5) if
+        [not all([df.iloc[n, 0] == df.iloc[n, i] for i in range(len(df.iloc[n])) if
                   df.columns[i] not in ["desc", "prereqs", "coreqs"]]) for n in range(len(df.index))]]
     df["CRN"] = df["CRN"].astype(int)
     return df

@@ -5,7 +5,7 @@ from flask_app.utils import get_known_majors
 from random import random
 import threading
 import os
-import pickle
+import dill
 
 path = os.path.dirname(__file__)
 task_path = os.path.join(path, "tasks")
@@ -70,7 +70,7 @@ def naive_task(course_code, task_id):
         new_dict = {"done": False}
         json.dump(new_dict, f)
     with open(os.path.join(data_path, course_code + ".p"), "rb") as f:
-        reqs_df, reqs = pickle.load(f)
+        reqs_df, reqs = dill.load(f)
     for update in naive(reqs_df, reqs):
         with open(os.path.join(task_path, task_id), "w") as f:
             new_dict = {"done": False}

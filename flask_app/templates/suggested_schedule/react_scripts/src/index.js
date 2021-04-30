@@ -1,4 +1,20 @@
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
 
 import React from "react";
 import ReactDOM from "react-dom";
@@ -6,7 +22,6 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function render_schedule(schedule) {
-  console.log(schedule);
   ReactDOM.render( /*#__PURE__*/React.createElement("div", null, schedule["unsatisfied"].map((val, index) => /*#__PURE__*/React.createElement("div", {
     className: "alert alert-danger",
     key: index
@@ -55,12 +70,27 @@ function ComboBox(label, options, custom_function) {
 function SuggestedScheduleForm() {
   let major_name = null;
 
-  function upload_class() {
+  function get_task_status(task_id) {
+    fetch("/suggested_schedule_status_post", {
+      method: "POST",
+      body: task_id
+    }).then(r => r.json()).then(result => {
+      if ("schedule" in result) {
+        render_schedule(result);
+      } else {
+        console.log(result);
+      }
+
+      if (!result["done"]) window.setTimeout(() => get_task_status(task_id), 500);
+    }, error => console.log(error));
+  }
+
+  function start_task() {
     if (major_name == null) return;
     fetch("/suggested_schedule_post", {
       method: "POST",
       body: known_majors[major_name]
-    }).then(r => r.json()).then(result => render_schedule(result), error => console.log(error));
+    }).then(r => r.json()).then(result => get_task_status(result), error => console.log(error));
   }
 
   return /*#__PURE__*/React.createElement("div", {
@@ -84,7 +114,7 @@ function SuggestedScheduleForm() {
     id: "grade_input"
   }, ComboBox("Major", Object.keys(known_majors), (e, val) => major_name = val)))), /*#__PURE__*/React.createElement("button", {
     className: "btn btn-secondary float-end mt-3",
-    onClick: upload_class
+    onClick: start_task
   }, "Generate Suggested Schedule"));
 }
 

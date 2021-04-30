@@ -134,7 +134,7 @@ function Class(class_dict) {
     className: "col text-secondary"
   }, class_dict["desc"])), /*#__PURE__*/React.createElement("div", {
     className: "row"
-  }, /*#__PURE__*/React.createElement("span", null, offered_terms)), reqs))))));
+  }, /*#__PURE__*/React.createElement("span", null, offered_terms)), reqs, class_dict["prereqs"]))))));
 }
 
 export default function filter_classes() {

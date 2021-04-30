@@ -7,3 +7,4 @@
 /flask_app/templates/*/react_scripts/package-lock.json
 /flask_app/templates/*/react_scripts/dist/main.js.LICENSE.txt
 /.idea
+/flask_app/views/suggested_schedule/tasks/

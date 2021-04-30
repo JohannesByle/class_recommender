@@ -4,7 +4,6 @@ import TextField from "@material-ui/core/TextField";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 function render_schedule(schedule) {
-    console.log(schedule)
     ReactDOM.render(
         <div>
             {schedule["unsatisfied"].map((val, index) =>
@@ -56,7 +55,25 @@ function ComboBox(label, options, custom_function) {
 function SuggestedScheduleForm() {
     let major_name = null;
 
-    function upload_class() {
+    function get_task_status(task_id) {
+        fetch("/suggested_schedule_status_post",
+            {
+                method: "POST",
+                body: task_id
+            }
+        ).then(r => r.json()).then(
+            (result) => {
+                if ("schedule" in result) {
+                    render_schedule(result);
+                } else {
+                    console.log(result);
+                }
+                if (!result["done"]) window.setTimeout(() => get_task_status(task_id), 500);
+            },
+            (error) => console.log(error));
+    }
+
+    function start_task() {
         if (major_name == null)
             return
         fetch("/suggested_schedule_post",
@@ -65,7 +82,7 @@ function SuggestedScheduleForm() {
                 body: known_majors[major_name]
             }
         ).then(r => r.json()).then(
-            (result) => render_schedule(result),
+            (result) => get_task_status(result),
             (error) => console.log(error));
     }
 
@@ -83,7 +100,7 @@ function SuggestedScheduleForm() {
                     </div>
                 </div>
             </div>
-            <button className="btn btn-secondary float-end mt-3" onClick={upload_class}>
+            <button className="btn btn-secondary float-end mt-3" onClick={start_task}>
                 Generate Suggested Schedule
             </button>
         </div>

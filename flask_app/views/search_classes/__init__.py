@@ -5,7 +5,7 @@ import json
 from flask_app.utils import get_known_majors
 
 path = os.path.dirname(os.path.dirname(__file__))
-data_path = os.path.join(os.path.dirname(path), "data")
+data_path = os.path.join(os.path.dirname(path), "data/majors_data")
 majors = [n.replace(".json", "") for n in os.listdir(data_path)]
 _, known_majors = get_known_majors()
 known_majors = {n: known_majors[n] for n in known_majors if known_majors[n] in majors}

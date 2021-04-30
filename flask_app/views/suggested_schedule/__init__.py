@@ -1,4 +1,3 @@
-import time
 from flask import Blueprint, render_template, request
 import json
 from .algorithm import naive, create_reqs_df
@@ -6,6 +5,7 @@ from flask_app.utils import get_known_majors
 from random import random
 import threading
 import os
+import pickle
 
 path = os.path.dirname(__file__)
 task_path = os.path.join(path, "tasks")
@@ -13,6 +13,7 @@ path = os.path.dirname(path)
 if not os.path.exists(task_path):
     os.mkdir(task_path)
 
+data_path = os.path.join(os.path.dirname(os.path.dirname(path)), "flask_app/data/reqs_data")
 suggested_schedule_blueprint = Blueprint("suggested_schedule", __name__)
 
 js_path = os.path.join(os.path.dirname(path), "templates/suggested_schedule/react_scripts/dist/main.js")
@@ -68,7 +69,9 @@ def naive_task(course_code, task_id):
     with open(os.path.join(task_path, task_id), "w") as f:
         new_dict = {"done": False}
         json.dump(new_dict, f)
-    for update in naive(*create_reqs_df(course_code)):
+    with open(os.path.join(data_path, course_code + ".p"), "rb") as f:
+        reqs_df, reqs = pickle.load(f)
+    for update in naive(reqs_df, reqs):
         with open(os.path.join(task_path, task_id), "w") as f:
             new_dict = {"done": False}
             new_dict.update(**update)

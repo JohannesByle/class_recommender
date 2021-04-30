@@ -43,7 +43,7 @@ def clean_df(input_df):
     return output_df
 
 
-courses_df = clean_df(pd.read_pickle(os.path.join(path, "scripts/class_scraper/data/courses.p")))
+courses_df = clean_df(pd.read_csv(os.path.join(path, "scripts/class_scraper/data/courses.csv")))
 
 
 def create_reqs_df(major):

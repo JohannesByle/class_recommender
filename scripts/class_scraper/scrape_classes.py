@@ -163,4 +163,4 @@ def get_all_courses():
                     # end of added logic for prereqs and coreqs
 
                     dfs.append(courses_df)
-        clean_df(pd.concat(dfs)).to_pickle("data/courses.p")
+        clean_df(pd.concat(dfs)).to_csv("data/courses.csv")

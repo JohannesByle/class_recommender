@@ -11,7 +11,7 @@ with open(os.path.join(path, "class_conversion.json"), "r") as f:
 
 
 def migrate_classes():
-    df = pd.read_pickle(os.path.join(path, "data/courses.p"))
+    df = pd.read_csv(os.path.join(path, "data/courses.csv"))
     for index, row in tqdm(df.iterrows(), total=len(df.index)):
         new_course = {n: row[conversion_dict[n]] for n in conversion_dict}
         course = Class.query.filter_by(term=row["Associated Term"], crn=row["CRN"]).first()

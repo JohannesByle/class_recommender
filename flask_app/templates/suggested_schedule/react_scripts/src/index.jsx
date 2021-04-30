@@ -66,7 +66,13 @@ function SuggestedScheduleForm() {
                 if ("schedule" in result) {
                     render_schedule(result);
                 } else {
-                    console.log(result);
+                    ReactDOM.render(
+                        <div className="d-flex justify-content-center">
+                            <div className="spinner-border text-light mx-auto" role="status">
+                            </div>
+                        </div>,
+                        document.getElementById("schedule_container")
+                    )
                 }
                 if (!result["done"]) window.setTimeout(() => get_task_status(task_id), 500);
             },

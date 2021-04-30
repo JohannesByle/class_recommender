@@ -1,3 +1,4 @@
+import time
 from flask import Blueprint, render_template, request
 import json
 from .algorithm import naive, create_reqs_df
@@ -43,11 +44,21 @@ def start_suggested_schedule_task():
 def get_suggested_schedule_task():
     task_id = request.data.decode("utf-8")
     if os.path.exists(os.path.join(task_path, task_id)):
-        with open(os.path.join(task_path, task_id), "r") as f:
-            to_return = json.load(f)
-            if to_return["done"]:
-                os.remove(os.path.join(task_path, task_id))
-            return json.dumps(to_return)
+        opened = False
+        tries = 0
+        while not opened:
+            try:
+                tries += 1
+                with open(os.path.join(task_path, task_id), "r") as f:
+                    to_return = json.load(f)
+                opened = True
+            except json.decoder.JSONDecodeError as e:
+                if tries > 10:
+                    raise e
+
+        if to_return["done"]:
+            os.remove(os.path.join(task_path, task_id))
+        return json.dumps(to_return)
     else:
         return json.dumps("Task not found")
 
